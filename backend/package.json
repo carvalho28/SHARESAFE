@@ -1,0 +1,25 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "tsx src/app.ts",
+    "start:dev": "tsx watch src/app.ts",
+    "build": "tsup src",
+    "test": "tap --node-arg=--require=ts-node/register tests/**/*.test.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^18.15.3",
+    "@types/tap": "^15.0.8",
+    "tap": "^16.3.4",
+    "ts-node": "^10.9.1",
+    "tsup": "^6.6.3",
+    "tsx": "^3.12.5",
+    "typescript": "^5.0.2"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "fastify": "^4.14.1"
+  }
+}
