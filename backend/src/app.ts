@@ -10,6 +10,5 @@ server.listen({ port: port }, (err, address) => {
     console.error(err);
     process.exit(1);
   }
-
   console.log(`Server listening at ${address}`);
 });
