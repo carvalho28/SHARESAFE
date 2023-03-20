@@ -1,0 +1,17 @@
+{
+  "name": "SHARESAFE",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "frontend:init": "cd frontend && yarn install",
+    "backend:init": "cd backend && yarn install",
+    "inst:all": "concurrently \"yarn backend:init\" \"yarn frontend:init\"",
+    "frontend": "cd frontend && yarn dev",
+    "backend": "cd backend && yarn start:dev",
+    "dev": "concurrently \"yarn backend\" \"yarn frontend\""
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^7.6.0"
+  }
+}
