@@ -1,11 +1,20 @@
-import "./App.css";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Home from "./Home";
+import NotFound from "./NotFound";
 
-function App() {
+export function App() {
   return (
-    <div>
-      <h1>SHARESAFE</h1>
-    </div>
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
   );
 }
 
-export default App;
+export function renderApp() {
+  return (
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  );
+}
