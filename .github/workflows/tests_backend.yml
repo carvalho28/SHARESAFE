@@ -3,7 +3,7 @@ name: Tests Backend
 on: [push]
 
 jobs:
-  vitest-run:
+  tap-run:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
