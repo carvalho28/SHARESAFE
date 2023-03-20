@@ -11,7 +11,7 @@ export function App() {
   );
 }
 
-export function renderApp() {
+export function RenderApp() {
   return (
     <BrowserRouter>
       <App />
