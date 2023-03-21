@@ -6,7 +6,8 @@ import { RenderApp, App } from "../App";
 describe("App", () => {
   it("renders", () => {
     render(RenderApp());
-    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Home");
+    // expect a loginBtn to be present
+    expect(screen.getByText("WELCOME BACK TO SHARESAFE")).toBeInTheDocument();
   });
 
   it("renders not found if user navigates to a non-existing page", () => {
