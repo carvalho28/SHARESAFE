@@ -34,3 +34,18 @@ test("GET /notfound", async (t) => {
   t.equal(response.statusCode, 404);
   t.same("Not found", response.payload);
 });
+
+test("GET /api/users", async (t) => {
+  const fastify = buildServer();
+
+  t.teardown(() => {
+    fastify.close();
+  });
+
+  const response = await fastify.inject({
+    method: "GET",
+    url: "/api/users",
+  });
+
+  t.equal(response.statusCode, 200);
+});
