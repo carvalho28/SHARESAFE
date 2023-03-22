@@ -13,6 +13,6 @@ jobs:
       - name: Build
         run: cd backend && yarn build
       - name: Prisma Run
-        run: npx prisma generate
+        run: cd backend && npx prisma generate
       - name: Tap run
         run: cd backend && yarn test
