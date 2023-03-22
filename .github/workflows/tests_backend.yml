@@ -10,7 +10,7 @@ jobs:
         uses: actions/checkout@v3
       - name: Write the .env file
         run: |
-          echo '${{ secrets.DATABASE_URL }}' > backend/.env
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > backend/.env
       - name: Compile
         run: cd backend && yarn
       - name: Build
