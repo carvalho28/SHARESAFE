@@ -1,8 +1,10 @@
 import { FastifyInstance } from "fastify";
-import { getUsersHandler } from "./user.controller";
+import { getUsersHandler, registerUserHandler } from "./user.controller";
 
-async function userRoute(server: FastifyInstance) {
+async function userRoutes(server: FastifyInstance) {
   server.get("/", getUsersHandler);
+
+  server.get("/key", registerUserHandler);
 }
 
-export default userRoute;
+export default userRoutes;
