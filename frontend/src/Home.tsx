@@ -3,13 +3,13 @@ import logo from "./images/Logo.png";
 
 function Home() {
   return (
-    <div className="h-screen flex items-center justify-center">
-
+    <div className="flex items-center justify-center h-screen">
+      
       <div className="pr-[200px]">
         <img alt="Logo" src={logo} />
       </div>
 
-      <div className="h-[80%] bg-gray-100 w-[5px] rounded-lg"/>
+      <div className="h-[80%] bg-gray-100 w-[4px] rounded-lg"/>
       
       <div className="pl-[200px]">
         <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
