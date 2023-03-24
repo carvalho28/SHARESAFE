@@ -2,12 +2,26 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "./Home";
 import NotFound from "./NotFound";
 import Register from "./Register";
+import MainMenu from './Menu';
+import GroupPage from "./subPages/groupPage";
+import HelpPage from './subPages/helpPage';
+import SettingsPage from "./subPages/settingsPage";
+import SendFilePage from './subPages/sendFilePage';
+import SentPage from './subPages/sentPage';
+import InboxPage from './subPages/inboxPage';
 
 export function App() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/mainmenu" element={<MainMenu />} />
+      <Route path="/sendfile" element={<SendFilePage/>} />
+      <Route path="/inbox" element={<InboxPage/>} />
+      <Route path="/group" element={<GroupPage/>} />
+      <Route path="/sent" element={<SentPage/>} />
+      <Route path="/help" element={<HelpPage/>} />
+      <Route path="/settings" element={<SettingsPage/>} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

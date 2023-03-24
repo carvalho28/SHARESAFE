@@ -9,7 +9,7 @@ const Register = () => {
         <img alt="Logo" src={logo} />
       </div>
 
-      <div className="h-[80%] bg-gray-200 w-[5px] rounded-lg" />
+      <div className="h-[80%] bg-gray-100 w-[4px] rounded-lg" />
       
       <div className="pl-[200px]">
         <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
