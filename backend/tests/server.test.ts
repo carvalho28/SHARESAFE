@@ -1,5 +1,5 @@
 import { test } from "tap";
-import buildServer from "../src/server";
+import { buildServer } from "../src/server";
 
 // test root
 test("GET /", async (t) => {
