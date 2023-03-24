@@ -1,4 +1,4 @@
-import buildServer from "./server";
+import { buildServer } from "./server";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -12,3 +12,5 @@ server.listen({ port: port }, (err, address) => {
   }
   console.log(`Server listening at ${address}`);
 });
+
+export default server;

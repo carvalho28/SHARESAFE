@@ -9,11 +9,15 @@ export function hashPassword(password: string) {
   return { hash, salt };
 }
 
-export function comparePassword(
-  candidatePassword: string,
-  hash: string,
-  salt: string
-) {
+export function comparePassword({
+  candidatePassword,
+  hash,
+  salt,
+}: {
+  candidatePassword: string;
+  hash: string;
+  salt: string;
+}) {
   const hashVerify = crypto
     .pbkdf2Sync(candidatePassword, salt, 10000, 64, "sha512")
     .toString("hex");
