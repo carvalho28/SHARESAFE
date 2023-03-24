@@ -1,6 +1,8 @@
-import { findUsers } from "./user.service";
-import crypto from "crypto";
+import { createUser, findUsers } from "./user.service";
 import dotenv from "dotenv";
+import { FastifyReply, FastifyRequest } from "fastify";
+import { CreateUserInput } from "./user.schema";
+
 dotenv.config();
 
 export async function getUsersHandler() {
@@ -8,20 +10,19 @@ export async function getUsersHandler() {
   return users;
 }
 
-export async function registerUserHandler() {
-  const { publicKey, privateKey } = crypto.generateKeyPairSync("rsa", {
-    modulusLength: 4096,
-    publicKeyEncoding: {
-      type: "spki",
-      format: "pem",
-    },
-    privateKeyEncoding: {
-      type: "pkcs8",
-      format: "pem",
-      cipher: "aes-256-cbc",
-      passphrase: process.env.PRIVATE_KEY_PASSPHRASE,
-    },
-  });
+export async function registerUserHandler(
+  request: FastifyRequest<{ Body: CreateUserInput }>,
+  reply: FastifyReply
+) {
+  const body = request.body;
+  console.log(body);
 
-  return { publicKey: publicKey, privateKey: privateKey };
+  try {
+    const user = await createUser(body);
+
+    return reply.code(201).send(user);
+  } catch (error) {
+    console.log(error);
+    return reply.code(400).send(error);
+  }
 }
