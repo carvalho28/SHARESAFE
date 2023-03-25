@@ -5,3 +5,5 @@ yarn-error.log
 frontend/yarn.lock
 
 .DS_Store
+
+.env
