@@ -7,13 +7,16 @@
     "start": "tsx src/app.ts",
     "start:dev": "tsx watch src/app.ts",
     "build": "tsup src",
-    "test": "tap --node-arg=--require=ts-node/register tests/**/*.test.ts"
+    "test": "tap --node-arg=--require=ts-node/register tests/**/*.test.ts --no-coverage"
   },
   "devDependencies": {
+    "@faker-js/faker": "^7.6.0",
     "@types/node": "^18.15.3",
     "@types/tap": "^15.0.8",
     "prisma": "4.11.0",
+    "sinon": "^15.0.2",
     "tap": "^16.3.4",
+    "ts-mock-imports": "^1.3.8",
     "ts-node": "^10.9.1",
     "tsup": "^6.6.3",
     "tsx": "^3.12.5",

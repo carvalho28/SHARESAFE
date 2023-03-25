@@ -1,6 +1,4 @@
-import { buildServer } from "./server";
-import dotenv from "dotenv";
-dotenv.config();
+import buildServer from "./server";
 
 const port = parseInt(process.env.PORT || "3000");
 const server = buildServer();
