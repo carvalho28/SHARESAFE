@@ -7,7 +7,7 @@
     "start": "tsx src/app.ts",
     "start:dev": "tsx watch src/app.ts",
     "build": "tsup src",
-    "test": "tap --node-arg=--require=ts-node/register tests/**/*.test.ts"
+    "test": "tap --node-arg=--require=ts-node/register tests/**/*.test.ts --no-coverage"
   },
   "devDependencies": {
     "@faker-js/faker": "^7.6.0",

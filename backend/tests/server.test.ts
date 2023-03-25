@@ -19,18 +19,18 @@ test("GET /", async (t) => {
 });
 
 // test 404
-// test("GET /notfound", async (t) => {
-//   const fastify = buildServer();
+test("GET /notfound", async (t) => {
+  const fastify = buildServer();
 
-//   t.teardown(() => {
-//     fastify.close();
-//   });
+  t.teardown(() => {
+    fastify.close();
+  });
 
-//   const response = await fastify.inject({
-//     method: "GET",
-//     url: "/notfound",
-//   });
+  const response = await fastify.inject({
+    method: "GET",
+    url: "/notfound",
+  });
 
-//   t.equal(response.statusCode, 404);
-//   t.same("Not found", response.payload);
-// });
+  t.equal(response.statusCode, 404);
+  t.same("Not found", response.payload);
+});
