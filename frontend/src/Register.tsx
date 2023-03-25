@@ -1,7 +1,20 @@
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import { KEYUTIL } from "jsrsasign";
 import logo from "./images/Logo.png";
 
 function Register() {
+  const [publicKey, setPublicKey] = useState("");
+  const [privateKey, setPrivateKey] = useState("");
+
+  function generateKeys() {
+    const keyPair = KEYUTIL.generateKeypair("RSA", 2048);
+    const publicKey = KEYUTIL.getPEM(keyPair.pubKeyObj);
+    const privateKey = KEYUTIL.getPEM(keyPair.prvKeyObj, "PKCS1PRV");
+    setPublicKey(publicKey);
+    setPrivateKey(privateKey);
+  }
+
   return (
     <div className="h-screen flex items-center justify-center">
       <div className="pr-[200px]">
@@ -19,6 +32,14 @@ function Register() {
             <p className="text-xs font-bold">
               WELCOME TO SHARESAFE, LET&apos;S GET STARTED
             </p>
+          </div>
+          <div>
+            {publicKey ? <p>{publicKey}</p> : <p>Public key not generated</p>}
+            {privateKey ? (
+              <p>{privateKey}</p>
+            ) : (
+              <p>Private key not generated</p>
+            )}
           </div>
           <div className="pt-5">
             <input
@@ -57,6 +78,7 @@ function Register() {
               className="shadow appearance-none border rounded w-full py-2 bg-blue-900 hover:bg-blue-600 text-white font-bold text-xl"
               id="registerBtn"
               type="button"
+              onClick={generateKeys}
             >
               Register
             </button>
