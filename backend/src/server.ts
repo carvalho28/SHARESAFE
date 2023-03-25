@@ -45,7 +45,7 @@ function buildServer() {
     server.addSchema(schema);
   }
 
-  server.register(userRoutes, { prefix: "api/users" });
+  server.register(userRoutes, { prefix: "/api/users" });
 
   server.setNotFoundHandler((request, reply) => {
     reply.code(404).send("Not found");

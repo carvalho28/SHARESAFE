@@ -4,7 +4,6 @@ import buildServer from "../src/server";
 // test root
 test("GET /", async (t) => {
   const fastify = buildServer();
-  console.log("Fastify: ", fastify);
 
   t.teardown(() => {
     fastify.close();
