@@ -1,6 +1,28 @@
 import { Link } from "react-router-dom";
 import logo from "./images/Logo.png";
 
+import { createDiffieHellmanGroup} from 'crypto';
+import { writeFileSync } from 'fs';
+
+function generateKeys() {
+  const user = createDiffieHellmanGroup('modp16');
+  user.generateKeys();
+  const privateKey = user.getPrivateKey('hex');
+  const publicKey = user.getPublicKey('hex');
+  console.log(publicKey);
+  console.log(privateKey);
+  const certContents =
+      '-----BEGIN KEY-----' + "\n" +
+      privateKey + "\n" +
+      '-----END KEY-----';
+  const filePath = 'Key.pem';
+  writeFileSync(
+    filePath,
+    certContents,
+    { encoding: 'utf8' }
+  );
+}
+
 function Register() {
   return (
     <div className="h-screen flex items-center justify-center">
