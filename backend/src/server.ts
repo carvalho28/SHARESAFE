@@ -1,13 +1,19 @@
-import fastify, { FastifyReply, FastifyRequest } from "fastify";
+import Fastify, { FastifyReply, FastifyRequest } from "fastify";
+import fastifyJwt, { JWT } from "@fastify/jwt";
 import userRoutes from "./modules/user/user.route";
-import fastifyJwt from "@fastify/jwt";
-import dotenv from "dotenv";
 import { userSchemas } from "./modules/user/user.schema";
 
+declare module "fastify" {
+  interface FastifyRequest {
+    jwt: JWT;
+  }
+}
+
+import dotenv from "dotenv";
 dotenv.config();
 
 function buildServer() {
-  const server = fastify();
+  const server = Fastify();
 
   const defaultSecret = "secret";
 
@@ -26,15 +32,20 @@ function buildServer() {
     }
   );
 
-  for (const schema of userSchemas) {
-    server.addSchema(schema);
-  }
-
   server.get("/", async (request, reply) => {
     return { status: "UP" };
   });
 
-  server.register(userRoutes, { prefix: "/api/users" });
+  server.addHook("preHandler", (request, reply, next) => {
+    request.jwt = server.jwt;
+    return next();
+  });
+
+  for (const schema of userSchemas) {
+    server.addSchema(schema);
+  }
+
+  server.register(userRoutes, { prefix: "api/users" });
 
   server.setNotFoundHandler((request, reply) => {
     reply.code(404).send("Not found");
@@ -43,4 +54,4 @@ function buildServer() {
   return server;
 }
 
-export { buildServer };
+export default buildServer;

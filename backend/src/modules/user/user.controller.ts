@@ -1,11 +1,7 @@
 import { createUser, findUserByEmail, findUsers } from "./user.service";
-import dotenv from "dotenv";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { CreateUserInput, LoginInput } from "./user.schema";
 import { comparePassword } from "../../utils/hash";
-import server from "../../app";
-
-dotenv.config();
 
 export async function getUsersHandler() {
   const users = await findUsers();
@@ -52,7 +48,7 @@ export async function loginHandler(
 
     console.log(rest);
 
-    return { accessToken: server.jwt.sign(rest) };
+    return { accessToken: request.jwt.sign(rest) };
   }
 
   return reply.code(401).send("Invalid login credentials");
