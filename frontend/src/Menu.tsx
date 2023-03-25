@@ -1,10 +1,11 @@
-import Sidebar from './components/sidebar';
-const MainMenu = () => {
-    return (
+import Sidebar from "./components/sidebar";
+
+function MainMenu() {
+  return (
     <div>
-        <Sidebar/>
+      <Sidebar />
     </div>
-    )
+  );
 }
 
-export default MainMenu
+export default MainMenu;
