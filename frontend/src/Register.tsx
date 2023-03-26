@@ -13,6 +13,16 @@ function Register() {
     const privateKey = KEYUTIL.getPEM(keyPair.prvKeyObj, "PKCS1PRV");
     setPublicKey(publicKey);
     setPrivateKey(privateKey);
+
+    const element = document.createElement("a");
+    const file = new Blob(["PRIVATE KEY:\n"+privateKey], {
+      type: "text/plain"
+    });
+    element.href = URL.createObjectURL(file);
+    element.download = "privateKey.pem";
+    document.body.appendChild(element);
+    element.click();
+    element.remove();
   }
 
   return (
@@ -34,6 +44,7 @@ function Register() {
             </p>
           </div>
           <div>
+            {/* TO REMOVE LATER */}
             {publicKey ? <p>{publicKey}</p> : <p>Public key not generated</p>}
             {privateKey ? (
               <p>{privateKey}</p>
