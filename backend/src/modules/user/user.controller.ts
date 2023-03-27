@@ -46,8 +46,6 @@ export async function loginHandler(
   if (correctPassword) {
     const { password, salt, ...rest } = user;
 
-    console.log(rest);
-
     return { accessToken: request.jwt.sign(rest) };
   }
 

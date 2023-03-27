@@ -1,7 +1,46 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "./images/Logo.png";
 
 function Home() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const navigate = useNavigate();
+
+  async function loginUser() {
+    if (password === "" || email === "") {
+      // error message of empty fields
+      console.log("empty fields");
+      return;
+    }
+
+    // call the backend to register the user
+    const data = {
+      email,
+      password,
+    };
+
+    console.log(JSON.stringify(data));
+
+    await fetch("http://localhost:3000/api/users/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json; charset=UTF-8",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        // go to the dashboard
+        navigate("/mainmenu");
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+  }
+
   return (
     <div className="flex items-center justify-center h-screen">
       <div className="pr-[200px]">
@@ -21,17 +60,21 @@ function Home() {
           <div className="pt-5">
             <input
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-xl"
-              id="LGNnome"
-              type="text"
-              placeholder="Nome"
+              id="email"
+              type="email"
+              placeholder="Email"
+              required
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
           <div className="pt-5">
             <input
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-xl"
-              id="LGNpassword"
+              id="password"
               type="password"
               placeholder="Password"
+              required
+              onChange={(e) => setPassword(e.target.value)}
             />
           </div>
           <div className="pt-1">
@@ -47,6 +90,9 @@ function Home() {
               className="shadow appearance-none border rounded w-full py-2 bg-blue-900 hover:bg-blue-600 text-white font-bold text-xl"
               id="loginBtn"
               type="button"
+              onClick={() => {
+                loginUser();
+              }}
             >
               Login
             </button>
