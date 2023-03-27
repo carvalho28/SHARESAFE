@@ -19,7 +19,13 @@ module.exports = {
     project: "tsconfig.json",
     tsconfigRootDir: __dirname,
   },
-  plugins: ["react", "@typescript-eslint", "prettier", "jsrsasign"],
+  plugins: [
+    "react",
+    "@typescript-eslint",
+    "prettier",
+    "jsrsasign",
+    "node-forge",
+  ],
   rules: {
     "react/react-in-jsx-scope": 0,
     "@typescript-eslint/quotes": ["error", "double"],

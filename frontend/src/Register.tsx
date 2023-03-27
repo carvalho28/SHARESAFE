@@ -1,28 +1,23 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import { KEYUTIL } from "jsrsasign";
 import logo from "./images/Logo.png";
+import forge from "node-forge";
 
 function Register() {
   const [publicKey, setPublicKey] = useState("");
   const [privateKey, setPrivateKey] = useState("");
 
   function generateKeys() {
-    const keyPair = KEYUTIL.generateKeypair("RSA", 2048);
-    const publicKey = KEYUTIL.getPEM(keyPair.pubKeyObj);
-    const privateKey = KEYUTIL.getPEM(keyPair.prvKeyObj, "PKCS1PRV");
+    const initTime = new Date().getTime();
+    const keypair = forge.pki.rsa.generateKeyPair({ bits: 2048 });
+    const publicKey = forge.pki.publicKeyToPem(keypair.publicKey);
+    const privateKey = forge.pki.privateKeyToPem(keypair.privateKey);
     setPublicKey(publicKey);
     setPrivateKey(privateKey);
-
-    const element = document.createElement("a");
-    const file = new Blob(["PRIVATE KEY:\n"+privateKey], {
-      type: "text/plain"
-    });
-    element.href = URL.createObjectURL(file);
-    element.download = "privateKey.pem";
-    document.body.appendChild(element);
-    element.click();
-    element.remove();
+    const endTime = new Date().getTime();
+    console.log(publicKey);
+    console.log(privateKey);
+    console.log(`Time taken: ${endTime - initTime}ms`);
   }
 
   return (
