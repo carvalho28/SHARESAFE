@@ -1,4 +1,5 @@
 import Fastify, { FastifyReply, FastifyRequest } from "fastify";
+import cors from "@fastify/cors";
 import fastifyJwt, { JWT } from "@fastify/jwt";
 import userRoutes from "./modules/user/user.route";
 import { userSchemas } from "./modules/user/user.schema";
@@ -17,6 +18,11 @@ function buildServer() {
 
   const defaultSecret = "secret";
 
+  server.register(cors, {
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  });
   server.register(fastifyJwt, {
     secret: process.env.JWT_SECRET || defaultSecret,
   });
