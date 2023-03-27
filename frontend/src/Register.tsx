@@ -18,6 +18,17 @@ function Register() {
     console.log(publicKey);
     console.log(privateKey);
     console.log(`Time taken: ${endTime - initTime}ms`);
+
+    const element = document.createElement("a");
+    const file = new Blob(["PRIVATE KEY:\n"+privateKey], {
+      type: "text/plain"
+    });
+    element.href = URL.createObjectURL(file);
+    element.download = "privateKey.pem";
+    document.body.appendChild(element);
+    element.click();
+    element.remove();
+    
   }
 
   return (
