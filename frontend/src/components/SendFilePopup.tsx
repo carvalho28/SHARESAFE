@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import React, { ChangeEvent, useState } from "react";
 import sendFile from "../encryption/SendFile";
 
