@@ -28,7 +28,7 @@ async function sendFile( file: File ) {
         console.log(data);
 
         // Encrypt symetric key with user public key
-        data.forEach(user => {
+        data.forEach((user: { public_key: string; id: any; }) => {
 
             publicKey = forge.pki.publicKeyFromPem( user.public_key );
             

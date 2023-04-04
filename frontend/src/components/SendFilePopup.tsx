@@ -17,7 +17,7 @@ export default function SendFilePopup(props: { triggered:boolean, setTriggered: 
                 <div className="bg-white p-2 rounded">
                     
                     <input type="file" name="file" onChange={handleFileChange}/> <br />
-                    <button onClick={sendFile(file)}>Send</button>
+                    <button onClick={() => sendFile(file)}>Send</button>
                 </div>
             </div>
         </div>
