@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import logo from "../images/Logo.png";
-import SendFilePopup from "./sendFilePopup";
+import SendFilePopup from "./SendFilePopup";
 
 export default function Sidebar() {
   const [triggered, setTriggered] = useState(false);
