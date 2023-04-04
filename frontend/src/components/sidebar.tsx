@@ -1,9 +1,16 @@
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import logo from "../images/Logo.png";
+import SendFilePopup from "./SendFilePopup";
 
 export default function Sidebar() {
+  const [triggered, setTriggered] = useState(false);
+
   return (
     <div>
+
+      <SendFilePopup triggered={triggered} setTriggered={setTriggered}/>
+
       <aside
         id="default-sidebar"
         className="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0"
@@ -18,8 +25,8 @@ export default function Sidebar() {
             </li>
             <hr />
             <li>
-              <Link
-                to="/sendfile"
+              <button
+                onClick={() => setTriggered(true)}
                 className="flex items-center p-4 text-base font-normal border-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
               >
                 <svg
@@ -37,7 +44,7 @@ export default function Sidebar() {
                   <path d="M14 3v5h5M18 21v-6M15 18h6" />
                 </svg>
                 <span className="flex-1 ml-3 whitespace-nowrap">Send File</span>
-              </Link>
+              </button>
             </li>
             <li>
               <Link
