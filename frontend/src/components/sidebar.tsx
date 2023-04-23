@@ -8,8 +8,7 @@ export default function Sidebar() {
 
   return (
     <div>
-
-      <SendFilePopup triggered={triggered} setTriggered={setTriggered}/>
+      <SendFilePopup triggered={triggered} setTriggered={setTriggered} />
 
       <aside
         id="default-sidebar"
