@@ -1,7 +1,7 @@
 import { buildJsonSchemas } from "fastify-zod";
 import { z } from "zod";
 
-const fileSchema = z.object({
+const fileUploadCore = z.object({
   file_name: z.string({
     required_error: "File name is required",
   }),
@@ -13,12 +13,17 @@ const fileSchema = z.object({
   }),
   encrypted_file: z.any(),
   iv: z.any(),
-  created_at: z.date(),
   user_id: z.number(),
 });
 
-export type FileInput = z.infer<typeof fileSchema>;
+// add encrypted_file and iv 
+const fileSchema = fileUploadCore.extend({
+  encrypted_file: z.any(),
+});
+
+export type FileInput = z.infer<typeof fileUploadCore>;
 
 export const { schemas: fileSchemas, $ref } = buildJsonSchemas({
   fileSchema,
+  fileUploadCore
 });

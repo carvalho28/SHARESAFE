@@ -38,7 +38,6 @@ model EncryptedFile {
   file_name      String
   file_type      String
   file_size      Int
-  encrypted_file Bytes
   iv             Bytes
   created_at     DateTime @default(now())
 
