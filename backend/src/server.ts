@@ -2,6 +2,7 @@ import Fastify, { FastifyReply, FastifyRequest } from "fastify";
 import cors from "@fastify/cors";
 import fastifyJwt, { JWT } from "@fastify/jwt";
 import userRoutes from "./modules/user/user.route";
+import fileRoutes from "./modules/file/file.route";
 import { userSchemas } from "./modules/user/user.schema";
 
 declare module "fastify" {
@@ -52,6 +53,7 @@ function buildServer() {
   }
 
   server.register(userRoutes, { prefix: "/api/users" });
+  server.register(fileRoutes, { prefix: "/api/files" });
 
   server.setNotFoundHandler((request, reply) => {
     reply.code(404).send("Not found");

@@ -33,8 +33,12 @@ function Home() {
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
-        // go to the dashboard
-        navigate("/mainmenu");
+        if (data.accessToken) {
+          navigate("/mainmenu");
+        } else {
+          // error message of wrong credentials
+          console.log("wrong credentials");
+        }
       })
       .catch((err) => {
         console.log(err.message);
