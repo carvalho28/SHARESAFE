@@ -8,6 +8,7 @@ async function sendFile( file: File ) {
   let publicKey;
   let encryptedSymetricKey;
 
+  let fileInfo : any[] = [];
   let body_users : any[] = [];
 
   const symetricKey = forge.random.getBytesSync(16);
@@ -19,6 +20,14 @@ async function sendFile( file: File ) {
   cipher.finish();
 
   const encryptedFile = cipher.output.toHex();
+
+  fileInfo.push({
+    name: file.name,
+    type: file.type,
+    size: file.size,
+    encryptedFile: encryptedFile,
+    iv: iv
+  })
 
   await fetch("http://localhost:3000/api/users/", {
       method: "GET",
@@ -36,8 +45,7 @@ async function sendFile( file: File ) {
             
             body_users.push({
                 user_id: user.id,
-                file_key: encryptedSymetricKey,
-                iv: iv
+                file_key: encryptedSymetricKey
             });
         });
         
@@ -47,8 +55,8 @@ async function sendFile( file: File ) {
       });
 
       const body = {
-        encryptedFile,
-        body_users
+        file_info: fileInfo,
+        users_info: body_users
       };
 
       console.log(JSON.stringify(body));
@@ -92,9 +100,14 @@ export default sendFile;
         - encrypt symetric key with each user public key
         - send encrypted file and symetric keys
             body: {
-                file: xxx,
-                signature: xxx,
-                keys: [
+                fileInfo: {
+                    name: xxx,
+                    type: xxx,
+                    size: xxx,
+                    encryptedFile: xxx,
+                    iv: xxx
+                },
+                users_data: [
                     {
                         userId: xxx,
                         file_key: xxx
