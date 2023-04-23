@@ -13,11 +13,11 @@ async function sendFile(file: File) {
   const fileBuffer = await file.arrayBuffer();
   const fileBytes = new Uint8Array(fileBuffer);
 
-  let publicKey;
-  let encryptedSymetricKey;
+  let publicKey: forge.pki.rsa.PublicKey;
+  let encryptedSymetricKey: string;
 
-  let fileInfo: fileInformation;
-  let body_users: any[] = [];
+  let file_info: fileInformation;
+  let users_group: string[] = [];
 
   const symetricKey = forge.random.getBytesSync(16);
   const iv = forge.random.getBytesSync(16);
@@ -27,12 +27,10 @@ async function sendFile(file: File) {
   cipher.update(forge.util.createBuffer(fileBytes));
   cipher.finish();
 
-  // const encryptedFile = cipher.output.toHex();
-
   // get the encrypted bytes which is the file encrypted with the symetric key
   const encryptedFile = cipher.output.getBytes();
 
-  fileInfo = {
+  file_info = {
     file_name: file.name,
     file_type: file.type,
     file_size: file.size,
@@ -41,47 +39,43 @@ async function sendFile(file: File) {
     user_id: 1,
   };
 
-  // await fetch("http://localhost:3000/api/users/", {
-  //     method: "GET",
-  //   })
-  //     .then((res) => res.json())
-  //     .then((data) => {
-  //       console.log(data);
-  //
-  //       // Encrypt symetric key with user public key
-  //       data.forEach((user: { public_key: string; id: any; }) => {
-  //
-  //           publicKey = forge.pki.publicKeyFromPem( user.public_key );
-  //           
-  //           encryptedSymetricKey = publicKey.encrypt(symetricKey);
-  //           
-  //           body_users.push({
-  //               user_id: user.id,
-  //               file_key: encryptedSymetricKey
-  //           });
-  //       });
-  //       
-  //     })
-  //     .catch((err) => {
-  //       console.log(err.message);
-  //     });
-  //
-  //     const body = {
-  //       file_info: fileInfo,
-  //       users_info: body_users
-  //     };
-  //
-  //     console.log(JSON.stringify(body));
-  //     console.log(body);
+  await fetch("http://localhost:3000/api/users/", {
+    method: "GET",
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      console.log(data);
 
-  console.log(fileInfo);
+      // Encrypt symetric key with user public key
+      data.forEach((user: { public_key: string; id: number; }) => {
+
+        publicKey = forge.pki.publicKeyFromPem(user.public_key);
+
+        encryptedSymetricKey = publicKey.encrypt(symetricKey);
+
+        users_group.push(encryptedSymetricKey);
+      });
+
+    })
+    .catch((err: any) => {
+      console.log("Error: ", err.message);
+    });
+
+  const body = {
+    file_info,
+    users_group,
+  };
+
+
+  console.log(body);
+
 
   await fetch("http://localhost:3000/api/files/upload", {
     method: "POST",
     headers: {
       "Content-Type": "application/json; charset=UTF-8",
     },
-    body: JSON.stringify(fileInfo),
+    body: JSON.stringify(body),
   })
     .then((res) => res.json())
     .then((data) => {
@@ -113,7 +107,7 @@ export default sendFile;
         - encrypt symetric key with each user public key
         - send encrypted file and symetric keys
             body: {
-                fileInfo: {
+                file_info: {
                     name: xxx,
                     type: xxx,
                     size: xxx,
