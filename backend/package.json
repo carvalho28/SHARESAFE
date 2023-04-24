@@ -25,7 +25,7 @@
   "dependencies": {
     "@fastify/cors": "^8.2.1",
     "@fastify/jwt": "^6.7.1",
-    "@prisma/client": "^4.11.0",
+    "@prisma/client": "^4.13.0",
     "dotenv": "^16.0.3",
     "fastify": "^4.14.1",
     "fastify-zod": "^1.2.0",
