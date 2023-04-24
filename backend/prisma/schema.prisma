@@ -11,10 +11,24 @@ datasource db {
 }
 
 model User {
-  id         Int    @id @default(autoincrement())
+  id         Int             @id @default(autoincrement())
   name       String
-  email      String @unique
+  email      String          @unique
   password   String
   salt       String
   public_key String
+  files      EncryptedFile[]
+}
+
+model EncryptedFile {
+  id             Int      @id @default(autoincrement())
+  file_name      String
+  file_type      String
+  file_size      Int
+  iv             Bytes
+  created_at     DateTime @default(now())
+  users_group    Bytes[]
+
+  user    User @relation(fields: [user_id], references: [id])
+  user_id Int
 }
