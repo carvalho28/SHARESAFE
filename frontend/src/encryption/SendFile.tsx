@@ -6,6 +6,7 @@ type fileInformation = {
   file_size: number;
   encrypted_file: string;
   iv: string;
+  algorithm: string;
   user_id: number;
 };
 
@@ -22,6 +23,7 @@ async function sendFile(file: File) {
   const symetricKey = forge.random.getBytesSync(16);
   const iv = forge.random.getBytesSync(16);
 
+  // AES - CBC or AES - GCM
   const cipher = forge.cipher.createCipher('AES-CBC', symetricKey);
   cipher.start({ iv: iv });
   cipher.update(forge.util.createBuffer(fileBytes));
@@ -36,6 +38,7 @@ async function sendFile(file: File) {
     file_size: file.size,
     encrypted_file: encryptedFile,
     iv: iv,
+    algorithm: "AES-CBC",
     user_id: 1,
   };
 

@@ -27,6 +27,7 @@ model EncryptedFile {
   file_size      Int
   iv             Bytes
   created_at     DateTime @default(now())
+  algorithm      String
   users_group    Bytes[]
 
   user    User @relation(fields: [user_id], references: [id])

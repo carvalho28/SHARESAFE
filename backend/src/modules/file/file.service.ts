@@ -14,6 +14,7 @@ export async function uploadFile(input: FileInput) {
       },
     },
     created_at: new Date(),
+    algorithm: input.file_info.algorithm,
   };
 
   const usersGroup = input.users_group.map(user => Buffer.from(user));

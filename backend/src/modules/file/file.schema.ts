@@ -15,6 +15,7 @@ const fileUploadCore = z.object({
     encrypted_file: z.any(),
     iv: z.any(),
     user_id: z.number(),
+    algorithm: z.string(),
   }),
 
   // users_group as an array of strings
