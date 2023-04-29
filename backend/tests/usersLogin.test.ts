@@ -62,11 +62,11 @@ test("POST /api/users/login", async (t) => {
 
     t.teardown(async () => {
       fastify.close();
-      // await prisma.user.delete({
-      //   where: {
-      //     email: email,
-      //   },
-      // });
+      await prisma.user.delete({
+        where: {
+          email: email,
+        },
+      });
     });
 
     await fastify.inject({

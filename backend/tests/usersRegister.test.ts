@@ -93,6 +93,7 @@ test("POST /api/users/register - create a user in the database", async (t) => {
   t.same(json.email, email);
   t.same(json.public_key, public_key);
   t.type(json.id, "number");
+
 });
 
 test("POST /api/users/register - fails to create a user", async (t) => {

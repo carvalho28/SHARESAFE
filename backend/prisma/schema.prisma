@@ -18,18 +18,28 @@ model User {
   salt       String
   public_key String
   files      EncryptedFile[]
+  groups     Group[]         @relation("GroupMember")
 }
 
 model EncryptedFile {
-  id             Int      @id @default(autoincrement())
-  file_name      String
-  file_type      String
-  file_size      Int
-  iv             Bytes
-  created_at     DateTime @default(now())
-  algorithm      String
-  users_group    Bytes[]
+  id          Int      @id @default(autoincrement())
+  file_name   String
+  file_type   String
+  file_size   Int
+  iv          Bytes
+  created_at  DateTime @default(now())
+  algorithm   String
+  users_group Bytes[]
 
-  user    User @relation(fields: [user_id], references: [id])
+  user    User    @relation(fields: [user_id], references: [id])
   user_id Int
+  groups  Group[] @relation("GroupFile")
+}
+
+model Group {
+  id         Int             @id @default(autoincrement())
+  name       String
+  created_at DateTime        @default(now())
+  files      EncryptedFile[] @relation("GroupFile")
+  members    User[]          @relation("GroupMember")
 }
