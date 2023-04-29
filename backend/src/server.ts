@@ -12,6 +12,7 @@ declare module "fastify" {
 }
 
 import dotenv from "dotenv";
+import groupRoutes from "./modules/group/group.route";
 dotenv.config();
 
 function buildServer() {
@@ -54,6 +55,7 @@ function buildServer() {
 
   server.register(userRoutes, { prefix: "/api/users" });
   server.register(fileRoutes, { prefix: "/api/files" });
+  server.register(groupRoutes, { prefix: "/api/groups" });
 
   server.setNotFoundHandler((request, reply) => {
     reply.code(404).send("Not found");
