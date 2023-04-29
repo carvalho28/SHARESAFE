@@ -1,5 +1,9 @@
 import prisma from "../../utils/prisma";
-import { GroupAddFilesInput, GroupAddMembersInput, GroupInput } from "./group.schema";
+import {
+  GroupAddFilesInput,
+  GroupAddMembersInput,
+  GroupInput,
+} from "./group.schema";
 
 export async function createGroup(input: GroupInput) {
   const data = {
@@ -19,7 +23,6 @@ export async function createGroup(input: GroupInput) {
 
   return group;
 }
-
 
 // add files to group
 export async function addFilesToGroup(input: GroupAddFilesInput) {
@@ -58,12 +61,15 @@ export async function addMembersToGroup(input: GroupAddMembersInput) {
 }
 
 // get groups for a given user
-export async function getGroupsForUser(userId: number) {
-  const userGroups = await prisma.user.findUnique({
-  where: {
-    id: user_id,
-  },
-}).groups();
+export async function getGroupsForUser(user_id: number) {
+  const user = await prisma.user.findFirst({
+    where: {
+      id: user_id,
+    },
+    include: {
+      groups: true,
+    },
+  });
 
-  return userGroups;
+  return user?.groups;
 }

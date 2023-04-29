@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { GroupAddFilesInput, GroupAddMembersInput, GroupInput } from "./group.schema";
-import { addFilesToGroup, addMembersToGroup, createGroup } from "./group.service";
+import { addFilesToGroup, addMembersToGroup, createGroup, getGroupsForUser } from "./group.service";
 
 export async function createGroupHandler(
   request: FastifyRequest<{ Body: GroupInput }>,
@@ -45,4 +45,19 @@ export async function addMembersToGroupHandler(
   } catch (error) {
     return reply.code(400).send(error);
   } 
+}
+
+// get groups for a given user
+export async function getGroupsHandler(
+  request: FastifyRequest<{ Body: { userId: number } }>,
+  reply: FastifyReply
+) {
+  const userId = request.body.userId;
+
+  try {
+    const groups = await getGroupsForUser(userId);
+    return reply.code(200).send(groups);
+  } catch (error) {
+    return reply.code(400).send(error);
+  }
 }
