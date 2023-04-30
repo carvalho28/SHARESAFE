@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { exterminateCookies, getCookie, setCookie } from "./auth/Cookies";
+import { Spinner } from "./components/Spinner";
 import logo from "./images/Logo.png";
 
 function Home() {
@@ -8,40 +10,10 @@ function Home() {
 
   const navigate = useNavigate();
 
-  setCookie("hello", "world", 7);
-  setCookie("yamete", "kudasai", 7);
-  console.log(document.cookie);
-  console.log(getCookie("hello"));
+  const [isLoading, setIsLoading] = useState(true);
 
   // Deletes all cookies
   exterminateCookies();
-
-  function setCookie(cookieName:string, cookieValue:any, daysToLive:any) {
-    const date = new Date();
-    date.setTime(date.getTime() + (daysToLive*24*60*60*1000));
-    let expires = "expires="+date.toUTCString();
-    document.cookie = "" + cookieName + "=" + cookieValue + "; "+ expires + "; path=/";
-  }
-
-  function deleteCookie(cookieName:string) {
-    setCookie(cookieName, null, null);
-  }
-
-  function exterminateCookies() {
-    document.cookie.split(";").forEach(function(c) { document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); });
-  }
-
-  function getCookie(cookieName:string) {
-    const cDecoded = decodeURIComponent(document.cookie);
-    const cArray = cDecoded.split("; ");
-    let result = "";
-    cArray.forEach(element => {
-      if (element.indexOf(cookieName) == 0) {
-        result += element.substring(cookieName.length+1);
-      }
-    });
-    return result
-  }
 
   async function loginUser() {
     if (password === "" || email === "") {
@@ -50,6 +22,7 @@ function Home() {
       return;
     }
 
+    setIsLoading(true);
     // call the backend to register the user
     const data = {
       email,
@@ -70,6 +43,7 @@ function Home() {
         console.log(data);
         if (data.accessToken) {
           setCookie("accessToken", data.accessToken, 7);
+          setIsLoading(false);
           navigate("/mainmenu");
         } else {
           // error message of wrong credentials
@@ -137,6 +111,11 @@ function Home() {
               Login
             </button>
           </div>
+          {isLoading && (
+            <div className="pt-5">
+              <Spinner />
+            </div>
+          )}
           <div className="pt-1">
             <p className="text-xs">
               Don&apos;t have an account? Click{" "}
