@@ -1,6 +1,17 @@
 import prisma from "../../utils/prisma";
-import { FileInput } from "./file.schema";
+import { FileInput, FileReceive } from "./file.schema";
 import fs from 'fs'
+
+export async function receiveFile(input: FileReceive) {
+  return await prisma.group.findUnique({
+    where: {
+      id: input.id
+    },
+    select: {
+      files: true,
+    }
+  })
+}
 
 export async function uploadFile(input: FileInput) {
   const file_data = {

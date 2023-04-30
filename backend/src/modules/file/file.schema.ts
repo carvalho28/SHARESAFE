@@ -22,8 +22,14 @@ const fileUploadCore = z.object({
   users_group: z.array(z.any()),
 });
 
+const FileReceiveCore = z.object({
+  id: z.number(),
+});
+
 export type FileInput = z.infer<typeof fileUploadCore>;
+export type FileReceive = z.infer<typeof FileReceiveCore>;
 
 export const { schemas: fileSchemas, $ref } = buildJsonSchemas({
-  fileUploadCore
+  fileUploadCore,
+  FileReceiveCore
 });
