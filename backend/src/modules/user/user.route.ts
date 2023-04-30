@@ -3,6 +3,7 @@ import {
   getUsersHandler,
   loginHandler,
   registerUserHandler,
+  verifyAccessTokenHandler,
 } from "./user.controller";
 import { $ref } from "./user.schema";
 
@@ -34,6 +35,8 @@ async function userRoutes(server: FastifyInstance) {
     },
     loginHandler
   );
+
+  server.post("/verify", verifyAccessTokenHandler);
 }
 
 export default userRoutes;

@@ -10,7 +10,7 @@ function Home() {
 
   const navigate = useNavigate();
 
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Deletes all cookies
   exterminateCookies();

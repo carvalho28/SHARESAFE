@@ -33,10 +33,42 @@ function getCookie(cookieName: string) {
 }
 
 // function to verify is the user is logged in, if not, redirect to login page
-function verifyLogin(navigate: any) {
+async function verifyLogin(navigate: any) {
   if (getCookie("accessToken") === "") {
+    navigate("/");
+  } else if (getCookie("accessToken") !== "") {
+    await fetch("http://localhost:3000/api/users/verify", {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer " + getCookie("accessToken"),
+      },
+    })
+      .then((response) => {
+        if (response.status === 401) {
+          navigate("/");
+        } else {
+          navigate("/mainmenu");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  } else {
     navigate("/");
   }
 }
 
-export { setCookie, deleteCookie, exterminateCookies, getCookie, verifyLogin };
+function userLogout(navigate: any) {
+  console.log("logout");
+  deleteCookie("accessToken");
+  navigate("/");
+}
+
+export {
+  setCookie,
+  deleteCookie,
+  exterminateCookies,
+  getCookie,
+  verifyLogin,
+  userLogout,
+};

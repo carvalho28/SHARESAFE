@@ -1,10 +1,13 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { userLogout } from "../auth/Cookies";
 import logo from "../images/Logo.png";
 import SendFilePopup from "./SendFilePopup";
 
 export default function Sidebar() {
   const [triggered, setTriggered] = useState(false);
+
+  const navigate = useNavigate();
 
   return (
     <div>
@@ -161,9 +164,11 @@ export default function Sidebar() {
               </Link>
             </li>
             <li>
-              <Link
-                to="/"
-                className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
+              <span
+                className="flex items-center p-2 text-base font-normal
+                text-gray-900 rounded-lg dark:text-white hover:bg-gray-100
+                dark:hover:bg-gray-700 hover:cursor-pointer"
+                onClick={() => userLogout(navigate)}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -179,7 +184,7 @@ export default function Sidebar() {
                   <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M13.8 12H3" />
                 </svg>
                 <span className="flex-1 ml-3 whitespace-nowrap">Logout</span>
-              </Link>
+              </span>
             </li>
           </ul>
         </div>

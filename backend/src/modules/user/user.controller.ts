@@ -51,3 +51,19 @@ export async function loginHandler(
 
   return reply.code(401).send("Invalid login credentials");
 }
+
+export async function verifyAccessTokenHandler(
+  request: FastifyRequest, 
+  reply: FastifyReply
+) {
+  const token = request.headers.authorization?.replace("Bearer ", "")!;
+
+  try {
+    const decoded = await request.jwt.verify(token);
+    return reply.code(200).send(decoded);
+  }
+  catch (error) {
+    return reply.code(401).send("Invalid token");
+  }
+}
+
