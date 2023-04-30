@@ -9,7 +9,7 @@ async function receiveFile(group_id: number) {
     }
 
     await fetch(endpoint+"files/receive", {
-        method: "GET",
+        method: "POST",
         headers: {
             "Content-Type": "application/json; charset=UTF-8",
         },
@@ -17,7 +17,12 @@ async function receiveFile(group_id: number) {
         })
         .then((res) => res.json())
         .then((data) => {
-            console.log(data);
+            if (data) {
+                console.log(data);
+                
+            } else {
+                console.error("--> null data handler");
+            }
         })
         .catch((err) => {
             console.error(err.message);

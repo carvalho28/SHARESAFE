@@ -11,6 +11,7 @@ export async function receiveFile(input: FileReceive) {
       files: true,
     }
   })
+  // return await prisma.group.findMany();
 }
 
 export async function uploadFile(input: FileInput) {
