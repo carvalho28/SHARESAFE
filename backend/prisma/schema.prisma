@@ -29,7 +29,7 @@ model EncryptedFile {
   iv          Bytes
   created_at  DateTime @default(now())
   algorithm   String
-  users_group Bytes[]
+  users_group Json[]
 
   user    User    @relation(fields: [user_id], references: [id])
   user_id Int
