@@ -5,14 +5,23 @@ import fs from "fs";
 export async function receiveFile(input: FileReceive) {
   const groupId = Number(input.id);
 
-  const groupFiles = await prisma.group.findUnique({
+  const group = await prisma.group.findUnique({
     where: { id: groupId },
     include: {
       files: true,
     },
   });
 
-  return groupFiles;
+  const files =  group?.files.map((file) => {
+    return fs.readFileSync(`./files/${file.file_name}`);
+  })
+
+  const result = {
+    group,
+    files
+  }
+
+  return result;
 }
 
 export async function uploadFile(input: FileInput) {

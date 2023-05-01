@@ -21,9 +21,16 @@ async function receiveFile(group_id: number) {
                 console.log(data);
                 
                 // Just for testing, eliminate afeter !!!
-                decryptFile(data.algorithm, data.iv, data.encrypted_file);
+                const input = {
+                    algorithm: data.group.algorithm, 
+                    iv: data.group.iv, 
+                    encryptedKey: data.group.users_group.encrypted_key[0], 
+                    encrypted_file: data.files[0]
+                }
+                decryptFile(input);
                 // end of teste
 
+                return data;
             } else {
                 console.error("--> null data handler");
             }
