@@ -1,4 +1,4 @@
-import forge from "node-forge";
+import decryptFile from "./DecryptFile";
 
 const endpoint = "http://localhost:3000/api/"
 
@@ -20,6 +20,10 @@ async function receiveFile(group_id: number) {
             if (data) {
                 console.log(data);
                 
+                // Just for testing, eliminate afeter !!!
+                decryptFile(data.algorithm, data.iv, data.encrypted_file);
+                // end of teste
+
             } else {
                 console.error("--> null data handler");
             }

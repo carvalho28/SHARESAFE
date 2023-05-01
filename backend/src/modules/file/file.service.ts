@@ -2,7 +2,7 @@ import prisma from "../../utils/prisma";
 import { FileInput, FileReceive } from "./file.schema";
 import fs from "fs";
 
-export async function receiveFile(input: FileReceive) {
+export async function receiveFile(input: FileReceive) {  
   return await prisma.group.findUnique({
     where: {
       id: input.id,
@@ -11,7 +11,6 @@ export async function receiveFile(input: FileReceive) {
       files: true,
     },
   });
-  // return await prisma.group.findMany();
 }
 
 export async function uploadFile(input: FileInput) {
