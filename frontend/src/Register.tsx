@@ -11,16 +11,17 @@ function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   async function registerUser() {
     if (password !== confirmPassword) {
-      // error message of password not matching
       console.log("password not matching");
+      setErrorMessage("Passowrds not Matching");
       return;
     }
     if (name === "" || email === "" || password === "") {
-      // error message of empty fields
       console.log("empty fields");
+      setErrorMessage("Empty Fields");
       return;
     }
 
@@ -70,13 +71,13 @@ function Register() {
 
   return (
     <div className="h-screen flex items-center justify-center">
-      <div className="pr-[200px]">
+      <div className="w-1/3 flex flex-col pr-[200px] ">
         <img alt="Logo" src={logo} />
       </div>
 
       <div className="h-[80%] bg-gray-100 w-[4px] rounded-lg" />
 
-      <div className="pl-[200px]">
+      <div className="w-1/3 flex flex-col pl-[200px]">
         <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
           <div>
             <p className="text-6xl text-blue-900">Register</p>
@@ -116,7 +117,7 @@ function Register() {
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          <div className="pt-5">
+          <div className="pt-5 pb-2">
             <input
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-xl"
               id="confirmPassword"
@@ -126,7 +127,26 @@ function Register() {
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
           </div>
-          <div className="md:w-2/3 pt-5">
+
+          {errorMessage != "" && (
+            <div className="flex items-center justify-center my-3 p-2 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-5 dark:text-red-400 dark:border-red-800" role="alert">
+              <svg 
+                aria-hidden="true" 
+                className="flex-shrink-0 inline w-5 h-5 mr-3" 
+                fill="currentColor" 
+                viewBox="0 0 20 20" 
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+              </svg>
+              <span className="sr-only">Info</span>
+              <div>
+                <span className="font-medium">{errorMessage}</span>
+              </div>
+            </div>
+          )}
+
+          <div className="md:w-2/3 pt-1">
             <button
               className="shadow appearance-none border rounded w-full py-2 bg-blue-900 hover:bg-blue-600 text-white font-bold text-xl"
               id="registerBtn"

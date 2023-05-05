@@ -6,7 +6,6 @@ import MainMenu from "./Menu";
 import GroupPage from "./subPages/groupPage";
 import HelpPage from "./subPages/helpPage";
 import SettingsPage from "./subPages/settingsPage";
-import SendFilePage from "./subPages/sendFilePage";
 import SentPage from "./subPages/sentPage";
 import InboxPage from "./subPages/inboxPage";
 
@@ -16,7 +15,6 @@ export function App() {
       <Route path="/" element={<Home />} />
       <Route path="/register" element={<Register />} />
       <Route path="/mainmenu" element={<MainMenu />} />
-      <Route path="/sendfile" element={<SendFilePage />} />
       <Route path="/inbox" element={<InboxPage />} />
       <Route path="/group" element={<GroupPage />} />
       <Route path="/sent" element={<SentPage />} />
