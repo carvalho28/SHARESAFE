@@ -11,17 +11,17 @@ async function decryptFile(input: FileInput) {
     const fileBytes = new Uint8Array(input.encrypted_file);    
 
     // Decrypt simetricKey
-    const privateKey = forge.pki.privateKeyFromPem( privateKeyPem );
+    // const privateKey = forge.pki.privateKeyFromPem( privateKeyPem );
 
-    const symetricKey = privateKey.decrypt( input.encryptedKey );
+    // const symetricKey = privateKey.decrypt( input.encryptedKey );
 
-    // Decrypt file
-    var decipher = forge.cipher.createDecipher( input.algorithm, symetricKey);
-    decipher.start({iv: input.iv});
-    decipher.update(forge.util.createBuffer(fileBytes));
-    var result = decipher.finish();
+    // // Decrypt file
+    // var decipher = forge.cipher.createDecipher( input.algorithm, symetricKey);
+    // decipher.start({iv: input.iv});
+    // decipher.update(forge.util.createBuffer(fileBytes));
+    // var result = decipher.finish();
 
-    console.log(decipher.output.toHex());
+    // console.log(decipher.output.toHex());
 }
 
 
