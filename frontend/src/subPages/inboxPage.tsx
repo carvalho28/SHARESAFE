@@ -14,7 +14,7 @@ function InboxPage() {
   const [groups, setGroups] = useState<{
     id: number;
     name: string;
-    createdAt: string;
+    created_at: string;
   }[]>([]);
 
   // Get user_id to query the db
@@ -50,17 +50,13 @@ function InboxPage() {
     getGroupsUser();
   }, []);
 
-  // Call getGroupsUser function when component is updated
-  //useEffect(() => {
-  //  getGroupsUser();
-  //});
-
   const handleGroupClick = (group: Group) => {
     const encodedGroupId = encodeURIComponent(group.id.toString());
     const currentPathname = window.location.pathname;
     const url = `${currentPathname}/${encodedGroupId}`;
     window.location.href = url;
   }
+
   
   return (
     <div>
@@ -105,7 +101,7 @@ function InboxPage() {
                   {group.files}
                 </td>*/}
                 <td className="px-6 py-4">
-                  {group.createdAt}
+                  {group.created_at}
                 </td>
               </tr>
             ))}
