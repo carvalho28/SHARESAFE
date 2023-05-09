@@ -1,33 +1,32 @@
 import Sidebar from "../components/sidebar";
 import { useEffect, useState } from "react";
-import { Link } from 'react-router-dom';
-
-interface Props {
-  groupId: string;
-}
 
 type Group = {
   id: number;
   name: string;
-  members: { id: number }[];
-  files: { id: number }[];
   createdAt: string;
+  //files: number;
+  //members: number;
 };
-
 
 function InboxPage() {
 
-  const [groups, setGroups] = useState<Group[]>([]);
+  const [groups, setGroups] = useState<{
+    id: number;
+    name: string;
+    createdAt: string;
+  }[]>([]);
 
-  let user_id = 3;
-
+  // Get user_id to query the db
+  let user_id = 20;
+  
   async function getGroupsUser(){
 
     const body = {
-      id: user_id
+      user_id
     }
 
-    await fetch("http://localhost:3000/api/groups/getGroups", {
+    await fetch("http://localhost:3000/api/groups/getGroups", { 
       method: "POST",
       headers: {
         "Content-Type": "application/json; charset=UTF-8",
@@ -37,6 +36,8 @@ function InboxPage() {
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
+        setGroups(data);
+        console.log(groups)
       })
       .catch((err) => {
         console.log(err.message);
@@ -44,36 +45,45 @@ function InboxPage() {
 
   }
 
-  let id = 3;
+  // Call getGroupsUser function when component is mounted
+  useEffect(() => {
+    getGroupsUser();
+  }, []);
 
-  function encodeGroupID(){
-    const encodedGroupId = encodeURIComponent(id);
+  // Call getGroupsUser function when component is updated
+  //useEffect(() => {
+  //  getGroupsUser();
+  //});
+
+  const handleGroupClick = (group: Group) => {
+    const encodedGroupId = encodeURIComponent(group.id.toString());
+    const currentPathname = window.location.pathname;
+    const url = `${currentPathname}/${encodedGroupId}`;
+    window.location.href = url;
   }
-  
   
   return (
     <div>
       <Sidebar />
 
       <div className="p-4 sm:ml-64">
-        <p>INBOX</p>
         <section>
           {/* Grupos */}
           <h2 className="text-center underline">Groups</h2>
           <br></br>
-          <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+          <table className="w-full text-sm text-center text-gray-500 dark:text-gray-400">
             {/* Cabeçalho */}
             <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
                 <th scope="col" className="px-6 py-3">
                   Group
                 </th>
-                <th scope="col" className="px-6 py-3">
+                {/*<th scope="col" className="px-6 py-3">
                   Members
                 </th>
                 <th scope="col" className="px-6 py-3">
                   Files
-                </th>
+                </th>*/}
                 <th>
                   Created At
                 </th>
@@ -83,20 +93,22 @@ function InboxPage() {
             {/* Linhas da base de dados */}
             <tbody>
 
-            <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                    {/*<Link onClick={encodeGroupID()} to={'/filePage/${encodedGroupId}'}>Apple MacBook Pro 17"</Link> */}
+            {groups.map((group) => (
+              <tr key={group.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                <th>
+                  <button onClick={() => handleGroupClick(group)}>{group.name}</button> 
                 </th>
-                <td className="px-6 py-4">
-                    Silver
+                {/*<td className="px-6 py-4">
+                 {group.members}
                 </td>
                 <td className="px-6 py-4">
-                    Laptop
-                </td>
+                  {group.files}
+                </td>*/}
                 <td className="px-6 py-4">
-                    $2999
+                  {group.createdAt}
                 </td>
-            </tr>
+              </tr>
+            ))}
 
             </tbody>
 
