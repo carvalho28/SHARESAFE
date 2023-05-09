@@ -1,5 +1,6 @@
+import { useParams } from "react-router-dom";
 import Sidebar from "../components/sidebar";
-import { useState } from "react";
+import { useState , useEffect } from "react";
 
 type File = {
     name: string;
@@ -10,22 +11,90 @@ type File = {
 
 function FilePage() {
 
-    // Group Name
-    let heading = "Segurança Informática";
+    // Get group id
+    const currentPathname = window.location.pathname;
+    console.log(currentPathname);
+    let id = currentPathname.substring(currentPathname.length - 1);
+    let group_id = +id;
+    console.log(group_id);
 
-    const [file,setFile] = useState<File>({
-        name: "",
-        size: [1],
-        type: "",
-        owner: "",
-    });
+    // Get user_id to query the db
+    let user_id = 20;
 
+    const [files, setFiles] = useState<{
+      name: string;
+      size: number[];
+      type: string;
+      owner: string;
+    }[]>([]);
+    const [groups, setGroups] = useState<{
+      id: number;
+      name: string;
+      created_at: string;
+    }[]>([]);
+
+    async function getGroupsUser(){
+
+      const body = {
+        user_id
+      }
+  
+      await fetch("http://localhost:3000/api/groups/getGroups", { 
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json; charset=UTF-8",
+        },
+        body: JSON.stringify(body),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          setGroups(data);
+        })
+        .catch((err) => {
+          console.log(err.message);
+        });
+    }
+  
+    // Call getGroupsUser function when component is mounted
+    useEffect(() => {
+      getGroupsUser();
+    }, []);
+
+     // Group Name
+    let selectedGroup = groups.find((group) => group.id === group_id);
+    let heading = selectedGroup ? selectedGroup.name : "Not Found";
+  
+
+  async function getFilesGroup(){
+
+    const body = {
+      group_id
+    }
+
+    await fetch("http://localhost:3000/api/groups/getGroups", { 
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json; charset=UTF-8",
+      },
+      body: JSON.stringify(body),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        setFiles(data);
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+
+  }
+  
   return (
     <div>
       <Sidebar />
 
       <div className="p-4 sm:ml-64">
-        <p>INBOX</p>
         <section>
           {/* Ficheiros */}
           <h2 className="text-center underline">{heading}</h2>

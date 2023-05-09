@@ -37,7 +37,6 @@ function InboxPage() {
       .then((data) => {
         console.log(data);
         setGroups(data);
-        console.log(groups)
       })
       .catch((err) => {
         console.log(err.message);
@@ -53,7 +52,8 @@ function InboxPage() {
   const handleGroupClick = (group: Group) => {
     const encodedGroupId = encodeURIComponent(group.id.toString());
     const currentPathname = window.location.pathname;
-    const url = `${currentPathname}/${encodedGroupId}`;
+    const url = `${currentPathname}/group/${encodedGroupId}`;
+    console.log(url);
     window.location.href = url;
   }
 
