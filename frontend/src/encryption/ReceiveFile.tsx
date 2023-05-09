@@ -27,7 +27,7 @@ async function receiveFile(group_id: number) {
                     encryptedKey: data.group.users_group.encrypted_key[0], 
                     encrypted_file: data.files[0]
                 }
-                decryptFile(input);
+                // decryptFile(input);
                 // end of teste
 
                 return data;
