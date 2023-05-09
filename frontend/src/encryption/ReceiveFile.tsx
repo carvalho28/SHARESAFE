@@ -2,6 +2,7 @@ import decryptFile from "./DecryptFile";
 
 const endpoint = "http://localhost:3000/api/"
 
+// Returns all the files of a specific group
 async function receiveFile(group_id: number) {
 
     const body = {
@@ -17,26 +18,16 @@ async function receiveFile(group_id: number) {
         })
         .then((res) => res.json())
         .then((data) => {
-            if (data) {
-                console.log(data);
-                
-                // Just for testing, eliminate afeter !!!
-                const input = {
-                    algorithm: data.group.algorithm, 
-                    iv: data.group.iv, 
-                    encryptedKey: data.group.users_group.encrypted_key[0], 
-                    encrypted_file: data.files[0]
-                }
-                // decryptFile(input);
-                // end of teste
+            console.log(data);
 
-                return data;
-            } else {
-                console.error("--> null data handler");
-            }
+            if (!data) 
+                console.error("--> null data handler here");
+
+            return data;
         })
         .catch((err) => {
             console.error(err.message);
+            throw err;
         });
 
 }
