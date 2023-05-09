@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 type Group = {
   id: number;
   name: string;
-  createdAt: string;
+  created_at: string;
   //files: number;
   //members: number;
 };
