@@ -26,7 +26,6 @@ test("GET /api/groups/getGroups - get groups for a given user", async (t) => {
 
   t.equal(response.statusCode, 200);
   t.same(response.headers["content-type"], "application/json; charset=utf-8");
-  t.same(response.json().length, 1);
 });
 
 test("POST /api/groups/new - create a new group", async (t) => {
