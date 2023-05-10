@@ -27,7 +27,8 @@ async function decryptFile(input: FileInput) {
 
     if (!result) throw "Error on file decryption"
 
-    console.log(decipher.output.toHex());
+    // console.log(decipher.output.toHex());
+
 
     // Create blob link to download
     const url = window.URL.createObjectURL(
