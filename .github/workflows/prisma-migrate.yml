@@ -22,8 +22,9 @@ jobs:
       - name: Install deps
         run: cd backend && yarn
       - name: Write the .env file
+        run: cd backend && touch .env
+      - name: Add url to the .env file
         run: |
-          cd backend && touch .env
           echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > backend/.env
       - run: cd backend && npx prisma migrate dev --name init
       - name: check for file changes
