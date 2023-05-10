@@ -13,10 +13,11 @@ function FilePage() {
 
     // Get group id
     const currentPathname = window.location.pathname;
-    console.log(currentPathname);
-    let id = currentPathname.substring(currentPathname.length - 1);
+    const splitString = currentPathname.split("/");
+    //console.log(currentPathname);
+    let id = splitString[splitString.length-1];
     let group_id = +id;
-    console.log(group_id);
+    //console.log(group_id);
 
     // Get user_id to query the db
     let user_id = 20;
@@ -48,7 +49,7 @@ function FilePage() {
       })
         .then((res) => res.json())
         .then((data) => {
-          console.log(data);
+          //console.log(data);
           setGroups(data);
         })
         .catch((err) => {
