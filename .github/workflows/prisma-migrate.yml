@@ -1,72 +1,44 @@
 name: Prisma Migrate
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - "./prisma/**/*.*"
-  workflow_dispatch:
-    branches: [main]
+  schedule:
+    # sets the action to run daily. You can modify this to run the action more or less frequently
+    - cron: "0 0 * * *"
 
 jobs:
-  install:
+  update:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v2
-      - name: Setup Nodejs
-        uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
         with:
-          node-version: 16.x
-          cache: "yarn"
-
-      - name: Install
-        run: yarn install
-      - name: Rerun Install
-        run: yarn install
-
-  generate:
-    runs-on: ubuntu-latest
-
-    needs: install
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Setup Nodejs
-        uses: actions/setup-node@v2
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-node@v3
         with:
-          node-version: 16.x
-          cache: "yarn"
-
-      - name: Install
-        run: yarn install
-
-      - run: rm -rf node_modules/.prisma
-
-      - name: Generate Prisma Client
-        run: npx prisma generate
-
-  migrate:
-    runs-on: ubuntu-latest
-
-    needs: install
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Setup Nodejs
-        uses: actions/setup-node@v2
+          node-version: 16
+      - name: Install deps
+        run: cd backend && yarn
+      - name: Write the .env file
+        run: |
+          cd backend && touch .env
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > backend/.env
+      - run: cd backend && npx prisma migrate dev --name init
+      - name: check for file changes
+        id: git_status
+        run: |
+          echo "::set-output name=status::$(git status -s)"
+      - name: Commit files
+        if: ${{contains(steps.git_status.outputs.status, ' ')}}
+        run: |
+          git add backend/prisma/
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git commit -m "Update database" -a
+      - name: Push changes
+        if: ${{contains(steps.git_status.outputs.status, ' ')}}
+        uses: ad-m/github-push-action@master
         with:
-          node-version: 16.x
-          cache: "yarn"
-
-      - name: Install
-        run: yarn install
-
-      - run: rm -rf node_modules/.prisma
-
-      - name: Deploy Migrations
-        run: npx prisma migrate deploy
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
+      - name: Checkout
+        uses: actions/checkout@v3
