@@ -73,12 +73,18 @@ function FilePage() {
 
   console.log(receiveFile(group_id));
 
-  const [dataFile, setdataFile] = useState([]);
+  const [dataFile, setdataFile] = useState<any>([]);
 
   useEffect(() => {
     const getFiles = async () => {
-      //setdataFile(await receiveFile(group_id));
+      try {
+        const receiveData = await receiveFile(group_id);
+        setdataFile(receiveData);
+      } catch (error) {
+        console.log(error);
+      }
     };
+    getFiles();
   }, []);
 
   //setGroups(data.groups);
