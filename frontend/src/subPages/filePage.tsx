@@ -1,11 +1,20 @@
 import Sidebar from "../components/sidebar";
 import { useState , useEffect } from "react";
+import receiveFile from "../encryption/ReceiveFile";
+
+type file = {
+    data: [],
+    type: string;
+};
 
 type File = {
-    name: string;
-    size: number[];
-    type: string;
-    owner: string;
+    id: number;
+    file_name: string;
+    file_type: string;
+    file_size: number;
+    algorithm: string;
+    created_at: string;
+    user_id: number;
 };
 
 function FilePage() {
@@ -21,16 +30,13 @@ function FilePage() {
     // Get user_id to query the db
     let user_id = 20;
 
-    const [files, setFiles] = useState<{
-      name: string;
-      size: number[];
-      type: string;
-      owner: string;
-    }[]>([]);
+    const [ff,setff] = useState<file>();
+
     const [groups, setGroups] = useState<{
       id: number;
       name: string;
       created_at: string;
+      files: File;
     }[]>([]);
 
     async function getGroupsUser(){
@@ -64,7 +70,22 @@ function FilePage() {
      // Group Name
     let selectedGroup = groups.find((group) => group.id === group_id);
     let heading = selectedGroup ? selectedGroup.name : "Not Found";
-  
+
+    console.log(receiveFile(group_id));
+
+    const [dataFile,setdataFile] = useState([]);
+
+
+
+    useEffect(() => {
+        const getFiles = async() => {
+            setdataFile(await receiveFile(group_id));
+        }
+    }, [data]); 
+
+    
+
+    //setGroups(data.groups);
   
   return (
     <div>
@@ -80,7 +101,7 @@ function FilePage() {
             <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
                 <th scope="col" className="px-6 py-3">
-                  <a href="#">File Name</a>
+                  File Name
                 </th>
                 <th scope="col" className="px-6 py-3">
                   Size
@@ -95,6 +116,8 @@ function FilePage() {
             </thead>
             {/* Linhas da base de dados */}
             <tbody>
+
+            
               
             </tbody>
           </table>
