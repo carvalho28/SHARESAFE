@@ -46,14 +46,14 @@ export async function loginHandler(
   if (correctPassword) {
     const { password, salt, ...rest } = user;
 
-    return { accessToken: request.jwt.sign(rest) };
+    return { accessToken: request.jwt.sign(rest), id: user.id };
   }
 
   return reply.code(401).send("Invalid login credentials");
 }
 
 export async function verifyAccessTokenHandler(
-  request: FastifyRequest, 
+  request: FastifyRequest,
   reply: FastifyReply
 ) {
   const token = request.headers.authorization?.replace("Bearer ", "")!;
@@ -61,9 +61,7 @@ export async function verifyAccessTokenHandler(
   try {
     const decoded = await request.jwt.verify(token);
     return reply.code(200).send(decoded);
-  }
-  catch (error) {
+  } catch (error) {
     return reply.code(401).send("Invalid token");
   }
 }
-
