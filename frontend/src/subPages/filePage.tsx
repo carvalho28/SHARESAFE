@@ -71,7 +71,7 @@ function FilePage() {
   let selectedGroup = groups.find((group) => group.id === group_id);
   let heading = selectedGroup ? selectedGroup.name : "Not Found";
 
-  console.log(receiveFile(group_id));
+  // console.log(receiveFile(group_id));
 
   const [dataFile, setdataFile] = useState<any>([]);
 
@@ -79,6 +79,7 @@ function FilePage() {
     const getFiles = async () => {
       try {
         const receiveData = await receiveFile(group_id);
+        console.log("receiveData", receiveData);
         setdataFile(receiveData);
       } catch (error) {
         console.log(error);
@@ -87,8 +88,8 @@ function FilePage() {
     getFiles();
   }, []);
 
-  useEffect(()=>{
-    console.log(dataFile);
+  useEffect(() => {
+    console.log("dataFile", dataFile);
   }, [dataFile]);
 
   //setGroups(data.groups);
@@ -122,22 +123,17 @@ function FilePage() {
             </thead>
             {/* Linhas da base de dados */}
             <tbody>
-            {dataFile.map((group: any) => (
-              <tr key={group.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                <th>
-                  {group.group.files.file_name}
-                </th>
-                <td className="px-6 py-4">
-                 {group.group.files.file_size}
-                </td>
-                <td className="px-6 py-4">
-                  {group.group.files.file_type}
-                </td>
-                <td className="px-6 py-4">
-                  {group.group.files.user_id}
-                </td>
-              </tr>
-            ))}
+              {dataFile.map((file: any) => (
+                <tr
+                  key={file.id}
+                  className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+                >
+                  <th>{file.file_name}</th>
+                  <td className="px-6 py-4">{file.file_size}</td>
+                  <td className="px-6 py-4">{file.file_type}</td>
+                  <td className="px-6 py-4">{file.user_id}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </section>
