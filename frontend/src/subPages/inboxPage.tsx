@@ -10,23 +10,23 @@ type Group = {
 };
 
 function InboxPage() {
-
-  const [groups, setGroups] = useState<{
-    id: number;
-    name: string;
-    created_at: string;
-  }[]>([]);
+  const [groups, setGroups] = useState<
+    {
+      id: number;
+      name: string;
+      created_at: string;
+    }[]
+  >([]);
 
   // Get user_id to query the db
   let user_id = 20;
-  
-  async function getGroupsUser(){
 
+  async function getGroupsUser() {
     const body = {
-      user_id
-    }
+      user_id,
+    };
 
-    await fetch("http://localhost:3000/api/groups/getGroups", { 
+    await fetch("http://localhost:3000/api/groups/getGroups", {
       method: "POST",
       headers: {
         "Content-Type": "application/json; charset=UTF-8",
@@ -41,7 +41,6 @@ function InboxPage() {
       .catch((err) => {
         console.log(err.message);
       });
-
   }
 
   // Call getGroupsUser function when component is mounted
@@ -55,9 +54,8 @@ function InboxPage() {
     const url = `${currentPathname}/group/${encodedGroupId}`;
     console.log(url);
     window.location.href = url;
-  }
+  };
 
-  
   return (
     <div>
       <Sidebar />
@@ -68,9 +66,9 @@ function InboxPage() {
           <h2 className="text-center underline">Groups</h2>
           <br></br>
           <table className="w-full text-sm text-center text-gray-500 dark:text-gray-400">
-            {/* Cabeçalho */}
+            {/* CabeÃ§alho */}
             <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-            <tr>
+              <tr>
                 <th scope="col" className="px-6 py-3">
                   Group
                 </th>
@@ -80,34 +78,32 @@ function InboxPage() {
                 <th scope="col" className="px-6 py-3">
                   Files
                 </th>*/}
-                <th>
-                  Created At
-                </th>
-            </tr>
+                <th>Created At</th>
+              </tr>
             </thead>
 
             {/* Linhas da base de dados */}
             <tbody>
-
-            {groups.map((group) => (
-              <tr key={group.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                <th>
-                  <button onClick={() => handleGroupClick(group)}>{group.name}</button> 
-                </th>
-                {/*<td className="px-6 py-4">
+              {groups.map((group) => (
+                <tr
+                  key={group.id}
+                  className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+                >
+                  <th>
+                    <button onClick={() => handleGroupClick(group)}>
+                      {group.name}
+                    </button>
+                  </th>
+                  {/*<td className="px-6 py-4">
                  {group.members}
                 </td>
                 <td className="px-6 py-4">
                   {group.files}
                 </td>*/}
-                <td className="px-6 py-4">
-                  {group.created_at}
-                </td>
-              </tr>
-            ))}
-
+                  <td className="px-6 py-4">{group.created_at}</td>
+                </tr>
+              ))}
             </tbody>
-
           </table>
         </section>
       </div>

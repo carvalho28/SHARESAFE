@@ -10,6 +10,11 @@ type fileInformation = {
   user_id: number;
 };
 
+type userInformation = {
+  id: number;
+  encrypted_key: string;
+};
+
 async function sendFile(file: File) {
   const fileBuffer = await file.arrayBuffer();
   const fileBytes = new Uint8Array(fileBuffer);
@@ -18,13 +23,13 @@ async function sendFile(file: File) {
   let encryptedSymetricKey: string;
 
   let file_info: fileInformation;
-  let users_group: string[] = [];
+  let users_group: userInformation[] = [];
 
   const symetricKey = forge.random.getBytesSync(16);
   const iv = forge.random.getBytesSync(16);
 
   // AES - CBC or AES - GCM
-  const cipher = forge.cipher.createCipher('AES-CBC', symetricKey);
+  const cipher = forge.cipher.createCipher("AES-CBC", symetricKey);
   cipher.start({ iv: iv });
   cipher.update(forge.util.createBuffer(fileBytes));
   cipher.finish();
@@ -50,15 +55,17 @@ async function sendFile(file: File) {
       console.log(data);
 
       // Encrypt symetric key with user public key
-      data.forEach((user: { public_key: string; id: number; }) => {
-
+      data.forEach((user: { public_key: string; id: number }) => {
         publicKey = forge.pki.publicKeyFromPem(user.public_key);
 
         encryptedSymetricKey = publicKey.encrypt(symetricKey);
 
-        users_group.push(encryptedSymetricKey);
+        // users_group.push(encryptedSymetricKey);
+        users_group.push({
+          id: user.id,
+          encrypted_key: encryptedSymetricKey,
+        });
       });
-
     })
     .catch((err: any) => {
       console.log("Error: ", err.message);
@@ -69,9 +76,7 @@ async function sendFile(file: File) {
     users_group,
   };
 
-
   console.log(body);
-
 
   await fetch("http://localhost:3000/api/files/upload", {
     method: "POST",
@@ -87,7 +92,6 @@ async function sendFile(file: File) {
     .catch((err) => {
       console.log(err.message);
     });
-
 }
 
 export default sendFile;
