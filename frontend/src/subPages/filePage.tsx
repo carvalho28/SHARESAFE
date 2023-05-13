@@ -1,11 +1,8 @@
 import Sidebar from "../components/sidebar";
 import { useState, useEffect } from "react";
 import receiveFile from "../encryption/ReceiveFile";
-
-type file = {
-  data: [];
-  type: string;
-};
+import downloadFile from "../encryption/DownloadFile";
+import { getCookie } from "../auth/Cookies";
 
 type File = {
   id: number;
@@ -18,18 +15,16 @@ type File = {
 };
 
 function FilePage() {
-  // Get group id
+
+  // Get group id from url
   const currentPathname = window.location.pathname;
   const splitString = currentPathname.split("/");
-  //console.log(currentPathname);
   let id = splitString[splitString.length - 1];
   let group_id = +id;
-  //console.log(group_id);
 
   // Get user_id to query the db
-  let user_id = 20;
-
-  const [ff, setff] = useState<file>();
+  let user_id = getCookie('user_id');
+  console.log(user_id);
 
   const [groups, setGroups] = useState<
     {
@@ -71,8 +66,6 @@ function FilePage() {
   let selectedGroup = groups.find((group) => group.id === group_id);
   let heading = selectedGroup ? selectedGroup.name : "Not Found";
 
-  // console.log(receiveFile(group_id));
-
   const [dataFile, setdataFile] = useState<any>([]);
 
   useEffect(() => {
@@ -92,7 +85,60 @@ function FilePage() {
     console.log("dataFile", dataFile);
   }, [dataFile]);
 
-  //setGroups(data.groups);
+  const [user,setUser] = useState<
+    {
+        id: number;
+        name: string;
+        email: string;
+        password: string;
+        public_key: string;
+        salt: string;
+      }[]
+    >([]);
+
+  // Owner user_name
+  async function getUser() {
+
+    await fetch("http://localhost:3000/api/users", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json; charset=UTF-8",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("users", data);
+        const userWithID = data.find((user: any) => user.id === user_id);
+        console.log("user", userWithID);
+        setUser(userWithID);
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+  }
+  useEffect(() => {
+    getUser();
+  }, []);
+
+  const [dFile, setdFile] = useState<any>([]);
+
+  const handleDownloadClick = async (name : string) => {
+    try {
+        const receiveData = await downloadFile(group_id);
+        setdFile(receiveData)
+        const element = document.createElement("a");
+        const file = new Blob([dFile.data], {
+            type: "text/plain",
+        });
+        element.href = URL.createObjectURL(file);
+        element.download = name;
+        document.body.appendChild(element);
+        element.click();
+        element.remove();
+    } catch (error) {
+        console.log(error); 
+    }
+  }
 
   return (
     <div>
@@ -103,7 +149,7 @@ function FilePage() {
           {/* Ficheiros */}
           <h2 className="text-center underline">{heading}</h2>
           <br></br>
-          <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+          <table className="w-full text-sm text-center text-gray-500 dark:text-gray-400">
             {/* CabeÃ§alho */}
             <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
               <tr>
@@ -119,6 +165,7 @@ function FilePage() {
                 <th scope="col" className="px-6 py-3">
                   Owner
                 </th>
+                <th></th>
               </tr>
             </thead>
             {/* Linhas da base de dados */}
@@ -132,6 +179,7 @@ function FilePage() {
                   <td className="px-6 py-4">{file.file_size}</td>
                   <td className="px-6 py-4">{file.file_type}</td>
                   <td className="px-6 py-4">{file.user_id}</td>
+                  <td className="px-6 py-4"><button onClick={() => handleDownloadClick(file.file_name)}>Download</button></td>
                 </tr>
               ))}
             </tbody>

@@ -1,5 +1,6 @@
 import Sidebar from "../components/sidebar";
 import { useEffect, useState } from "react";
+import { getCookie } from "../auth/Cookies";
 
 type Group = {
   id: number;
@@ -19,7 +20,7 @@ function InboxPage() {
   >([]);
 
   // Get user_id to query the db
-  let user_id = 20;
+  let user_id = getCookie('user_id');
 
   async function getGroupsUser() {
     const body = {
@@ -48,12 +49,22 @@ function InboxPage() {
     getGroupsUser();
   }, []);
 
+  // construct url and navigate to the group url
   const handleGroupClick = (group: Group) => {
     const encodedGroupId = encodeURIComponent(group.id.toString());
     const currentPathname = window.location.pathname;
     const url = `${currentPathname}/group/${encodedGroupId}`;
     console.log(url);
     window.location.href = url;
+  };
+
+  // Mouse cursor css
+  const handleMouseOver = () => {
+    document.body.style.cursor = 'pointer';
+  };
+
+  const handleMouseOut = () => {
+    document.body.style.cursor = 'default';
   };
 
   return (
@@ -87,12 +98,13 @@ function InboxPage() {
               {groups.map((group) => (
                 <tr
                   key={group.id}
-                  className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+                  className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 cursor:pointer"
+                  onClick={() => handleGroupClick(group)}
+                  onMouseOver={handleMouseOver}
+                  onMouseOut={handleMouseOut}
                 >
                   <th>
-                    <button onClick={() => handleGroupClick(group)}>
                       {group.name}
-                    </button>
                   </th>
                   {/*<td className="px-6 py-4">
                  {group.members}
@@ -100,7 +112,7 @@ function InboxPage() {
                 <td className="px-6 py-4">
                   {group.files}
                 </td>*/}
-                  <td className="px-6 py-4">{group.created_at}</td>
+                  <td className="px-6 py-4">{group.created_at.substring(0,10)}</td>
                 </tr>
               ))}
             </tbody>
