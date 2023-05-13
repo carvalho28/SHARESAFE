@@ -79,9 +79,9 @@ function FilePage() {
 
     useEffect(() => {
         const getFiles = async() => {
-            setdataFile(await receiveFile(group_id));
+            //setdataFile(await receiveFile(group_id));
         }
-    }, [data]); 
+    }, []); 
 
     
 
