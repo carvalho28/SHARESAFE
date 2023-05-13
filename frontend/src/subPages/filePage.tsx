@@ -87,6 +87,10 @@ function FilePage() {
     getFiles();
   }, []);
 
+  useEffect(()=>{
+    console.log(dataFile);
+  }, [dataFile]);
+
   //setGroups(data.groups);
 
   return (
@@ -117,7 +121,24 @@ function FilePage() {
               </tr>
             </thead>
             {/* Linhas da base de dados */}
-            <tbody></tbody>
+            <tbody>
+            {dataFile.map((group: any) => (
+              <tr key={group.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                <th>
+                  {group.group.files.file_name}
+                </th>
+                <td className="px-6 py-4">
+                 {group.group.files.file_size}
+                </td>
+                <td className="px-6 py-4">
+                  {group.group.files.file_type}
+                </td>
+                <td className="px-6 py-4">
+                  {group.group.files.user_id}
+                </td>
+              </tr>
+            ))}
+            </tbody>
           </table>
         </section>
       </div>
