@@ -24,7 +24,6 @@ function FilePage() {
 
   // Get user_id to query the db
   let user_id = getCookie('user_id');
-  console.log(user_id);
 
   const [groups, setGroups] = useState<
     {
@@ -49,7 +48,6 @@ function FilePage() {
     })
       .then((res) => res.json())
       .then((data) => {
-        //console.log(data);
         setGroups(data);
       })
       .catch((err) => {
@@ -96,38 +94,45 @@ function FilePage() {
       }[]
     >([]);
 
-  // Owner user_name
-  async function getUser() {
-
-    await fetch("http://localhost:3000/api/users", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json; charset=UTF-8",
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("users", data);
-        const userWithID = data.find((user: any) => user.id === user_id);
-        console.log("user", userWithID);
-        setUser(userWithID);
-      })
-      .catch((err) => {
-        console.log(err.message);
-      });
-  }
+  // Owner user_name  
   useEffect(() => {
-    getUser();
-  }, []);
+    const getUser = async () => {
+        await fetch("http://localhost:3000/api/users", {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json; charset=UTF-8",
+            },
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              console.log("users", data);
+              setUser(data);
+            })
+            .catch((err) => {
+              console.log(err.message);
+            });
+    
+        }; 
+        getUser();
+}, []);
 
-  const [dFile, setdFile] = useState<any>([]);
+  useEffect(() => {
+    console.log("user", user);
+  }, [user]);
+
+  function getUserById(id : number){
+    console.log("Owner", id);
+    const userWithID : any = user.find((user: any) => user.id === id);
+    return userWithID.name;
+  }
+
+  //const [dFile, setdFile] = useState<any>([]);
 
   const handleDownloadClick = async (name : string) => {
     try {
         const receiveData = await downloadFile(group_id);
-        setdFile(receiveData)
         const element = document.createElement("a");
-        const file = new Blob([dFile.data], {
+        const file = new Blob([receiveData], {
             type: "text/plain",
         });
         element.href = URL.createObjectURL(file);
@@ -178,7 +183,7 @@ function FilePage() {
                   <th>{file.file_name}</th>
                   <td className="px-6 py-4">{file.file_size}</td>
                   <td className="px-6 py-4">{file.file_type}</td>
-                  <td className="px-6 py-4">{file.user_id}</td>
+                  <td className="px-6 py-4">{getUserById(file.user_id)}</td>
                   <td className="px-6 py-4"><button onClick={() => handleDownloadClick(file.file_name)}>Download</button></td>
                 </tr>
               ))}
