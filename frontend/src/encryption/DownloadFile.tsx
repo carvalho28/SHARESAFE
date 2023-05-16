@@ -3,7 +3,7 @@ import decryptFile from "./DecryptFile";
 const endpoint = "http://localhost:3000/api/";
 
 // Returns all the files of a specific group
-async function receiveFile(group_id: number) {
+async function downloadFile(group_id: number) {
 
   const body = {
     id: group_id,
@@ -19,7 +19,8 @@ async function receiveFile(group_id: number) {
     .then((res) => res.json())
     .then((data) => {
       if (!data) console.error("--> null data handler here");
-      return data.group.files;
+      console.log(data.files);
+      return data.files.data;
     })
     .catch((err) => {
       console.error(err.message);
@@ -27,4 +28,4 @@ async function receiveFile(group_id: number) {
     });
 }
 
-export default receiveFile;
+export default downloadFile;

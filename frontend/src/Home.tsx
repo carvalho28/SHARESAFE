@@ -44,6 +44,7 @@ function Home() {
         console.log(data);
         if (data.accessToken) {
           setCookie("accessToken", data.accessToken, 7);
+          setCookie("user_id", data.id, 7);
           setIsLoading(false);
           navigate("/mainmenu");
         } else {
