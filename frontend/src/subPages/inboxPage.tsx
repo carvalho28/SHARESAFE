@@ -12,16 +12,16 @@ type Group = {
 
 function InboxPage() {
   const [groups, setGroups] = useState<
-    {
-      id: number;
-      name: string;
-      created_at: string;
-    }[]
-  | null>(null);
+    | {
+        id: number;
+        name: string;
+        created_at: string;
+      }[]
+    | null
+  >(null);
 
   // Get user_id to query the db
   let user_id = getCookie("user_id");
-  console.log(user_id);
 
   async function getGroupsUser() {
     const body = {
@@ -37,7 +37,6 @@ function InboxPage() {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log("recebidos grupos", data);
         setGroups(data);
       })
       .catch((err) => {

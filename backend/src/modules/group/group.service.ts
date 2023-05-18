@@ -63,7 +63,6 @@ export async function addMembersToGroup(input: GroupAddMembersInput) {
 
 // get groups for a given user
 export async function getGroupsForUser(user_id: number) {
-  console.log("user_id", user_id);
   const user = await prisma.user.findUnique({
     where: {
       id: parseInt(user_id.toString()),
@@ -81,9 +80,10 @@ export async function getGroupsForUser(user_id: number) {
 }
 
 export async function getUsersFromGroup(input: GetUserFromGroupInput) {
+  console.log(input);
   return prisma.group.findUnique({
     where: {
-      id: input.group_id,
+      id: parseInt(input.group_id.toString()),
     },
     include: {
       members: true,

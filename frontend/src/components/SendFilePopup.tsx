@@ -13,7 +13,7 @@ export default function SendFilePopup(props: {
 
   return props.triggered ? (
     <div className="fixed inset-0 p-4 sm:ml-64 bg-black bg-opacity-5 backdrop-blur-sm flex justify-center items-center">
-      <button onClick={() => sendFile(file, 48)}>teste</button>
+      {/* <button onClick={() => sendFile(file, 1)}>teste</button> */}
       <div className="h-creen flex items-center justify-center">
         <form className="flex items-center justify-center">
           <div className="flex flex-col items-center justify-center w-full h-full border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:bg-gray-700  dark:border-gray-600 ">
@@ -75,7 +75,12 @@ export default function SendFilePopup(props: {
             <button
               id="btnSend"
               className="flex items-center justify-center border-2 my-4 px-2 py-1 rounded hover:bg-gray-600"
-              onClick={() => sendFile(file!, 48)}
+              onClick={(event) => {
+                event.preventDefault();
+                sendFile(file!, 1).catch((error) => {
+                  console.error("Error sending file:", error);
+                });
+              }}
             >
               <p className="text-xl text-gray-500 dark:text-gray-300">
                 Send <span className="font-semibold">File</span>

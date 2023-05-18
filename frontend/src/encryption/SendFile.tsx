@@ -17,6 +17,42 @@ type userInformation = {
   encrypted_key: string;
 };
 
+const getUsers = async (groupId: number) => {
+  const bodyGetUsers = {
+    group_id: 1,
+  };
+  console.log("body: ", bodyGetUsers);
+  await fetch("http://localhost:3000/api/groups/getGroups", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json; charset=UTF-8",
+    },
+    body: JSON.stringify(bodyGetUsers),
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      console.log("recebido", data);
+
+      // // Encrypt symetric key with user public key
+      // data.members.forEach((user: { public_key: string; id: number }) => {
+      //   console.log("user x:", user);
+
+      //   publicKey = forge.pki.publicKeyFromPem(user.public_key);
+
+      //   encryptedSymetricKey = publicKey.encrypt(symetricKey);
+
+      //   users_group.push({
+      //     id: user.id,
+      //     encrypted_key: forge.util.encode64(encryptedSymetricKey),
+      //   });
+      // });
+    })
+    .catch((err: any) => {
+      console.log("Error: ", err);
+      return err;
+    });
+};
+
 async function sendFile(file: File, groupId: number) {
   const user_id = getCookie("user_id");
   const fileBuffer = await file.arrayBuffer();
@@ -40,6 +76,9 @@ async function sendFile(file: File, groupId: number) {
   // convert encrypted file to BASE64
   const encryptedFile = cipher.output.getBytes();
 
+  // console.log("user id: ", user_id);
+  // console.log("group id: ", groupId);
+
   file_info = {
     file_name: file.name,
     file_type: file.type,
@@ -51,18 +90,19 @@ async function sendFile(file: File, groupId: number) {
     group_id: Number(groupId),
   };
 
-  console.log(file_info);
-
+  const bodyGetUsers = {
+    group_id: 1,
+  };
   await fetch("http://localhost:3000/api/groups/getUsers", {
     method: "POST",
     headers: {
       "Content-Type": "application/json; charset=UTF-8",
     },
-    body: JSON.stringify({ group_id: groupId }),
+    body: JSON.stringify(bodyGetUsers),
   })
     .then((res) => res.json())
     .then((data) => {
-      console.log(data);
+      console.log("recebido", data);
 
       // Encrypt symetric key with user public key
       data.members.forEach((user: { public_key: string; id: number }) => {
@@ -79,7 +119,8 @@ async function sendFile(file: File, groupId: number) {
       });
     })
     .catch((err: any) => {
-      console.log("Error: ", err.message);
+      console.log("Error: ", err);
+      return err;
     });
 
   const body = {
@@ -87,7 +128,7 @@ async function sendFile(file: File, groupId: number) {
     users_group,
   };
 
-  console.log(body);
+  console.log("envio de ficheiro: ", body);
 
   await fetch("http://localhost:3000/api/files/upload", {
     method: "POST",

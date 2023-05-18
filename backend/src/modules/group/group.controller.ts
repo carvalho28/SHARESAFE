@@ -1,14 +1,22 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { GroupAddFilesInput, GroupAddMembersInput, GroupInput } from "./group.schema";
-import { addFilesToGroup, addMembersToGroup, createGroup, getGroupsForUser, getUsersFromGroup } from "./group.service";
+import {
+  GroupAddFilesInput,
+  GroupAddMembersInput,
+  GroupInput,
+} from "./group.schema";
+import {
+  addFilesToGroup,
+  addMembersToGroup,
+  createGroup,
+  getGroupsForUser,
+  getUsersFromGroup,
+} from "./group.service";
 
 // get users from a given group
 export async function getUsersFromGroupHandler(
   request: FastifyRequest<{ Body: { group_id: number } }>,
   reply: FastifyReply
 ) {
-
-  console.log("GetUsers:", request.body);
   try {
     const users = await getUsersFromGroup(request.body);
     console.log(users);
@@ -60,7 +68,7 @@ export async function addMembersToGroupHandler(
     return reply.code(201).send(group);
   } catch (error) {
     return reply.code(400).send(error);
-  } 
+  }
 }
 
 // get groups for a given user
@@ -72,7 +80,6 @@ export async function getGroupsHandler(
 
   try {
     const groups = await getGroupsForUser(user_id);
-    console.log(groups);
     return reply.code(200).send(groups);
   } catch (error) {
     return reply.code(400).send(error);
