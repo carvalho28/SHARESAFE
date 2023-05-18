@@ -24,7 +24,7 @@ export async function receiveFileHandler(
 
   try {
     const files = await receiveFile(body);
-    console.log(files);
+    // console.log(files);
     return reply.code(201).send(files);
   } catch (error) {
     return reply.code(400).send(error);

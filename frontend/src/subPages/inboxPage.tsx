@@ -17,10 +17,11 @@ function InboxPage() {
       name: string;
       created_at: string;
     }[]
-  >([]);
+  | null>(null);
 
   // Get user_id to query the db
-  let user_id = getCookie('user_id');
+  let user_id = getCookie("user_id");
+  console.log(user_id);
 
   async function getGroupsUser() {
     const body = {
@@ -36,7 +37,7 @@ function InboxPage() {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
+        console.log("recebidos grupos", data);
         setGroups(data);
       })
       .catch((err) => {
@@ -60,11 +61,11 @@ function InboxPage() {
 
   // Mouse cursor css
   const handleMouseOver = () => {
-    document.body.style.cursor = 'pointer';
+    document.body.style.cursor = "pointer";
   };
 
   const handleMouseOut = () => {
-    document.body.style.cursor = 'default';
+    document.body.style.cursor = "default";
   };
 
   return (
@@ -94,28 +95,30 @@ function InboxPage() {
             </thead>
 
             {/* Linhas da base de dados */}
-            <tbody>
-              {groups.map((group) => (
-                <tr
-                  key={group.id}
-                  className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 cursor:pointer"
-                  onClick={() => handleGroupClick(group)}
-                  onMouseOver={handleMouseOver}
-                  onMouseOut={handleMouseOut}
-                >
-                  <th>
-                      {group.name}
-                  </th>
-                  {/*<td className="px-6 py-4">
+            {groups !== null && (
+              <tbody>
+                {groups.map((group) => (
+                  <tr
+                    key={group.id}
+                    className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 cursor:pointer"
+                    onClick={() => handleGroupClick(group)}
+                    onMouseOver={handleMouseOver}
+                    onMouseOut={handleMouseOut}
+                  >
+                    <th>{group.name}</th>
+                    {/*<td className="px-6 py-4">
                  {group.members}
                 </td>
                 <td className="px-6 py-4">
                   {group.files}
                 </td>*/}
-                  <td className="px-6 py-4">{group.created_at.substring(0,10)}</td>
-                </tr>
-              ))}
-            </tbody>
+                    <td className="px-6 py-4">
+                      {group.created_at.substring(0, 10)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            )}
           </table>
         </section>
       </div>

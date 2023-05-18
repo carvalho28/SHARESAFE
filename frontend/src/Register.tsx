@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import logo from "./images/Logo.png";
 import forge from "node-forge";
+import { Spinner } from "./components/Spinner";
 
 function Register() {
   // const [publicKey, setPublicKey] = useState("");
@@ -12,6 +13,7 @@ function Register() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   async function registerUser() {
     if (password !== confirmPassword) {
@@ -24,6 +26,8 @@ function Register() {
       setErrorMessage("Empty Fields");
       return;
     }
+
+    setIsLoading(true);
 
     const { publicKey, privateKey } = await generateKeys();
     // call the backend to register the user
@@ -47,6 +51,18 @@ function Register() {
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
+        console.log("private key: ", privateKey);
+        const element = document.createElement("a");
+        const file = new Blob(["PRIVATE KEY:\n" + privateKey], {
+          type: "text/plain",
+        });
+        element.href = URL.createObjectURL(file);
+        element.download = "privateKey.pem";
+        document.body.appendChild(element);
+        element.click();
+        element.remove();
+
+        setIsLoading(false);
       })
       .catch((err) => {
         console.log(err.message);
@@ -57,15 +73,6 @@ function Register() {
     const keypair = forge.pki.rsa.generateKeyPair({ bits: 2048 });
     const publicKey = forge.pki.publicKeyToPem(keypair.publicKey);
     const privateKey = forge.pki.privateKeyToPem(keypair.privateKey);
-    const element = document.createElement("a");
-    const file = new Blob(["PRIVATE KEY:\n" + privateKey], {
-      type: "text/plain",
-    });
-    element.href = URL.createObjectURL(file);
-    element.download = "privateKey.pem";
-    document.body.appendChild(element);
-    element.click();
-    element.remove();
     return { publicKey, privateKey };
   }
 
@@ -163,6 +170,12 @@ function Register() {
               Register
             </button>
           </div>
+          {isLoading && (
+            <div className="pt-5">
+              <Spinner />
+            </div>
+          )}
+
           <div className="pt-1">
             <p className="text-xs">
               Already have an account? Click{" "}

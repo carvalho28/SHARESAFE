@@ -16,6 +16,11 @@ export async function createUser(input: CreateUserInput) {
       ...rest,
       salt,
       password: hash,
+      groups: {
+        connect: {
+          id: 1,
+        },
+      },
     },
   });
 

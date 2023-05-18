@@ -8,6 +8,7 @@ export async function getUsersFromGroupHandler(
   reply: FastifyReply
 ) {
 
+  console.log("GetUsers:", request.body);
   try {
     const users = await getUsersFromGroup(request.body);
     console.log(users);
@@ -22,7 +23,7 @@ export async function createGroupHandler(
   reply: FastifyReply
 ) {
   const body = request.body;
-  console.log(body);
+  // console.log(body);
 
   try {
     const group = await createGroup(body);
@@ -64,13 +65,14 @@ export async function addMembersToGroupHandler(
 
 // get groups for a given user
 export async function getGroupsHandler(
-  request: FastifyRequest<{ Body: { userId: number } }>,
+  request: FastifyRequest<{ Body: { user_id: number } }>,
   reply: FastifyReply
 ) {
-  const userId = request.body.userId;
+  const user_id = request.body.user_id;
 
   try {
-    const groups = await getGroupsForUser(userId);
+    const groups = await getGroupsForUser(user_id);
+    console.log(groups);
     return reply.code(200).send(groups);
   } catch (error) {
     return reply.code(400).send(error);
