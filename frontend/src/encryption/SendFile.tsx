@@ -17,42 +17,6 @@ type userInformation = {
   encrypted_key: string;
 };
 
-const getUsers = async (groupId: number) => {
-  const bodyGetUsers = {
-    group_id: 1,
-  };
-  console.log("body: ", bodyGetUsers);
-  await fetch("http://localhost:3000/api/groups/getGroups", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json; charset=UTF-8",
-    },
-    body: JSON.stringify(bodyGetUsers),
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      console.log("recebido", data);
-
-      // // Encrypt symetric key with user public key
-      // data.members.forEach((user: { public_key: string; id: number }) => {
-      //   console.log("user x:", user);
-
-      //   publicKey = forge.pki.publicKeyFromPem(user.public_key);
-
-      //   encryptedSymetricKey = publicKey.encrypt(symetricKey);
-
-      //   users_group.push({
-      //     id: user.id,
-      //     encrypted_key: forge.util.encode64(encryptedSymetricKey),
-      //   });
-      // });
-    })
-    .catch((err: any) => {
-      console.log("Error: ", err);
-      return err;
-    });
-};
-
 async function sendFile(file: File, groupId: number) {
   const user_id = getCookie("user_id");
   const fileBuffer = await file.arrayBuffer();
@@ -84,7 +48,7 @@ async function sendFile(file: File, groupId: number) {
     file_type: file.type,
     file_size: file.size,
     encrypted_file: forge.util.encode64(encryptedFile),
-    iv: forge.util.encode64(iv),
+    iv: forge.util.encode64(iv).toString(),
     algorithm: "AES-CBC",
     user_id: Number(user_id),
     group_id: Number(groupId),
@@ -106,7 +70,6 @@ async function sendFile(file: File, groupId: number) {
 
       // Encrypt symetric key with user public key
       data.members.forEach((user: { public_key: string; id: number }) => {
-        console.log("user x:", user);
 
         publicKey = forge.pki.publicKeyFromPem(user.public_key);
 

@@ -125,7 +125,7 @@ function FilePage() {
   }, [user]);
 
   function getUserById(id: number) {
-    console.log("Owner", id);
+    // console.log("Owner", id);
     const userWithID: any = user.find((user: any) => user.id === id);
     return userWithID.name;
   }
@@ -137,24 +137,31 @@ function FilePage() {
     encryptedFile: any,
     index: number,
   ) => {
-    console.log("--- HANDLE DOWNLOAD ---");
-    console.log(fileInfo);
-    console.log(encryptedFile);
-    console.log("user_id: " + user_id);
+    // console.log("--- HANDLE DOWNLOAD ---");
+    // console.log(fileInfo);
+    // console.log(encryptedFile);
+    // console.log("user_id: " + user_id);
 
     let encriptedKey;
 
-    fileInfo.users_group.forEach(
-      (element: { id: number; encrypted_key: any }) => {
-        // if (element.id === Number(user_id))
-        if (element.id === 1) encriptedKey = element.encrypted_key;
-      },
-    );
+    fileInfo.users_group.forEach((elem: { id: number; encrypted_key: any }) => {
+      if (elem.id === Number(user_id)) {
+        encriptedKey = elem.encrypted_key;
+      }
+    });
 
-    // console.log(encriptedKey);
+    console.log("encriptedKey", encriptedKey);
 
     try {
-      decryptFile({
+      // decryptFile({
+      //   algorithm: fileInfo.algorithm,
+      //   iv: fileInfo.iv,
+      //   encryptedKey: String(encriptedKey),
+      //   encrypted_file: encryptedFile,
+      //   privateKeyPem: String(privateKey),
+      // });
+
+      const receiveData = await decryptFile({
         algorithm: fileInfo.algorithm,
         iv: fileInfo.iv,
         encryptedKey: String(encriptedKey),
@@ -162,16 +169,12 @@ function FilePage() {
         privateKeyPem: String(privateKey),
       });
 
-      // const receiveData = await decryptFile(input.file);
-      // const element = document.createElement("a");
-      // const file = new Blob([receiveData], {
-      //     type: "text/plain",
-      // });
-      // element.href = URL.createObjectURL(file);
-      // element.download = name;
-      // document.body.appendChild(element);
-      // element.click();
-      // element.remove();
+      // download file 
+      // const encoder = new TextEncoder(); 
+      // const data = encoder.encode(receiveData);
+      // const blob = new Blob([data], { type: "text/plain" });
+      
+      
     } catch (error) {
       console.log(error);
     }

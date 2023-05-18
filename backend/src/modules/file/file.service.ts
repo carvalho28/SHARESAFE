@@ -31,7 +31,7 @@ export async function uploadFile(input: FileInput) {
     file_name: input.file_info.file_name,
     file_type: input.file_info.file_type,
     file_size: input.file_info.file_size,
-    iv: Buffer.from(input.file_info.iv),
+    iv: input.file_info.iv,
     // User that uploaded the file
     user: {
       connect: {
