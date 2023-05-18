@@ -1,5 +1,6 @@
 import prisma from "../../utils/prisma";
 import {
+  GetUserFromGroupInput,
   GroupAddFilesInput,
   GroupAddMembersInput,
   GroupInput,
@@ -72,4 +73,15 @@ export async function getGroupsForUser(user_id: number) {
   });
 
   return user?.groups;
+}
+
+export async function getUsersFromGroup(input: GetUserFromGroupInput) {
+  return prisma.group.findUnique({
+    where: {
+      id: input.group_id,
+    },
+    include: {
+      members: true,
+    },
+  });
 }

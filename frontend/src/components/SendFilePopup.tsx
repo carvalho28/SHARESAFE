@@ -14,7 +14,7 @@ export default function SendFilePopup(props: {
 
   return props.triggered ? (
     <div className="fixed inset-0 p-4 sm:ml-64 bg-black bg-opacity-5 backdrop-blur-sm flex justify-center items-center">
-
+      <button onClick={() => sendFile(file, 3)}>teste</button>
       <div className="h-creen flex items-center justify-center">
 
         <form className="flex items-center justify-center">
@@ -58,7 +58,7 @@ export default function SendFilePopup(props: {
 
             <input id="dropzone-file" type="file" className="" onChange={handleFileChange} multiple={true}/>
 
-            <button id="btnSend" className="flex items-center justify-center border-2 my-4 px-2 py-1 rounded hover:bg-gray-600" onClick={() => sendFile(file!)}>
+            <button id="btnSend" className="flex items-center justify-center border-2 my-4 px-2 py-1 rounded hover:bg-gray-600" onClick={() => sendFile(file!, 3)}>
 
               <p className="text-xl text-gray-500 dark:text-gray-300">Send <span className="font-semibold">File</span></p>
               

@@ -21,6 +21,8 @@ export async function receiveFile(input: FileReceive) {
     files
   }
 
+  console.log(result);
+
   return result;
 }
 
@@ -30,6 +32,7 @@ export async function uploadFile(input: FileInput) {
     file_type: input.file_info.file_type,
     file_size: input.file_info.file_size,
     iv: Buffer.from(input.file_info.iv),
+    // User that uploaded the file
     user: {
       connect: {
         id: input.file_info.user_id,
@@ -37,8 +40,14 @@ export async function uploadFile(input: FileInput) {
     },
     created_at: new Date(),
     algorithm: input.file_info.algorithm,
+    groups: {
+      connect: {
+        id: input.file_info.group_id
+      }
+    }
   };
 
+  // the file encrypted_key for every user in the group
   const usersGroup = input.users_group.map((user) => {
     return {
       id: user.id,

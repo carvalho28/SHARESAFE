@@ -4,6 +4,11 @@ import receiveFile from "../encryption/ReceiveFile";
 import downloadFile from "../encryption/DownloadFile";
 import { getCookie } from "../auth/Cookies";
 
+import decryptFile from "../encryption/DecryptFile";
+import fs from 'fs';
+
+
+
 type File = {
   id: number;
   file_name: string;
@@ -65,13 +70,16 @@ function FilePage() {
   let heading = selectedGroup ? selectedGroup.name : "Not Found";
 
   const [dataFile, setdataFile] = useState<any>([]);
+  const [groupData, setGroupData] = useState<any>({});
+  const [privateKey, setPrivateKey] = useState<String>();
 
   useEffect(() => {
     const getFiles = async () => {
       try {
         const receiveData = await receiveFile(group_id);
         console.log("receiveData", receiveData);
-        setdataFile(receiveData);
+        setGroupData(receiveData);
+        setdataFile(receiveData.group.files);
       } catch (error) {
         console.log(error);
       }
@@ -128,21 +136,64 @@ function FilePage() {
 
   //const [dFile, setdFile] = useState<any>([]);
 
-  const handleDownloadClick = async (name : string) => {
+  const handleDownloadClick = async (fileInfo: any, encryptedFile: any, index: number) => {
+    console.log("--- HANDLE DOWNLOAD ---");
+    console.log(fileInfo);
+    console.log(encryptedFile);
+    console.log("user_id: "+user_id);
+    
+    let encriptedKey;
+
+    fileInfo.users_group.forEach((element: { id: number; encrypted_key: any; }) => {
+      // if (element.id === Number(user_id))
+      if (element.id === 1)
+        encriptedKey = element.encrypted_key;
+    });
+
+    // console.log(encriptedKey);
+    
     try {
-        const receiveData = await downloadFile(group_id);
-        const element = document.createElement("a");
-        const file = new Blob([receiveData], {
-            type: "text/plain",
+        decryptFile({
+          algorithm: fileInfo.algorithm,
+          iv: fileInfo.iv, 
+          encryptedKey: String(encriptedKey), 
+          encrypted_file: encryptedFile,
+          privateKeyPem: String(privateKey)
         });
-        element.href = URL.createObjectURL(file);
-        element.download = name;
-        document.body.appendChild(element);
-        element.click();
-        element.remove();
+
+        // const receiveData = await decryptFile(input.file);
+        // const element = document.createElement("a");
+        // const file = new Blob([receiveData], {
+        //     type: "text/plain",
+        // });
+        // element.href = URL.createObjectURL(file);
+        // element.download = name;
+        // document.body.appendChild(element);
+        // element.click();
+        // element.remove();
+
     } catch (error) {
         console.log(error); 
     }
+  }
+
+  // TODO: DELETE THIS AFTER TESTING
+  useEffect(() => {
+    console.log(privateKey);
+  }, [privateKey]);
+
+  function handleFileChange(e: any){
+    const reader = new FileReader()
+    reader.onload = async (e: any) => { 
+      const text = (e.target.result)
+
+      var lines = text.split('\n');
+      lines.splice(0,1);
+      var newtext = lines.join('\n');
+
+      setPrivateKey(newtext);
+    };
+    reader.readAsText(e.target.files[0])
   }
 
   return (
@@ -150,6 +201,7 @@ function FilePage() {
       <Sidebar />
 
       <div className="p-4 sm:ml-64">
+        <input type="file" id="file" onChange={(e) => handleFileChange(e)} />
         <section>
           {/* Ficheiros */}
           <h2 className="text-center underline">{heading}</h2>
@@ -175,7 +227,7 @@ function FilePage() {
             </thead>
             {/* Linhas da base de dados */}
             <tbody>
-              {dataFile.map((file: any) => (
+              {dataFile.map((file: any, index: number) => (
                 <tr
                   key={file.id}
                   className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
@@ -184,7 +236,7 @@ function FilePage() {
                   <td className="px-6 py-4">{file.file_size}</td>
                   <td className="px-6 py-4">{file.file_type}</td>
                   <td className="px-6 py-4">{getUserById(file.user_id)}</td>
-                  <td className="px-6 py-4"><button onClick={() => handleDownloadClick(file.file_name)}>Download</button></td>
+                  <td className="px-6 py-4"><button onClick={() => handleDownloadClick(file, groupData.files[index], index)}>Download</button></td>
                 </tr>
               ))}
             </tbody>
