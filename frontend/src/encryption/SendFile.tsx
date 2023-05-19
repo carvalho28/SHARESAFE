@@ -21,6 +21,7 @@ async function sendFile(file: File, groupId: number) {
   const user_id = getCookie("user_id");
   const fileBuffer = await file.arrayBuffer();
   const fileBytes = new Uint8Array(fileBuffer);
+  console.log("fileBytes", fileBytes);
 
   let publicKey: forge.pki.rsa.PublicKey;
   let encryptedSymetricKey: string;

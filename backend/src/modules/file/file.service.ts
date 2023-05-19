@@ -35,8 +35,6 @@ export async function receiveFile(input: FileReceive) {
     files,
   };
 
-  console.log(result);
-
   return result;
 }
 

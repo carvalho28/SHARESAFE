@@ -74,7 +74,7 @@ function FilePage() {
     const getFiles = async () => {
       try {
         const receiveData = await receiveFile(group_id);
-        console.log("receiveData", receiveData);
+        // console.log("receiveData", receiveData);
         setGroupData(receiveData);
         setdataFile(receiveData.group.files);
       } catch (error) {
@@ -85,7 +85,7 @@ function FilePage() {
   }, []);
 
   useEffect(() => {
-    console.log("dataFile", dataFile);
+    // console.log("dataFile", dataFile);
   }, [dataFile]);
 
   const [user, setUser] = useState<
@@ -110,7 +110,7 @@ function FilePage() {
       })
         .then((res) => res.json())
         .then((data) => {
-          console.log("users", data);
+          // console.log("users", data);
           setUser(data);
         })
         .catch((err) => {
@@ -121,7 +121,7 @@ function FilePage() {
   }, []);
 
   useEffect(() => {
-    console.log("user", user);
+    // console.log("user", user);
   }, [user]);
 
   function getUserById(id: number) {
@@ -153,28 +153,27 @@ function FilePage() {
     console.log("encriptedKey", encriptedKey);
 
     try {
-      // decryptFile({
-      //   algorithm: fileInfo.algorithm,
-      //   iv: fileInfo.iv,
-      //   encryptedKey: String(encriptedKey),
-      //   encrypted_file: encryptedFile,
-      //   privateKeyPem: String(privateKey),
-      // });
+      const receiveData = await decryptFile(
+        {
+          algorithm: fileInfo.algorithm,
+          iv: fileInfo.iv,
+          encryptedKey: String(encriptedKey),
+          encrypted_file: encryptedFile,
+          privateKeyPem: String(privateKey),
+        },
+        fileInfo.file_type,
+      );
+      console.log("receiveData", receiveData);
 
-      const receiveData = await decryptFile({
-        algorithm: fileInfo.algorithm,
-        iv: fileInfo.iv,
-        encryptedKey: String(encriptedKey),
-        encrypted_file: encryptedFile,
-        privateKeyPem: String(privateKey),
-      });
-
-      // download file 
-      // const encoder = new TextEncoder(); 
-      // const data = encoder.encode(receiveData);
-      // const blob = new Blob([data], { type: "text/plain" });
-      
-      
+      // download file
+      const element = document.createElement("a");
+      console.log("type", fileInfo.file_type);
+      const file = new Blob([receiveData], { type: fileInfo.file_type });
+      element.href = URL.createObjectURL(file);
+      element.download = fileInfo.file_name;
+      document.body.appendChild(element); // Required for this to work in FireFox
+      element.click();
+      element.remove();
     } catch (error) {
       console.log(error);
     }
@@ -182,7 +181,7 @@ function FilePage() {
 
   // TODO: DELETE THIS AFTER TESTING
   useEffect(() => {
-    console.log(privateKey);
+    // console.log(privateKey);
   }, [privateKey]);
 
   function handleFileChange(e: any) {
