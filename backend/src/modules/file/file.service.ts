@@ -12,14 +12,28 @@ export async function receiveFile(input: FileReceive) {
     },
   });
 
-  const files =  group?.files.map((file) => {
-    return fs.readFileSync(`./files/${file.file_name}`);
-  })
+  const filePromises = (group?.files || []).map((file) => {
+    return new Promise((resolve, reject) => {
+      fs.readFile(
+        `./files/${file.file_name}`,
+        { encoding: "utf8" },
+        (err, data) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(data);
+          }
+        }
+      );
+    });
+  });
+
+  const files = await Promise.all(filePromises);
 
   const result = {
     group,
-    files
-  }
+    files,
+  };
 
   console.log(result);
 
@@ -42,9 +56,9 @@ export async function uploadFile(input: FileInput) {
     algorithm: input.file_info.algorithm,
     groups: {
       connect: {
-        id: input.file_info.group_id
-      }
-    }
+        id: input.file_info.group_id,
+      },
+    },
   };
 
   // the file encrypted_key for every user in the group
@@ -60,14 +74,11 @@ export async function uploadFile(input: FileInput) {
     users_group: usersGroup,
   };
 
-  // save the encrypted file to the /files folder
-  fs.writeFile(
+  fs.writeFileSync(
     `./files/${input.file_info.file_name}`,
     input.file_info.encrypted_file,
-    (err) => {
-      if (err) {
-        console.log(err);
-      }
+    {
+      encoding: "utf8",
     }
   );
 

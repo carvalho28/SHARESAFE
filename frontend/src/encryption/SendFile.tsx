@@ -28,8 +28,13 @@ async function sendFile(file: File, groupId: number) {
   let file_info: fileInformation;
   let users_group: userInformation[] = [];
 
-  const symetricKey = forge.random.getBytesSync(16);
+  // 16 bytes = 128 bits
+  // 32 bytes = 256 bits
+  // 64 bytes = 512 bits
+  const symetricKey = forge.random.getBytesSync(32);
+  console.log("symetricKey", symetricKey);
   const iv = forge.random.getBytesSync(16);
+  console.log("iv", iv);
 
   // AES - CBC or AES - GCM
   const cipher = forge.cipher.createCipher("AES-CBC", symetricKey);
@@ -38,7 +43,9 @@ async function sendFile(file: File, groupId: number) {
   cipher.finish();
 
   // convert encrypted file to BASE64
+  console.log("cipher.output", cipher.output);
   const encryptedFile = cipher.output.getBytes();
+  console.log("encryptedFile", encryptedFile);
 
   // console.log("user id: ", user_id);
   // console.log("group id: ", groupId);

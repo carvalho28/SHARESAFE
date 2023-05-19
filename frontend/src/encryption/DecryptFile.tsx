@@ -10,15 +10,13 @@ type FileInput = {
 
 // Decrypts the file and downloads it
 async function decryptFile(input: FileInput) {
-  console.log(input);
+  console.log("input.encrypted_file", input.encrypted_file);
 
-  const fileBytes = new Uint8Array(input.encrypted_file.data);
-  console.log("fileBytes", fileBytes);
+  const decodedFile = forge.util.decode64(input.encrypted_file);
 
   const privateKey = forge.pki.privateKeyFromPem(input.privateKeyPem);
 
   // console.log(forge.util.decode64( input.encryptedKey ));
-  console.log("input.encryptedKey", input.encryptedKey);
 
   // Decrypt simetricKey
   const symetricKey = privateKey.decrypt(
@@ -26,15 +24,21 @@ async function decryptFile(input: FileInput) {
   );
 
   console.log("symetricKey", symetricKey);
+  console.log("input.iv", forge.util.decode64(input.iv));
+  console.log("input.algorithm", input.algorithm);
 
   // Decrypt file
-  var decipher = forge.cipher.createDecipher(input.algorithm, symetricKey);
+  const decipher = forge.cipher.createDecipher(input.algorithm, symetricKey);
   decipher.start({
-    iv: forge.util.createBuffer(forge.util.decode64(input.iv)),
+    iv: forge.util.decode64(input.iv),
   });
-  decipher.update(forge.util.createBuffer(fileBytes));
-  var result = decipher.finish();
+  // given that i saved the file as .getBytes() i need to convert it back to a buffer
+  decipher.update(forge.util.createBuffer(decodedFile));
+  const result = decipher.finish();
   console.log("result", result);
+  console.log("decipher", decipher);
+  console.log("decipher.output", decipher.output);
+  console.log("decipher.output", decipher.output.getBytes());
 
   if (!result) throw "Error on file decryption";
   console.log("decipher.output", decipher.output);
