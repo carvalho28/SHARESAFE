@@ -67,9 +67,6 @@ export default function Sidebar() {
                   <path d="M5.5 5.1L2 12v6c0 1.1.9 2 2 2h16a2 2 0 002-2v-6l-3.4-6.9A2 2 0 0016.8 4H7.2a2 2 0 00-1.8 1.1z" />
                 </svg>
                 <span className="flex-1 ml-3 whitespace-nowrap">Inbox</span>
-                <span className="inline-flex items-center justify-center w-3 h-3 p-3 ml-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300">
-                  0
-                </span>
               </Link>
             </li>
             <li>
