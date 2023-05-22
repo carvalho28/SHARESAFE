@@ -11,7 +11,7 @@
   },
   "devDependencies": {
     "@faker-js/faker": "^7.6.0",
-    "@types/node": "^18.15.3",
+    "@types/node": "^20.2.3",
     "@types/tap": "^15.0.8",
     "prisma": "4.13.0",
     "sinon": "^15.0.2",
