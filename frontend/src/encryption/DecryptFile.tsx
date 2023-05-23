@@ -9,9 +9,11 @@ type FileInput = {
 };
 
 // Decrypts the file and downloads it
-async function decryptFile(input: FileInput, type: string) {
-  // const decodedFile = forge.util.decode64(input.encrypted_file);
-  // const decodedFile = input.encrypted_file;
+async function decryptFile(
+  input: FileInput,
+  type: string,
+  receivedMac: string,
+) {
   const decodedFile = forge.util.hexToBytes(
     forge.util.decode64(input.encrypted_file),
   );
@@ -22,6 +24,14 @@ async function decryptFile(input: FileInput, type: string) {
   const symetricKey = privateKey.decrypt(
     forge.util.decode64(input.encryptedKey),
   );
+
+  // verify the hmac
+  const hmac = forge.hmac.create();
+  hmac.start("sha256", symetricKey);
+  hmac.update(input.encrypted_file);
+  const calculatedMac = hmac.digest().toHex();
+  if (calculatedMac !== forge.util.decode64(receivedMac))
+    throw "Message authentication code is not valid";
 
   // Decrypt file
   const decipher = forge.cipher.createDecipher(input.algorithm, symetricKey);

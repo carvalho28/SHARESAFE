@@ -57,6 +57,7 @@ export async function uploadFile(input: FileInput) {
     created_at: new Date(),
     algorithm: input.file_info.algorithm,
     signature: input.file_info.signature,
+    mac: input.file_info.mac,
     groups: {
       connect: {
         id: input.file_info.group_id,

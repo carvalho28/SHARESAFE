@@ -9,6 +9,7 @@ type fileInformation = {
   iv: string;
   algorithm: string;
   signature: string;
+  mac: string;
   user_id: number;
   group_id: number;
 };
@@ -26,7 +27,6 @@ async function sendFile(
   const user_id = getCookie("user_id");
   const fileBuffer = await file.arrayBuffer();
   const fileBytes = new Uint8Array(fileBuffer);
-  // console.log("fileBytes", fileBytes);
 
   let publicKey: forge.pki.rsa.PublicKey;
   let encryptedSymetricKey: string;
@@ -49,19 +49,24 @@ async function sendFile(
   const encryptedFile = cipher.output.toHex();
   // convert encrypted file to BASE64
   const base64EncryptedFile = forge.util.encode64(encryptedFile);
-  let signature: string | undefined;
 
+  let signature: string | undefined;
   // get the private key from the file
   if (digitalSignature) {
     const privateKeyFileBuffer = await digitalSignature?.arrayBuffer();
     const privateKeyString = new TextDecoder().decode(privateKeyFileBuffer);
     const privateKey = forge.pki.privateKeyFromPem(privateKeyString);
-
     // sign the encrypted file
     const md = forge.md.sha256.create();
     md.update(base64EncryptedFile);
     signature = privateKey.sign(md);
   }
+
+  // message authentication code
+  const hmac = forge.hmac.create();
+  hmac.start("sha256", symetricKey);
+  hmac.update(base64EncryptedFile);
+  const hmacHex = hmac.digest().toHex();
 
   file_info = {
     file_name: file.name,
@@ -73,6 +78,7 @@ async function sendFile(
     // signature: forge.util.encode64(signature).toString(),
     // if signature is empty, the file is not signed
     signature: signature ? forge.util.encode64(signature).toString() : "",
+    mac: forge.util.encode64(hmacHex).toString(),
     user_id: Number(user_id),
     group_id: Number(groupId),
   };

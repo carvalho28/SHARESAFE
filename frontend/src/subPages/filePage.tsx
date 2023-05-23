@@ -180,6 +180,7 @@ function FilePage() {
           privateKeyPem: String(privateKey),
         },
         fileInfo.file_type,
+        fileInfo.mac,
       );
 
       // download file
