@@ -1,11 +1,10 @@
 import Sidebar from "../components/sidebar";
 import { useState, useEffect } from "react";
 import receiveFile from "../encryption/ReceiveFile";
-import downloadFile from "../encryption/DownloadFile";
 import { getCookie } from "../auth/Cookies";
+import forge from "node-forge";
 
 import decryptFile from "../encryption/DecryptFile";
-import fs from "fs";
 
 type File = {
   id: number;
@@ -13,6 +12,7 @@ type File = {
   file_type: string;
   file_size: number;
   algorithm: string;
+  signatureV: string;
   created_at: string;
   user_id: number;
 };
@@ -70,19 +70,47 @@ function FilePage() {
   const [groupData, setGroupData] = useState<any>({});
   const [privateKey, setPrivateKey] = useState<String>();
 
+  const [validSignatures, setValidSignatures] = useState<any>([]);
+
   useEffect(() => {
     const getFiles = async () => {
       try {
         const receiveData = await receiveFile(group_id);
-        // console.log("receiveData", receiveData);
+        console.log("receiveData", receiveData);
         setGroupData(receiveData);
         setdataFile(receiveData.group.files);
+        // verify the signature using the public key inside receivedData.group.files.user.public_key
+        // if the signature is valid, decrypt the file using the private key
       } catch (error) {
         console.log(error);
       }
     };
     getFiles();
   }, []);
+
+  useEffect(() => {
+    if (dataFile.length === 0) {
+      return;
+    }
+    setValidSignatures(
+      groupData.group.files.map((file: any, index: number) => {
+        // console.log("file", file);
+        const publicKey = forge.pki.publicKeyFromPem(file.user.public_key);
+        // console.log("publicKey", publicKey);
+        const signature = forge.util.decode64(file.signature);
+        // console.log("signature", signature);
+        if (!signature) {
+          return false;
+        }
+        const md = forge.md.sha256.create();
+        // console.log("groupData.files[index]", groupData.files[index]);
+        md.update(groupData.files[index]);
+        console.log("md", md);
+        const verified = publicKey.verify(md.digest().bytes(), signature);
+        return verified;
+      }),
+    );
+  }, [dataFile]);
 
   useEffect(() => {
     // console.log("dataFile", dataFile);
@@ -110,7 +138,6 @@ function FilePage() {
       })
         .then((res) => res.json())
         .then((data) => {
-          // console.log("users", data);
           setUser(data);
         })
         .catch((err) => {
@@ -130,8 +157,6 @@ function FilePage() {
     return userWithID.name;
   }
 
-  //const [dFile, setdFile] = useState<any>([]);
-
   const handleDownloadClick = async (
     fileInfo: any,
     encryptedFile: any,
@@ -145,8 +170,6 @@ function FilePage() {
       }
     });
 
-    console.log("encriptedKey", encriptedKey);
-
     try {
       const receiveData = await decryptFile(
         {
@@ -158,20 +181,9 @@ function FilePage() {
         },
         fileInfo.file_type,
       );
-      console.log("receiveData", receiveData);
 
       // download file
-      // const element = document.createElement("a");
-      // console.log("type", fileInfo.file_type);
-      // const file = new Blob([receiveData], { type: fileInfo.file_type });
-      // element.href = URL.createObjectURL(file);
-      // element.download = fileInfo.file_name;
-      // document.body.appendChild(element); // Required for this to work in FireFox
-      // element.click();
-      // element.remove();
-      // download file
       const element = document.createElement("a");
-      console.log("type", fileInfo.file_type);
       const uint8Array = new Uint8Array(receiveData.length);
       for (let i = 0; i < receiveData.length; i++) {
         uint8Array[i] = receiveData.charCodeAt(i);
@@ -232,6 +244,9 @@ function FilePage() {
                 <th scope="col" className="px-6 py-3">
                   Owner
                 </th>
+                <th scope="col" className="px-6 py-3">
+                  Signed
+                </th>
                 <th></th>
               </tr>
             </thead>
@@ -247,6 +262,9 @@ function FilePage() {
                     <td className="px-6 py-4">{file.file_size}</td>
                     <td className="px-6 py-4">{file.file_type}</td>
                     <td className="px-6 py-4">{getUserById(file.user_id)}</td>
+                    <td className="px-6 py-4">
+                      {validSignatures[index] ? "Yes" : "No"}
+                    </td>
                     <td className="px-6 py-4">
                       <button
                         onClick={() =>

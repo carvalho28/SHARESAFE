@@ -4,7 +4,6 @@ const endpoint = "http://localhost:3000/api/";
 
 // Returns all the files of a specific group
 async function receiveFile(group_id: number) {
-
   const body = {
     id: group_id,
   };
@@ -18,8 +17,6 @@ async function receiveFile(group_id: number) {
   })
     .then((res) => res.json())
     .then((data) => {
-      console.log(data);
-      
       if (!data) console.error("--> null data handler here");
       return data;
     })

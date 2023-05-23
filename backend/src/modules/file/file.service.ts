@@ -8,7 +8,11 @@ export async function receiveFile(input: FileReceive) {
   const group = await prisma.group.findUnique({
     where: { id: groupId },
     include: {
-      files: true,
+      files: {
+        include: {
+          user: true,
+        },
+      },
     },
   });
 
@@ -52,6 +56,7 @@ export async function uploadFile(input: FileInput) {
     },
     created_at: new Date(),
     algorithm: input.file_info.algorithm,
+    signature: input.file_info.signature,
     groups: {
       connect: {
         id: input.file_info.group_id,

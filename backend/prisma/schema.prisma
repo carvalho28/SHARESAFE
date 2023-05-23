@@ -29,6 +29,7 @@ model EncryptedFile {
   iv          String
   created_at  DateTime @default(now())
   algorithm   String
+  signature   String   @default("")
   users_group Json[]
 
   user    User    @relation(fields: [user_id], references: [id])

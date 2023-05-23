@@ -8,6 +8,7 @@ type fileInformation = {
   encrypted_file: string;
   iv: string;
   algorithm: string;
+  signature: string;
   user_id: number;
   group_id: number;
 };
@@ -17,11 +18,15 @@ type userInformation = {
   encrypted_key: string;
 };
 
-async function sendFile(file: File, groupId: number) {
+async function sendFile(
+  file: File,
+  groupId: number,
+  digitalSignature: File | undefined,
+) {
   const user_id = getCookie("user_id");
   const fileBuffer = await file.arrayBuffer();
   const fileBytes = new Uint8Array(fileBuffer);
-  console.log("fileBytes", fileBytes);
+  // console.log("fileBytes", fileBytes);
 
   let publicKey: forge.pki.rsa.PublicKey;
   let encryptedSymetricKey: string;
@@ -33,9 +38,7 @@ async function sendFile(file: File, groupId: number) {
   // 32 bytes = 256 bits
   // 64 bytes = 512 bits
   const symetricKey = forge.random.getBytesSync(32);
-  console.log("symetricKey", symetricKey);
   const iv = forge.random.getBytesSync(16);
-  console.log("iv", iv);
 
   // AES - CBC or AES - GCM
   const cipher = forge.cipher.createCipher("AES-CBC", symetricKey);
@@ -43,20 +46,33 @@ async function sendFile(file: File, groupId: number) {
   cipher.update(forge.util.createBuffer(fileBytes));
   cipher.finish();
 
-  // const encryptedFile = cipher.output.getBytes();
-  // const encryptedFile = cipher.output.toHex();
   const encryptedFile = cipher.output.toHex();
+  // convert encrypted file to BASE64
   const base64EncryptedFile = forge.util.encode64(encryptedFile);
+  let signature: string | undefined;
+
+  // get the private key from the file
+  if (digitalSignature) {
+    const privateKeyFileBuffer = await digitalSignature?.arrayBuffer();
+    const privateKeyString = new TextDecoder().decode(privateKeyFileBuffer);
+    const privateKey = forge.pki.privateKeyFromPem(privateKeyString);
+
+    // sign the encrypted file
+    const md = forge.md.sha256.create();
+    md.update(base64EncryptedFile);
+    signature = privateKey.sign(md);
+  }
 
   file_info = {
     file_name: file.name,
     file_type: file.type,
     file_size: file.size,
-    // convert encrypted file to BASE64
-    // encrypted_file: forge.util.encode64(encryptedFile),
     encrypted_file: base64EncryptedFile,
     iv: forge.util.encode64(iv).toString(),
     algorithm: "AES-CBC",
+    // signature: forge.util.encode64(signature).toString(),
+    // if signature is empty, the file is not signed
+    signature: signature ? forge.util.encode64(signature).toString() : "",
     user_id: Number(user_id),
     group_id: Number(groupId),
   };
@@ -97,7 +113,7 @@ async function sendFile(file: File, groupId: number) {
     users_group,
   };
 
-  console.log("envio de ficheiro: ", body);
+  // console.log("envio de ficheiro: ", body);
 
   await fetch("http://localhost:3000/api/files/upload", {
     method: "POST",
