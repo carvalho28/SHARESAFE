@@ -137,11 +137,6 @@ function FilePage() {
     encryptedFile: any,
     index: number,
   ) => {
-    // console.log("--- HANDLE DOWNLOAD ---");
-    // console.log(fileInfo);
-    // console.log(encryptedFile);
-    // console.log("user_id: " + user_id);
-
     let encriptedKey;
 
     fileInfo.users_group.forEach((elem: { id: number; encrypted_key: any }) => {
@@ -166,9 +161,22 @@ function FilePage() {
       console.log("receiveData", receiveData);
 
       // download file
+      // const element = document.createElement("a");
+      // console.log("type", fileInfo.file_type);
+      // const file = new Blob([receiveData], { type: fileInfo.file_type });
+      // element.href = URL.createObjectURL(file);
+      // element.download = fileInfo.file_name;
+      // document.body.appendChild(element); // Required for this to work in FireFox
+      // element.click();
+      // element.remove();
+      // download file
       const element = document.createElement("a");
       console.log("type", fileInfo.file_type);
-      const file = new Blob([receiveData], { type: fileInfo.file_type });
+      const uint8Array = new Uint8Array(receiveData.length);
+      for (let i = 0; i < receiveData.length; i++) {
+        uint8Array[i] = receiveData.charCodeAt(i);
+      }
+      const file = new Blob([uint8Array], { type: fileInfo.file_type });
       element.href = URL.createObjectURL(file);
       element.download = fileInfo.file_name;
       document.body.appendChild(element); // Required for this to work in FireFox

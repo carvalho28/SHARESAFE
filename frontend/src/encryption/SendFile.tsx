@@ -43,19 +43,18 @@ async function sendFile(file: File, groupId: number) {
   cipher.update(forge.util.createBuffer(fileBytes));
   cipher.finish();
 
-  // convert encrypted file to BASE64
-  console.log("cipher.output", cipher.output);
-  const encryptedFile = cipher.output.getBytes();
-  console.log("encryptedFile", encryptedFile);
-
-  // console.log("user id: ", user_id);
-  // console.log("group id: ", groupId);
+  // const encryptedFile = cipher.output.getBytes();
+  // const encryptedFile = cipher.output.toHex();
+  const encryptedFile = cipher.output.toHex();
+  const base64EncryptedFile = forge.util.encode64(encryptedFile);
 
   file_info = {
     file_name: file.name,
     file_type: file.type,
     file_size: file.size,
-    encrypted_file: forge.util.encode64(encryptedFile),
+    // convert encrypted file to BASE64
+    // encrypted_file: forge.util.encode64(encryptedFile),
+    encrypted_file: base64EncryptedFile,
     iv: forge.util.encode64(iv).toString(),
     algorithm: "AES-CBC",
     user_id: Number(user_id),
@@ -78,7 +77,6 @@ async function sendFile(file: File, groupId: number) {
 
       // Encrypt symetric key with user public key
       data.members.forEach((user: { public_key: string; id: number }) => {
-
         publicKey = forge.pki.publicKeyFromPem(user.public_key);
 
         encryptedSymetricKey = publicKey.encrypt(symetricKey);

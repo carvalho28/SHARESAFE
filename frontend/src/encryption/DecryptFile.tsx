@@ -10,7 +10,11 @@ type FileInput = {
 
 // Decrypts the file and downloads it
 async function decryptFile(input: FileInput, type: string) {
-  const decodedFile = forge.util.decode64(input.encrypted_file);
+  // const decodedFile = forge.util.decode64(input.encrypted_file);
+  // const decodedFile = input.encrypted_file;
+  const decodedFile = forge.util.hexToBytes(
+    forge.util.decode64(input.encrypted_file),
+  );
 
   const privateKey = forge.pki.privateKeyFromPem(input.privateKeyPem);
 
@@ -30,8 +34,8 @@ async function decryptFile(input: FileInput, type: string) {
 
   if (!result) throw "Error on file decryption";
 
-  return decipher.output.getBytes();
-
+  // return decipher.output.getBytes();
+  return decipher.output.data;
 
   // ---- decrypt utf8-encoded bytes ----
 
