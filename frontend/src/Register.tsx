@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import { Spinner } from "./components/Spinner";
 import logo from "./images/Logo.png";
 import forge from "node-forge";
 import { Spinner } from "./components/Spinner";
@@ -17,12 +18,12 @@ function Register() {
 
   async function registerUser() {
     if (password !== confirmPassword) {
-      console.log("password not matching");
+      setIsLoading(false);
       setErrorMessage("Passowrds not Matching");
       return;
     }
     if (name === "" || email === "" || password === "") {
-      console.log("empty fields");
+      setIsLoading(false);
       setErrorMessage("Empty Fields");
       return;
     }
@@ -77,36 +78,40 @@ function Register() {
   }
 
   return (
-    <div className="h-screen flex items-center justify-center">
-      <div className="w-1/3 flex flex-col pr-[200px] ">
-        <img alt="Logo" src={logo} />
+    <div className="lg:flex lg:items-center lg:justify-center lg:h-screen">
+      <div className="lg:w-1/3 lg:flex-col lg:pr-[200px] lg:min-w-[600px] flex items-center justify-center">
+        <img className="lg:w-full w-1/3 min-h-[300px] min-w-[400px]" alt="Logo" src={logo} />
       </div>
 
-      <div className="h-[80%] bg-gray-100 w-[4px] rounded-lg" />
+      <div className="lg:visible collapse h-[80%] w-[4px] min-w-[4px] rounded-lg bg-gray-100"/>
 
-      <div className="w-1/3 flex flex-col pl-[200px]">
+      <div className="lg:collapse visible flex items-center justify-center">
+        <hr className="w-[80%] h-[4px] my-[50px] min-w-[80%] rounded bg-gray-100"/>
+      </div>
+
+      <div className="lg:w-1/3 lg:flex-col lg:pl-[200px] lg:min-w-[600px] flex items-center justify-center">
         <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-          <div>
+          <div className="flex items-center justify-center">
             <p className="text-6xl text-blue-900">Register</p>
           </div>
-          <div className="pt-3">
+          <div className="flex items-center justify-center pt-3">
             <p className="text-xs font-bold">
               WELCOME TO SHARESAFE, LET&apos;S GET STARTED
             </p>
           </div>
-          <div className="pt-5">
+          <div className="pt-5 flex items-center justify-center">
             <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-xl"
+              className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-xl"
               id="name"
               type="text"
-              placeholder="Nome"
+              placeholder="Name"
               required
               onChange={(e) => setName(e.target.value)}
             />
           </div>
-          <div className="pt-5">
+          <div className="pt-3 flex items-center justify-center">
             <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-xl"
+              className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-xl"
               id="email"
               type="email"
               placeholder="Email"
@@ -114,9 +119,9 @@ function Register() {
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
-          <div className="pt-5">
+          <div className="pt-3 flex items-center justify-center">
             <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-xl"
+              className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-xl"
               id="password"
               type="password"
               placeholder="Password"
@@ -124,9 +129,9 @@ function Register() {
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          <div className="pt-5 pb-2">
+          <div className="pt-3 pb-2 flex items-center justify-center">
             <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-xl"
+              className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-xl"
               id="confirmPassword"
               type="password"
               placeholder="Confirm password"
@@ -137,7 +142,7 @@ function Register() {
 
           {errorMessage != "" && (
             <div
-              className="flex items-center justify-center my-3 p-2 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-5 dark:text-red-400 dark:border-red-800"
+              className="flex items-center justify-center p-2 mx-[64px] text-l text-red-800 border border-red-300 rounded-lg bg-red-5 dark:text-red-400 dark:border-red-800"
               role="alert"
             >
               <svg
@@ -160,7 +165,13 @@ function Register() {
             </div>
           )}
 
-          <div className="md:w-2/3 pt-1">
+          {isLoading && (
+            <div className="flex items-center justify-center">
+              <Spinner />
+            </div>
+          )}
+
+          <div className="flex items-center justify-center pt-10 pb-1 px-[63px]">
             <button
               className="shadow appearance-none border rounded w-full py-2 bg-blue-900 hover:bg-blue-600 text-white font-bold text-xl"
               id="registerBtn"
@@ -177,6 +188,7 @@ function Register() {
           )}
 
           <div className="pt-1">
+          <div className="flex items-center justify-center">
             <p className="text-xs">
               Already have an account? Click{" "}
               <Link to="/" className="font-bold">
