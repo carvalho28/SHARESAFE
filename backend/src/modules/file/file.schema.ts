@@ -17,6 +17,9 @@ const fileUploadCore = z.object({
     user_id: z.number(),
     algorithm: z.string(),
     signature: z.string(),
+    signature_algorithm: z.string(),
+    mac: z.string(),
+    mac_algorithm: z.string(),
     group_id: z.number(),
   }),
 
