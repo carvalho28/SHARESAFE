@@ -1,39 +1,70 @@
-import { useState } from "react";
 import Sidebar from "../components/sidebar";
+import { useEffect, useState } from "react";
+import { getCookie } from "../auth/Cookies";
 
 type Group = {
+  id: number;
   name: string;
-  files: number[];
-  members: string[];
+  created_at: string;
+  //files: number;
+  //members: number;
 };
 
 function GroupPage() {
-  // variables for group
-  const [group, setGroup] = useState<Group>({
-    name: "",
-    files: [1],
-    members: ["diogo@diogo.com", "fernando.cruz@ubi.pt"],
-  });
+  const [groups, setGroups] = useState<
+    {
+      id: number;
+      name: string;
+      created_at: string;
+    }[]
+  >([]);
 
-  // create a new group with a post request
-  const createGroup = async () => {
-    const response = await fetch("http://localhost:3000/api/groups/new", {
+  // Get user_id to query the db
+  let user_id = getCookie('user_id');
+
+  async function getGroupsUser() {
+    const body = {
+      user_id,
+    };
+
+    await fetch("http://localhost:3000/api/groups/getGroups", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json; charset=UTF-8",
       },
-      body: JSON.stringify({
-        name: group.name,
-        // files: group.files,
-        members: group.members,
-      }),
-    });
-    if (!response.ok) {
-      const errorMessage = await response.text();
-      throw new Error(errorMessage);
-    }
-    const data = await response.json();
-    console.log(data);
+      body: JSON.stringify(body),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        setGroups(data);
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+  }
+
+  // Call getGroupsUser function when component is mounted
+  useEffect(() => {
+    getGroupsUser();
+  }, []);
+
+  // construct url and navigate to the group url
+  const handleGroupClick = (group: Group) => {
+    const encodedGroupId = encodeURIComponent(group.id.toString());
+    const currentPathname = window.location.pathname;
+    const url = `${currentPathname}/group/${encodedGroupId}`;
+    console.log(url);
+    window.location.href = url;
+  };
+
+  // Mouse cursor css
+  const handleMouseOver = () => {
+    document.body.style.cursor = 'pointer';
+  };
+
+  const handleMouseOut = () => {
+    document.body.style.cursor = 'default';
   };
 
   return (
@@ -41,48 +72,52 @@ function GroupPage() {
       <Sidebar />
 
       <div className="p-4 sm:ml-64">
-        <button
-          type="button"
-          className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4
-           focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 
-           mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none
-            dark:focus:ring-blue-800"
-          onClick={createGroup}
-        >
-          New group
-        </button>
+        <section>
+          {/* Grupos */}
+          <h2 className="text-center underline">Groups</h2>
+          <br></br>
+          <table className="w-full text-sm text-center text-gray-500 dark:text-gray-400">
+            {/* CabeÃ§alho */}
+            <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+              <tr>
+                <th scope="col" className="px-6 py-3">
+                  Group
+                </th>
+                {/*<th scope="col" className="px-6 py-3">
+                  Members
+                </th>
+                <th scope="col" className="px-6 py-3">
+                  Files
+                </th>*/}
+                <th>Created At</th>
+              </tr>
+            </thead>
 
-        <p>GRUPO</p>
-        <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">
-          <div className="grid grid-cols-3 gap-4 mb-4">
-            <div className="flex items-center justify-center h-24 rounded bg-gray-50 dark:bg-gray-800">
-              <p className="text-2xl text-gray-400 dark:text-gray-500">+</p>
-            </div>
-            <div className="flex items-center justify-center h-24 rounded bg-gray-50 dark:bg-gray-800">
-              <p className="text-2xl text-gray-400 dark:text-gray-500">+</p>
-            </div>
-            <div className="flex items-center justify-center h-24 rounded bg-gray-50 dark:bg-gray-800">
-              <p className="text-2xl text-gray-400 dark:text-gray-500">+</p>
-            </div>
-          </div>
-          <div className="flex items-center justify-center h-48 mb-4 rounded bg-gray-50 dark:bg-gray-800">
-            <p className="text-2xl text-gray-400 dark:text-gray-500">+</p>
-          </div>
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <div className="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
-              <p className="text-2xl text-gray-400 dark:text-gray-500">+</p>
-            </div>
-            <div className="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
-              <p className="text-2xl text-gray-400 dark:text-gray-500">+</p>
-            </div>
-            <div className="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
-              <p className="text-2xl text-gray-400 dark:text-gray-500">+</p>
-            </div>
-            <div className="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
-              <p className="text-2xl text-gray-400 dark:text-gray-500">+</p>
-            </div>
-          </div>
-        </div>
+            {/* Linhas da base de dados */}
+            <tbody>
+              {groups.map((group) => (
+                <tr
+                  key={group.id}
+                  className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 cursor:pointer"
+                  onClick={() => handleGroupClick(group)}
+                  onMouseOver={handleMouseOver}
+                  onMouseOut={handleMouseOut}
+                >
+                  <th>
+                      {group.name}
+                  </th>
+                {/*<td className="px-6 py-4">
+                  {group.members}
+                </td>
+                <td className="px-6 py-4">
+                  {group.files}
+                </td>*/}
+                  <td className="px-6 py-4">{group.created_at.substring(0,10)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </section>
       </div>
     </div>
   );

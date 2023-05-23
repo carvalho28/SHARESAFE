@@ -17,7 +17,7 @@ export function App() {
       <Route path="/register" element={<Register />} />
       <Route path="/mainmenu" element={<MainMenu />} />
       <Route path="/inbox" element={<InboxPage />} />
-      <Route path="/inbox/group/:id" element={<FilePage />} />
+      <Route path="/group/group/:id" element={<FilePage />} />
       <Route path="/group" element={<GroupPage />} />
       <Route path="/sent" element={<SentPage />} />
       {/* <Route path="/help" element={<HelpPage />} /> */}
