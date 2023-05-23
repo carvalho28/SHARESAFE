@@ -19,7 +19,6 @@ export async function getUsersFromGroupHandler(
 ) {
   try {
     const users = await getUsersFromGroup(request.body);
-    console.log(users);
     return reply.code(200).send(users);
   } catch (error) {
     return reply.code(400).send(error);
@@ -31,7 +30,6 @@ export async function createGroupHandler(
   reply: FastifyReply
 ) {
   const body = request.body;
-  // console.log(body);
 
   try {
     const group = await createGroup(body);

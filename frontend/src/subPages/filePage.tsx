@@ -1,11 +1,9 @@
 import Sidebar from "../components/sidebar";
 import { useState, useEffect } from "react";
 import receiveFile from "../encryption/ReceiveFile";
-import downloadFile from "../encryption/DownloadFile";
 import { getCookie } from "../auth/Cookies";
 
 import decryptFile from "../encryption/DecryptFile";
-import fs from "fs";
 
 type File = {
   id: number;
@@ -160,15 +158,6 @@ function FilePage() {
       );
       console.log("receiveData", receiveData);
 
-      // download file
-      // const element = document.createElement("a");
-      // console.log("type", fileInfo.file_type);
-      // const file = new Blob([receiveData], { type: fileInfo.file_type });
-      // element.href = URL.createObjectURL(file);
-      // element.download = fileInfo.file_name;
-      // document.body.appendChild(element); // Required for this to work in FireFox
-      // element.click();
-      // element.remove();
       // download file
       const element = document.createElement("a");
       console.log("type", fileInfo.file_type);

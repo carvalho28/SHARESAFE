@@ -80,7 +80,6 @@ export async function getGroupsForUser(user_id: number) {
 }
 
 export async function getUsersFromGroup(input: GetUserFromGroupInput) {
-  console.log(input);
   return prisma.group.findUnique({
     where: {
       id: parseInt(input.group_id.toString()),

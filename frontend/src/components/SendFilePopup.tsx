@@ -6,9 +6,16 @@ export default function SendFilePopup(props: {
   setTriggered: Function;
 }) {
   const [file, setFile] = useState<File>();
+  const [digitalSignature, setDigitalSignature] = useState<File | undefined>(
+    undefined,
+  );
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) setFile(e.target.files[0]);
+  };
+
+  const handleDigitalSignatureChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) setDigitalSignature(e.target.files[0]);
   };
 
   return props.triggered ? (
@@ -60,7 +67,7 @@ export default function SendFilePopup(props: {
               </p>
 
               <p className="text-l text-gray-500 dark:text-gray-400">
-                SVG, PNG, JPG or GIF
+                Any file up to 10 MB
               </p>
             </label>
 
@@ -72,12 +79,27 @@ export default function SendFilePopup(props: {
               multiple={true}
             />
 
+            {/* if you want to add a digital signature, upload the private key here */}
+            <label
+              htmlFor="drop-digital-signature"
+              className="flex flex-col items-center justify-center pt-5 pb-6 px-10 dark:hover:bg-gray-600 rounded-lg"
+            >
+              Digital Signature
+            </label>
+            <input
+              id="drop-digital-signature"
+              type="file"
+              className=""
+              onChange={handleDigitalSignatureChange}
+              multiple={true}
+            />
+
             <button
               id="btnSend"
               className="flex items-center justify-center border-2 my-4 px-2 py-1 rounded hover:bg-gray-600"
               onClick={(event) => {
                 event.preventDefault();
-                sendFile(file!, 1).catch((error) => {
+                sendFile(file!, 1, digitalSignature).catch((error) => {
                   console.error("Error sending file:", error);
                 });
               }}
