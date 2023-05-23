@@ -54,7 +54,6 @@ function InboxPage() {
     const encodedGroupId = encodeURIComponent(group.id.toString());
     const currentPathname = window.location.pathname;
     const url = `${currentPathname}/group/${encodedGroupId}`;
-    console.log(url);
     window.location.href = url;
   };
 

@@ -38,9 +38,7 @@ async function sendFile(
   // 32 bytes = 256 bits
   // 64 bytes = 512 bits
   const symetricKey = forge.random.getBytesSync(32);
-  // console.log("symetricKey", symetricKey);
   const iv = forge.random.getBytesSync(16);
-  // console.log("iv", iv);
 
   // AES - CBC or AES - GCM
   const cipher = forge.cipher.createCipher("AES-CBC", symetricKey);
@@ -51,17 +49,19 @@ async function sendFile(
   const encryptedFile = cipher.output.toHex();
   // convert encrypted file to BASE64
   const base64EncryptedFile = forge.util.encode64(encryptedFile);
+  let signature: string | undefined;
 
   // get the private key from the file
-  const privateKeyFileBuffer = await digitalSignature?.arrayBuffer();
-  const privateKeyString = new TextDecoder().decode(privateKeyFileBuffer);
-  const privateKey = forge.pki.privateKeyFromPem(privateKeyString);
+  if (digitalSignature) {
+    const privateKeyFileBuffer = await digitalSignature?.arrayBuffer();
+    const privateKeyString = new TextDecoder().decode(privateKeyFileBuffer);
+    const privateKey = forge.pki.privateKeyFromPem(privateKeyString);
 
-  // sign the file
-  const fileBytesString = new TextDecoder().decode(fileBytes);
-  const md = forge.md.sha256.create();
-  md.update(fileBytesString);
-  const signature = privateKey.sign(md);
+    // sign the encrypted file
+    const md = forge.md.sha256.create();
+    md.update(base64EncryptedFile);
+    signature = privateKey.sign(md);
+  }
 
   file_info = {
     file_name: file.name,
@@ -70,7 +70,9 @@ async function sendFile(
     encrypted_file: base64EncryptedFile,
     iv: forge.util.encode64(iv).toString(),
     algorithm: "AES-CBC",
-    signature: forge.util.encode64(signature).toString(),
+    // signature: forge.util.encode64(signature).toString(),
+    // if signature is empty, the file is not signed
+    signature: signature ? forge.util.encode64(signature).toString() : "",
     user_id: Number(user_id),
     group_id: Number(groupId),
   };

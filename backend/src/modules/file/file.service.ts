@@ -8,7 +8,11 @@ export async function receiveFile(input: FileReceive) {
   const group = await prisma.group.findUnique({
     where: { id: groupId },
     include: {
-      files: true,
+      files: {
+        include: {
+          user: true,
+        },
+      },
     },
   });
 
