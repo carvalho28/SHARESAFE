@@ -3,7 +3,6 @@ import { useState } from "react";
 import { Spinner } from "./components/Spinner";
 import logo from "./images/Logo.png";
 import forge from "node-forge";
-import { Spinner } from "./components/Spinner";
 
 function Register() {
   // const [publicKey, setPublicKey] = useState("");
@@ -80,13 +79,17 @@ function Register() {
   return (
     <div className="lg:flex lg:items-center lg:justify-center lg:h-screen">
       <div className="lg:w-1/3 lg:flex-col lg:pr-[200px] lg:min-w-[600px] flex items-center justify-center">
-        <img className="lg:w-full w-1/3 min-h-[300px] min-w-[400px]" alt="Logo" src={logo} />
+        <img
+          className="lg:w-full w-1/3 min-h-[300px] min-w-[400px]"
+          alt="Logo"
+          src={logo}
+        />
       </div>
 
-      <div className="lg:visible collapse h-[80%] w-[4px] min-w-[4px] rounded-lg bg-gray-100"/>
+      <div className="lg:visible collapse h-[80%] w-[4px] min-w-[4px] rounded-lg bg-gray-100" />
 
       <div className="lg:collapse visible flex items-center justify-center">
-        <hr className="w-[80%] h-[4px] my-[50px] min-w-[80%] rounded bg-gray-100"/>
+        <hr className="w-[80%] h-[4px] my-[50px] min-w-[80%] rounded bg-gray-100" />
       </div>
 
       <div className="lg:w-1/3 lg:flex-col lg:pl-[200px] lg:min-w-[600px] flex items-center justify-center">
@@ -188,13 +191,14 @@ function Register() {
           )}
 
           <div className="pt-1">
-          <div className="flex items-center justify-center">
-            <p className="text-xs">
-              Already have an account? Click{" "}
-              <Link to="/" className="font-bold">
-                here.
-              </Link>
-            </p>
+            <div className="flex items-center justify-center">
+              <p className="text-xs">
+                Already have an account? Click{" "}
+                <Link to="/" className="font-bold">
+                  here.
+                </Link>
+              </p>
+            </div>
           </div>
         </form>
       </div>
