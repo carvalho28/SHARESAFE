@@ -19,11 +19,11 @@ function FilePage() {
   // Get group id from url
   const currentPathname = window.location.pathname;
   const splitString = currentPathname.split("/");
-  let id = splitString[splitString.length - 1];
-  let group_id = +id;
+  const id = splitString[splitString.length - 1];
+  const group_id = +id;
 
   // Get user_id to query the db
-  let user_id = getCookie('user_id');
+  const user_id = getCookie('user_id');
 
   const [groups, setGroups] = useState<
     {
@@ -61,8 +61,8 @@ function FilePage() {
   }, []);
 
   // Group Name
-  let selectedGroup = groups.find((group) => group.id === group_id);
-  let heading = selectedGroup ? selectedGroup.name : "Not Found";
+  const selectedGroup = groups.find((group) => group.id === group_id);
+  const heading = selectedGroup ? selectedGroup.name : "Not Found";
 
   const [dataFile, setdataFile] = useState<any>([]);
 
