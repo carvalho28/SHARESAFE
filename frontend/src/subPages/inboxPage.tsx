@@ -6,8 +6,8 @@ import receiveFile from "../encryption/ReceiveFile";
 // this pages only contains the files for the group "Global", common to every user
 function InboxPage() {
   
-  let heading = "Global"
-  let group_id = 1;
+  const heading = "Global"
+  const group_id = 1;
 
   const [dataFile, setdataFile] = useState<any>([]);
 

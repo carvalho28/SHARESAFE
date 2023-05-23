@@ -20,7 +20,7 @@ function GroupPage() {
   >([]);
 
   // Get user_id to query the db
-  let user_id = getCookie('user_id');
+  const user_id = getCookie('user_id');
 
   async function getGroupsUser() {
     const body = {
@@ -65,6 +65,47 @@ function GroupPage() {
 
   const handleMouseOut = () => {
     document.body.style.cursor = 'default';
+  };
+
+  const [isCreateFormVisible, setIsCreateFormVisible] = useState(false);
+
+  const handleToggleCreateForm = () => {
+    setIsCreateFormVisible((prevValue) => !prevValue);
+  };
+
+  const [isEditFormVisible, setIsEditFormVisible] = useState(false);
+
+  const handleToogleEditForm = () => {
+    setIsEditFormVisible((prevValue) => !prevValue);
+  }
+
+  const [email, setEmail] = useState<string>('');
+  const [members, setMembers] = useState<string[]>([]);
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+  };
+
+  const handleAddMember = () => {
+    if (email.trim() !== '') {
+      if (!members.includes(email)) {
+        setMembers((prevMembers) => [...prevMembers, email]);
+      }
+      setEmail('');
+    }
+  };
+
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const handleToggleDropdown = () => {
+    setIsDropdownOpen((prevValue) => !prevValue);
+  };
+
+  const [name, setName] = useState("");
+
+  const handleSelectMember = (name: string) => {
+    setName(name);
+    setIsDropdownOpen(false);
   };
 
   return (
@@ -117,6 +158,105 @@ function GroupPage() {
               ))}
             </tbody>
           </table>
+        </section>
+
+        <section className="w-full flex justify-center relative isolate overflow-hidden">
+
+          <div className="w-1/2 bg-orange-100 text-center py-5">
+
+            <button
+              className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+              onClick={handleToggleCreateForm}
+            >
+              Create Group
+            </button>
+            
+          
+            {isCreateFormVisible && (
+              <div className="py-10">
+                <div className="py-3 px-20">
+                  <input
+                    className="shadow appearance-none w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-xl"
+                    placeholder="Enter group name"
+                  />
+                </div>
+                
+                <div className="py-3 px-20 space-y-3">
+                  <br></br>
+                  <h1 className="text-left">Add some members!</h1>
+                  <input
+                    className="shadow appearance-none w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-xl"
+                    id="email"
+                    type="email"
+                    placeholder="Enter member email"
+                    value={email}
+                    onChange={handleEmailChange}
+                  />
+                  <button
+                    className="flex justify-start text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+                    onClick={handleAddMember}
+                  >
+                    Add
+                  </button>
+                </div>  
+
+                <div className="py-3 px-20">
+
+                  <table className="w-full text-sm text-center text-gray-100">
+                    <thead className="text-xs text-gray-700 uppercase bg-gray-200">
+                      <tr>
+                        <th scope="col" className="px-6 py-3">
+                          Members
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {members.map((member, index) => (
+                        <tr key={index} className="bg-gray-100 cursor:pointer">
+                          <td>{member}</td>
+                        </tr>
+                        
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                
+              </div>
+            )}
+
+          </div>
+          <div className="w-1/2 bg-red-100 text-center py-5">
+            <button
+              className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+              onClick={handleToogleEditForm}
+            >
+              Edit group
+            </button>
+
+            {isEditFormVisible && (
+              <div className="py-10">
+                <div>
+                  <button onClick={handleToggleDropdown}>
+                    {isDropdownOpen ? 'Close Dropdown' : 'Open Dropdown'}
+                  </button>
+                  {isDropdownOpen && (
+                    <ul>
+                      {groups.map((group, index) => (
+                        <li key={index} onClick={() => handleSelectMember(group.name)}>
+                          {group.name}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+
+              </div>
+            )}
+
+          </div>
+
+          
+  
         </section>
       </div>
     </div>
