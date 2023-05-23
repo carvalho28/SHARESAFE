@@ -63,8 +63,18 @@ function FilePage() {
   }, []);
 
   // Group Name
-  let selectedGroup = groups.find((group) => group.id === group_id);
-  let heading = selectedGroup ? selectedGroup.name : "Not Found";
+  const [selectedGroup, setSelectedGroup] = useState<any>(null);
+  useEffect(() => {
+    if (groups.length > 0) {
+      setSelectedGroup(groups.find((group) => group.id === group_id));
+    }
+  }, [groups]);
+  const [heading, setHeading] = useState<string>("Not Found");
+  useEffect(() => {
+    if (selectedGroup) {
+      setHeading(selectedGroup.name);
+    }
+  }, [selectedGroup]);
 
   const [dataFile, setdataFile] = useState<any>([]);
   const [groupData, setGroupData] = useState<any>({});

@@ -9,7 +9,9 @@ type fileInformation = {
   iv: string;
   algorithm: string;
   signature: string;
+  signature_algorithm: string;
   mac: string;
+  mac_algorithm: string;
   user_id: number;
   group_id: number;
 };
@@ -75,10 +77,11 @@ async function sendFile(
     encrypted_file: base64EncryptedFile,
     iv: forge.util.encode64(iv).toString(),
     algorithm: "AES-CBC",
-    // signature: forge.util.encode64(signature).toString(),
     // if signature is empty, the file is not signed
     signature: signature ? forge.util.encode64(signature).toString() : "",
+    signature_algorithm: "SHA256",
     mac: forge.util.encode64(hmacHex).toString(),
+    mac_algorithm: "SHA256",
     user_id: Number(user_id),
     group_id: Number(groupId),
   };
