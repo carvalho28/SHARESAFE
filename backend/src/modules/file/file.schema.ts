@@ -16,6 +16,7 @@ const fileUploadCore = z.object({
     iv: z.any(),
     user_id: z.number(),
     algorithm: z.string(),
+    group_id: z.number(),
   }),
 
   // users_group as an array of objects

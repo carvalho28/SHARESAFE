@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Spinner } from "./components/Spinner";
 import logo from "./images/Logo.png";
 import forge from "node-forge";
+import { Spinner } from "./components/Spinner";
 
 function Register() {
   // const [publicKey, setPublicKey] = useState("");
@@ -51,6 +52,18 @@ function Register() {
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
+        console.log("private key: ", privateKey);
+        const element = document.createElement("a");
+        const file = new Blob(["PRIVATE KEY:\n" + privateKey], {
+          type: "text/plain",
+        });
+        element.href = URL.createObjectURL(file);
+        element.download = "privateKey.pem";
+        document.body.appendChild(element);
+        element.click();
+        element.remove();
+
+        setIsLoading(false);
       })
       .catch((err) => {
         console.log(err.message);
@@ -61,15 +74,6 @@ function Register() {
     const keypair = forge.pki.rsa.generateKeyPair({ bits: 2048 });
     const publicKey = forge.pki.publicKeyToPem(keypair.publicKey);
     const privateKey = forge.pki.privateKeyToPem(keypair.privateKey);
-    const element = document.createElement("a");
-    const file = new Blob(["PRIVATE KEY:\n" + privateKey], {
-      type: "text/plain",
-    });
-    element.href = URL.createObjectURL(file);
-    element.download = "privateKey.pem";
-    document.body.appendChild(element);
-    element.click();
-    element.remove();
     return { publicKey, privateKey };
   }
 
@@ -177,6 +181,13 @@ function Register() {
               Register
             </button>
           </div>
+          {isLoading && (
+            <div className="pt-5">
+              <Spinner />
+            </div>
+          )}
+
+          <div className="pt-1">
           <div className="flex items-center justify-center">
             <p className="text-xs">
               Already have an account? Click{" "}

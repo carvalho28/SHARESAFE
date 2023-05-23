@@ -1,4 +1,5 @@
 import forge from "node-forge";
+import { getCookie } from "../auth/Cookies";
 
 type fileInformation = {
   file_name: string;
@@ -8,6 +9,7 @@ type fileInformation = {
   iv: string;
   algorithm: string;
   user_id: number;
+  group_id: number;
 };
 
 type userInformation = {
@@ -15,9 +17,11 @@ type userInformation = {
   encrypted_key: string;
 };
 
-async function sendFile(file: File) {
+async function sendFile(file: File, groupId: number) {
+  const user_id = getCookie("user_id");
   const fileBuffer = await file.arrayBuffer();
   const fileBytes = new Uint8Array(fileBuffer);
+  console.log("fileBytes", fileBytes);
 
   let publicKey: forge.pki.rsa.PublicKey;
   let encryptedSymetricKey: string;
@@ -25,8 +29,13 @@ async function sendFile(file: File) {
   let file_info: fileInformation;
   let users_group: userInformation[] = [];
 
-  const symetricKey = forge.random.getBytesSync(16);
+  // 16 bytes = 128 bits
+  // 32 bytes = 256 bits
+  // 64 bytes = 512 bits
+  const symetricKey = forge.random.getBytesSync(32);
+  console.log("symetricKey", symetricKey);
   const iv = forge.random.getBytesSync(16);
+  console.log("iv", iv);
 
   // AES - CBC or AES - GCM
   const cipher = forge.cipher.createCipher("AES-CBC", symetricKey);
@@ -34,41 +43,53 @@ async function sendFile(file: File) {
   cipher.update(forge.util.createBuffer(fileBytes));
   cipher.finish();
 
-  // get the encrypted bytes which is the file encrypted with the symetric key
-  const encryptedFile = cipher.output.getBytes();
+  // const encryptedFile = cipher.output.getBytes();
+  // const encryptedFile = cipher.output.toHex();
+  const encryptedFile = cipher.output.toHex();
+  const base64EncryptedFile = forge.util.encode64(encryptedFile);
 
   file_info = {
     file_name: file.name,
     file_type: file.type,
     file_size: file.size,
-    encrypted_file: encryptedFile,
-    iv: iv,
+    // convert encrypted file to BASE64
+    // encrypted_file: forge.util.encode64(encryptedFile),
+    encrypted_file: base64EncryptedFile,
+    iv: forge.util.encode64(iv).toString(),
     algorithm: "AES-CBC",
-    user_id: 1,
+    user_id: Number(user_id),
+    group_id: Number(groupId),
   };
 
-  await fetch("http://localhost:3000/api/users/", {
-    method: "GET",
+  const bodyGetUsers = {
+    group_id: 1,
+  };
+  await fetch("http://localhost:3000/api/groups/getUsers", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json; charset=UTF-8",
+    },
+    body: JSON.stringify(bodyGetUsers),
   })
     .then((res) => res.json())
     .then((data) => {
-      console.log(data);
+      console.log("recebido", data);
 
       // Encrypt symetric key with user public key
-      data.forEach((user: { public_key: string; id: number }) => {
+      data.members.forEach((user: { public_key: string; id: number }) => {
         publicKey = forge.pki.publicKeyFromPem(user.public_key);
 
         encryptedSymetricKey = publicKey.encrypt(symetricKey);
 
-        // users_group.push(encryptedSymetricKey);
         users_group.push({
           id: user.id,
-          encrypted_key: encryptedSymetricKey,
+          encrypted_key: forge.util.encode64(encryptedSymetricKey),
         });
       });
     })
     .catch((err: any) => {
-      console.log("Error: ", err.message);
+      console.log("Error: ", err);
+      return err;
     });
 
   const body = {
@@ -76,7 +97,7 @@ async function sendFile(file: File) {
     users_group,
   };
 
-  console.log(body);
+  console.log("envio de ficheiro: ", body);
 
   await fetch("http://localhost:3000/api/files/upload", {
     method: "POST",

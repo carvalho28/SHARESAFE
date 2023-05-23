@@ -18,8 +18,10 @@ async function receiveFile(group_id: number) {
   })
     .then((res) => res.json())
     .then((data) => {
+      console.log(data);
+      
       if (!data) console.error("--> null data handler here");
-      return data.group.files;
+      return data;
     })
     .catch((err) => {
       console.error(err.message);

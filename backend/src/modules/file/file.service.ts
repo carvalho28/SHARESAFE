@@ -12,14 +12,28 @@ export async function receiveFile(input: FileReceive) {
     },
   });
 
-  const files =  group?.files.map((file) => {
-    return fs.readFileSync(`./files/${file.file_name}`);
-  })
+  const filePromises = (group?.files || []).map((file) => {
+    return new Promise((resolve, reject) => {
+      fs.readFile(
+        `./files/${file.file_name}`,
+        { encoding: "utf8" },
+        (err, data) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(data);
+          }
+        }
+      );
+    });
+  });
+
+  const files = await Promise.all(filePromises);
 
   const result = {
     group,
-    files
-  }
+    files,
+  };
 
   return result;
 }
@@ -29,7 +43,8 @@ export async function uploadFile(input: FileInput) {
     file_name: input.file_info.file_name,
     file_type: input.file_info.file_type,
     file_size: input.file_info.file_size,
-    iv: Buffer.from(input.file_info.iv),
+    iv: input.file_info.iv,
+    // User that uploaded the file
     user: {
       connect: {
         id: input.file_info.user_id,
@@ -37,8 +52,14 @@ export async function uploadFile(input: FileInput) {
     },
     created_at: new Date(),
     algorithm: input.file_info.algorithm,
+    groups: {
+      connect: {
+        id: input.file_info.group_id,
+      },
+    },
   };
 
+  // the file encrypted_key for every user in the group
   const usersGroup = input.users_group.map((user) => {
     return {
       id: user.id,
@@ -51,14 +72,11 @@ export async function uploadFile(input: FileInput) {
     users_group: usersGroup,
   };
 
-  // save the encrypted file to the /files folder
-  fs.writeFile(
+  fs.writeFileSync(
     `./files/${input.file_info.file_name}`,
     input.file_info.encrypted_file,
-    (err) => {
-      if (err) {
-        console.log(err);
-      }
+    {
+      encoding: "utf8",
     }
   );
 
