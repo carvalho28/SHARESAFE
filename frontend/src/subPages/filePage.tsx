@@ -113,7 +113,6 @@ function FilePage() {
     const getFiles = async () => {
       try {
         const receiveData = await receiveFile(group_id);
-        console.log("receiveData", receiveData);
         setGroupData(receiveData);
         setdataFile(receiveData.group.files);
         setAlgoSignature(
@@ -151,9 +150,7 @@ function FilePage() {
         // const md = forge.md.sha256.create();
         // get the md algorithm from the file
         const md = useMDForAlgorithm(algoSignature[index]);
-        // console.log("groupData.files[index]", groupData.files[index]);
         md.update(groupData.files[index]);
-        console.log("md", md);
         const verified = publicKey.verify(md.digest().bytes(), signature);
         return verified;
       }),
