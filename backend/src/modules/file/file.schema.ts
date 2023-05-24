@@ -16,13 +16,20 @@ const fileUploadCore = z.object({
     iv: z.any(),
     user_id: z.number(),
     algorithm: z.string(),
+    signature: z.string(),
+    signature_algorithm: z.string(),
+    mac: z.string(),
+    mac_algorithm: z.string(),
+    group_id: z.number(),
   }),
 
   // users_group as an array of objects
-  users_group: z.array(z.object({
-    id: z.number(),
-    encrypted_key: z.any(),
-  })),
+  users_group: z.array(
+    z.object({
+      id: z.number(),
+      encrypted_key: z.any(),
+    })
+  ),
 });
 
 const FileReceiveCore = z.object({
@@ -34,5 +41,5 @@ export type FileReceive = z.infer<typeof FileReceiveCore>;
 
 export const { schemas: fileSchemas, $ref } = buildJsonSchemas({
   fileUploadCore,
-  FileReceiveCore
+  FileReceiveCore,
 });

@@ -51,6 +51,18 @@ function Register() {
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
+        console.log("private key: ", privateKey);
+        const element = document.createElement("a");
+        const file = new Blob(["PRIVATE KEY:\n" + privateKey], {
+          type: "text/plain",
+        });
+        element.href = URL.createObjectURL(file);
+        element.download = "privateKey.pem";
+        document.body.appendChild(element);
+        element.click();
+        element.remove();
+
+        setIsLoading(false);
       })
       .catch((err) => {
         console.log(err.message);
@@ -61,22 +73,17 @@ function Register() {
     const keypair = forge.pki.rsa.generateKeyPair({ bits: 2048 });
     const publicKey = forge.pki.publicKeyToPem(keypair.publicKey);
     const privateKey = forge.pki.privateKeyToPem(keypair.privateKey);
-    const element = document.createElement("a");
-    const file = new Blob(["PRIVATE KEY:\n" + privateKey], {
-      type: "text/plain",
-    });
-    element.href = URL.createObjectURL(file);
-    element.download = "privateKey.pem";
-    document.body.appendChild(element);
-    element.click();
-    element.remove();
     return { publicKey, privateKey };
   }
 
   return (
     <div className="lg:flex lg:items-center lg:justify-center lg:h-screen bg-[#ffffff] dark:bg-[#1a1a1a]">
       <div className="lg:w-1/3 lg:flex-col lg:pr-[200px] lg:min-w-[600px] flex items-center justify-center">
-        <img className="lg:w-full w-1/3 min-h-[300px] min-w-[400px]" alt="Logo" src={logo} />
+        <img
+          className="lg:w-full w-1/3 min-h-[300px] min-w-[400px]"
+          alt="Logo"
+          src={logo}
+        />
       </div>
 
       <div className="lg:visible collapse h-[80%] w-[4px] min-w-[4px] rounded-lg bg-gray-100 dark:bg-[#9c9c9c]"/>

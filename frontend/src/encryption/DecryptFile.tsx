@@ -1,54 +1,59 @@
 import forge from "node-forge";
-var fs = require('fs');
 
 type FileInput = {
-    fileName: string,
-    algorithm: forge.cipher.Algorithm,
-    iv: string, 
-    encryptedKey: string, 
-    encrypted_file: Buffer
-    privateKeyPem: string
-}
+  algorithm: forge.cipher.Algorithm;
+  mac_algorithm: forge.md.Algorithm;
+  iv: string;
+  encryptedKey: string;
+  encrypted_file: any;
+  privateKeyPem: string;
+};
 
 // Decrypts the file and downloads it
-async function decryptFile(input: FileInput) {
-    const fileBytes = new Uint8Array(input.encrypted_file);    
+async function decryptFile(
+  input: FileInput,
+  type: string,
+  receivedMac: string,
+) {
+  const decodedFile = forge.util.hexToBytes(
+    forge.util.decode64(input.encrypted_file),
+  );
 
-    const privateKey = forge.pki.privateKeyFromPem( input.privateKeyPem );
-    
-    // Decrypt simetricKey
-    const symetricKey = privateKey.decrypt( input.encryptedKey );
+  const privateKey = forge.pki.privateKeyFromPem(input.privateKeyPem);
 
-    // Decrypt file
-    var decipher = forge.cipher.createDecipher( input.algorithm, symetricKey);
-    decipher.start({iv: input.iv});
-    decipher.update(forge.util.createBuffer(fileBytes));
-    var result = decipher.finish();
+  // Decrypt simetricKey
+  const symetricKey = privateKey.decrypt(
+    forge.util.decode64(input.encryptedKey),
+  );
 
-    if (!result) throw "Error on file decryption"
+  // verify the hmac
+  const hmac = forge.hmac.create();
+  hmac.start(input.mac_algorithm, symetricKey);
+  hmac.update(input.encrypted_file);
+  const calculatedMac = hmac.digest().toHex();
+  if (calculatedMac !== forge.util.decode64(receivedMac))
+    throw "Message authentication code is not valid";
 
-    // console.log(decipher.output.toHex());
+  // Decrypt file
+  const decipher = forge.cipher.createDecipher(input.algorithm, symetricKey);
+  decipher.start({
+    iv: forge.util.decode64(input.iv),
+  });
+  // given that i saved the file as .getBytes() i need to convert it back to a buffer
+  decipher.update(forge.util.createBuffer(decodedFile));
+  const result = decipher.finish();
 
+  if (!result) throw "Error on file decryption";
 
-    // Create blob link to download
-    const url = window.URL.createObjectURL(
-        new Blob([ decipher.output.getBytes() ]),
-    );
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute(
-        'download',
-        input.fileName,
-    );
+  // return decipher.output.getBytes();
+  return decipher.output.data;
 
-    // Append to html link element page
-    document.body.appendChild(link);
+  // ---- decrypt utf8-encoded bytes ----
 
-    // Start download
-    link.click();
+  // const decryptedData = decipher.output.getBytes();
+  // const utf8String = forge.util.decodeUtf8(decryptedData);
 
-    // Clean up and remove the link
-    link.parentNode?.removeChild(link);
+  // return utf8String;
 }
 
 export default decryptFile;

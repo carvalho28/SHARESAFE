@@ -16,6 +16,10 @@ describe("App", () => {
         {App()}
       </MemoryRouter>,
     );
-    expect(screen.getByText("Not Found")).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "Looks like you've found the doorway to the great nothing",
+      ),
+    ).toBeInTheDocument();
   });
 });

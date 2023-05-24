@@ -20,12 +20,20 @@ const groupAddMembers = z.object({
   members: z.array(z.any()),
 });
 
+const GetUserFromGroupSchema = z.object({
+  group_id: z.number({
+    required_error: "Group Id is required",
+  }),
+});
+
 export type GroupInput = z.infer<typeof groupCore>;
 export type GroupAddFilesInput = z.infer<typeof groupAddFiles>;
 export type GroupAddMembersInput = z.infer<typeof groupAddMembers>;
+export type GetUserFromGroupInput = z.infer<typeof GetUserFromGroupSchema>;
 
 export const { schemas: groupSchemas, $ref } = buildJsonSchemas({
   groupCore,
   groupAddFiles,
   groupAddMembers,
+  GetUserFromGroupSchema,
 });
