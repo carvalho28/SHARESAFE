@@ -20,7 +20,7 @@ function GroupPage() {
   >([]);
 
   // Get user_id to query the db
-  const user_id = getCookie('user_id');
+  const user_id = +getCookie('user_id');
 
   async function getGroupsUser() {
     const body = {
@@ -133,6 +133,12 @@ function GroupPage() {
   const [showErrorMessage, setShowErrorMessage] = useState(false);
 
 
+  function getEmailById(id : number){
+    console.log("Owner", id);
+    const userWithID : any = user.find((user: any) => user.id === id);
+    return userWithID.email;
+  }
+
   const handleAddMember = () => {
     if (email.trim() !== '') {
       setShowErrorMessage(false);
@@ -178,6 +184,12 @@ function GroupPage() {
       setShowErrorMessage(true);
       setErrorMessage("Missing members!");
       return;
+    }
+
+    const emailOwner = getEmailById(user_id);
+
+    if (!members.includes(emailOwner)) {
+      setMembers((prevMembers) => [...prevMembers, emailOwner]);
     }
 
     const body = {

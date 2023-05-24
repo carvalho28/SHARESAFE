@@ -116,7 +116,7 @@ export default function Sidebar() {
                   <line x1="12" y1="17" x2="12.01" y2="17" />
                 </svg>
                 <span className="flex-1 ml-3 whitespace-nowrap">Help</span>
-              </a>
+              </Link>
             </li>
             <li>
               <span
