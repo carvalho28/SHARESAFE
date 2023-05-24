@@ -1,107 +1,374 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import sendFile from "../encryption/SendFile";
+import { FaFileAlt, FaKey } from "react-icons/fa";
+import Dropdown from "./Dropdown";
+import forge from "node-forge";
+
+type filePreview = {
+  name: string;
+  type: string;
+  arrayBuffer: ArrayBuffer | unknown;
+};
+
+const algorithmEncOptions = [
+  { value: "AES-CBC", label: "AES-CBC" },
+  { value: "AES-ECB", label: "AES-ECB" },
+  { value: "AES-CFB", label: "AES-CFB" },
+  { value: "AES-OFB", label: "AES-OFB" },
+  { value: "AES-CTR", label: "AES-CTR" },
+  { value: "AES-GCM", label: "AES-GCM" },
+  { value: "3DES-ECB", label: "3DES-ECB" },
+  { value: "3DES-CBC", label: "3DES-CBC" },
+  { value: "DES-ECB", label: "DES-ECB" },
+  { value: "DES-CBC", label: "DES-CBC" },
+];
+
+const algorithmMDOptions = [
+  { value: "SHA1", label: "SHA1" },
+  { value: "SHA256", label: "SHA256" },
+  { value: "SHA384", label: "SHA384" },
+  { value: "SHA512", label: "SHA512" },
+  { value: "MD5", label: "MD5" },
+];
 
 export default function SendFilePopup(props: {
   triggered: boolean;
   setTriggered: Function;
 }) {
   const [file, setFile] = useState<File>();
+  const [filePreview, setFilePreview] = useState<filePreview | undefined>();
   const [digitalSignature, setDigitalSignature] = useState<File | undefined>(
     undefined,
   );
+  const [digitalSignaturePreview, setDigitalSignaturePreview] = useState<
+    filePreview | undefined
+  >();
+
+  const [symmetricKey, setSymmetricKey] = useState<string>("");
+  const [ownKey, setOwnKey] = useState<boolean>(false);
+
+  const [algorithm_sign, setAlgorithm_sign] = useState<string>(
+    algorithmMDOptions[0].value,
+  );
+  const [algorithm_encrypt, setAlgorithm_encrypt] =
+    useState<forge.cipher.Algorithm>("AES-CBC");
+  const [algorithm_hmac, setAlgorithm_hmac] =
+    useState<forge.md.Algorithm>("sha256");
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) setFile(e.target.files[0]);
+    if (!e.target.files) return;
+    console.log(e.target.files);
+    const file = e.target.files[0];
+    setFile(file);
+    // set file preview
+    const reader = new FileReader();
+
+    reader.addEventListener("load", function () {
+      // setFilePreview(reader.result);
+      setFilePreview({
+        name: file.name,
+        type: file.type,
+        arrayBuffer: reader.result as ArrayBuffer,
+      });
+    });
+
+    reader.readAsDataURL(file);
+
+    e.target.value = "";
+  };
+
+  const handleAlgorithmChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.name === "algorithm-Sign") {
+      setAlgorithm_sign(e.target.value);
+    }
+    if (e.target.name === "algorithm-Encrypt") {
+      setAlgorithm_encrypt(e.target.value as forge.cipher.Algorithm);
+    }
+    if (e.target.name === "algorithm-HMAC") {
+      setAlgorithm_hmac(e.target.value as forge.md.Algorithm);
+    }
   };
 
   const handleDigitalSignatureChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) setDigitalSignature(e.target.files[0]);
+    if (!e.target.files) return;
+    const file = e.target.files[0];
+    setDigitalSignature(file);
+    // set file preview
+    const reader = new FileReader();
+
+    reader.addEventListener("load", function () {
+      // setFilePreview(reader.result);
+      setDigitalSignaturePreview({
+        name: file.name,
+        type: file.type,
+        arrayBuffer: reader.result as ArrayBuffer,
+      });
+    });
+
+    reader.readAsDataURL(file);
+
+    e.target.value = "";
   };
 
   return props.triggered ? (
-    <div className="fixed inset-0 p-4 sm:ml-64 bg-black bg-opacity-5 backdrop-blur-sm flex justify-center items-center">
-      {/* <button onClick={() => sendFile(file, 1)}>teste</button> */}
-      <div className="h-creen flex items-center justify-center">
-        <form className="flex items-center justify-center">
-          <div className="flex flex-col items-center justify-center w-full h-full border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:bg-gray-700  dark:border-gray-600 ">
-            <button
-              onClick={() => props.setTriggered(false)}
-              className="text-white place-self-end"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="25 "
-                height="25"
-                fill="currentColor"
-                className="bi bi-x-circle"
-                viewBox="0 0 16 16"
+    <div
+      className="fixed inset-0 p-4 sm:ml-64 bg-black bg-opacity-5 backdrop-blur-sm 
+    flex justify-center items-center"
+    >
+      <form className="flex items-center justify-center w-8/12">
+        <div
+          className="px-10 pt-4 flex flex-col items-center justify-center w-full h-full border-2
+         border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:bg-gray-700
+         dark:border-gray-600"
+        >
+          <div className="flex flex-row w-full space-x-8">
+            <div className="flex w-1/2 flex-col">
+              <h3
+                className="text-lg font-medium text-gray-900 dark:text-gray-100 text-center 
+                        flex flex-col items-center flex-center justify-center mb-4"
               >
-                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
-              </svg>
-            </button>
+                Upload File
+              </h3>
+              <label
+                htmlFor="dropzone-file"
+                className="flex flex-col items-center justify-center w-full h-44 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+              >
+                {filePreview ? (
+                  <>
+                    {filePreview.type.includes("image") ? (
+                      <div className="flex flex-col items-center justify-center w-42 h-42">
+                        <img
+                          src={filePreview.arrayBuffer as string}
+                          alt="file preview"
+                          className="object-fit w-32 h-32 p-4"
+                        />
+                        <p className="text-lg text-gray-500 dark:text-gray-400">
+                          <span className="font-semibold">
+                            {filePreview.name}
+                          </span>
+                        </p>
+                      </div>
+                    ) : (
+                      // show file icon with file name
+                      <div className="flex flex-col items-center justify-center w-full h-44">
+                        {/* file icon from react-icons */}
+                        <div className="text-6xl text-gray-400">
+                          <FaFileAlt />
+                        </div>
+                        <p className="mb-2 text-lg text-gray-500 dark:text-gray-400 mt-4">
+                          <span className="font-semibold">
+                            {filePreview.name}
+                          </span>
+                        </p>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                      <svg
+                        aria-hidden="true"
+                        className="w-10 h-10 mb-3 text-gray-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                        ></path>
+                      </svg>
+                      <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                        <span className="font-semibold">Click to upload</span>{" "}
+                        or drag and drop
+                      </p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        SVG, PNG, JPG or GIF (MAX. 800x400px)
+                      </p>
+                    </div>
+                    <input
+                      id="dropzone-file"
+                      type="file"
+                      className="hidden"
+                      onChange={handleFileChange}
+                    />
+                  </>
+                )}
+              </label>
+            </div>
+            <div className="flex w-1/2 justify-between flex-col">
+              <h3
+                className="text-lg font-medium text-gray-900 dark:text-gray-100 text-center
+                        flex flex-col items-center flex-center justify-center mb-4"
+              >
+                Digital Signature
+              </h3>
+              <div className="flex items-center justify-center w-full">
+                <label
+                  htmlFor="dropzone-file-digital-signature"
+                  className="flex flex-col items-center justify-center w-full h-44 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+                >
+                  {digitalSignaturePreview ? (
+                    <>
+                      {digitalSignaturePreview.type.includes("image") ? (
+                        <>
+                          <img
+                            src={digitalSignaturePreview.arrayBuffer as string}
+                            alt="file preview"
+                            className="w-full h-full object-contain p-10"
+                          />
+                          <p className="mb-2 text-lg text-gray-500 dark:text-gray-400 mt-4">
+                            <span className="font-semibold">
+                              {digitalSignaturePreview.name}
+                            </span>
+                          </p>
+                        </>
+                      ) : (
+                        // show file icon with file name
+                        <div className="flex flex-col items-center justify-center w-full h-full">
+                          {/* file icon from react-icons */}
+                          <div className="text-6xl text-gray-400">
+                            <FaKey />
+                          </div>
+                          <p className="mb-2 text-lg text-gray-500 dark:text-gray-400 mt-4">
+                            <span className="font-semibold">
+                              {digitalSignaturePreview.name}
+                            </span>
+                          </p>
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                        <svg
+                          aria-hidden="true"
+                          className="w-10 h-10 mb-3 text-gray-400"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                          ></path>
+                        </svg>
+                        <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                          <span className="font-semibold">
+                            Click to upload digital signature
+                          </span>{" "}
+                          or drag and drop
+                        </p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                          PEM file
+                        </p>
+                      </div>
+                      <input
+                        id="dropzone-file-digital-signature"
+                        type="file"
+                        className="hidden"
+                        onChange={handleDigitalSignatureChange}
+                        // limit a .pem file
+                        accept=".pem"
+                      />
+                    </>
+                  )}
+                </label>
+              </div>
+            </div>
+          </div>
+          <div className="flex items-center justify-center w-full mt-2 space-x-20">
+            <div className="mt-8">
+              <Dropdown
+                label="Algorithm to Sign"
+                name="algorithm-Sign"
+                onSelect={handleAlgorithmChange}
+                defaultValue={algorithmMDOptions[1]}
+                items={algorithmMDOptions}
+              />
+            </div>
+            <div className="mt-8">
+              <Dropdown
+                label="Algorithm to Encrypt"
+                name="algorithm-Encrypt"
+                onSelect={handleAlgorithmChange}
+                defaultValue={algorithmEncOptions[0]}
+                items={algorithmEncOptions}
+              />
+            </div>
+            <div className="mt-8">
+              <Dropdown
+                label="Algorithm to HMAC"
+                name="algorithm-HMAC"
+                onSelect={handleAlgorithmChange}
+                defaultValue={algorithmMDOptions[1]}
+                items={algorithmMDOptions}
+              />
+            </div>
+          </div>
+          <div className="flex items-center justify-center w-full space-x-20 mt-8">
+            <div className="flex items-center justify-center">
+              <label
+                htmlFor="generatedKey"
+                className="text-sm font-medium text-gray-900 dark:text-white mr-2"
+              >
+                Use Own Key
+              </label>
+              <input
+                type="checkbox"
+                id="generatedKey"
+                onChange={(e) => setOwnKey(e.target.checked)}
+                className="w-4 h-4 text-blue-500 rounded border-gray-300 focus:ring-blue-500"
+              />
+            </div>
 
-            <label
-              htmlFor="dropzone-file"
-              className="flex flex-col items-center justify-center pt-5 pb-6 px-10 dark:hover:bg-gray-600 rounded-lg"
-            >
-              <svg
-                aria-hidden="true"
-                className="w-10 h-10 mb-3 text-gray-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+            {ownKey ? (
+              <div className="flex items-center justify-center w-1/2">
+                <label
+                  htmlFor="default-input"
+                  className="text-sm font-medium text-gray-900 dark:text-white mr-4"
+                >
+                  Key
+                </label>
+                <input
+                  type="text"
+                  id="default-input"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 
+              text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 
+              block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 
+              dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 "
                 />
-              </svg>
-
-              <p className="mb-2 text-2xl text-gray-500 dark:text-gray-400">
-                <span className="font-semibold">Click to upload</span> or drag
-                and drop
-              </p>
-
-              <p className="text-l text-gray-500 dark:text-gray-400">
-                Any file up to 10 MB
-              </p>
-            </label>
-
-            <input
-              id="dropzone-file"
-              type="file"
-              className=""
-              onChange={handleFileChange}
-              multiple={true}
-            />
-
-            {/* if you want to add a digital signature, upload the private key here */}
-            <label
-              htmlFor="drop-digital-signature"
-              className="flex flex-col items-center justify-center pt-5 pb-6 px-10 dark:hover:bg-gray-600 rounded-lg"
-            >
-              Digital Signature
-            </label>
-            <input
-              id="drop-digital-signature"
-              type="file"
-              className=""
-              onChange={handleDigitalSignatureChange}
-              multiple={true}
-            />
-
+              </div>
+            ) : null}
+          </div>
+          <div className="flex flex-col items-center justify-center w-full mt-2">
             <button
               id="btnSend"
               className="flex items-center justify-center border-2 my-4 px-2 py-1 rounded hover:bg-gray-600"
               onClick={(event) => {
                 event.preventDefault();
-                sendFile(file!, 1, digitalSignature).catch((error) => {
+                sendFile(
+                  file!,
+                  1,
+                  digitalSignature,
+                  algorithm_encrypt,
+                  algorithm_sign,
+                  algorithm_hmac,
+                ).catch((error) => {
                   console.error("Error sending file:", error);
                 });
+                //clear file input
+                setFile(undefined);
+                setFilePreview(undefined);
+                setDigitalSignature(undefined);
+                setDigitalSignaturePreview(undefined);
+                // close modal
               }}
             >
               <p className="text-xl text-gray-500 dark:text-gray-300">
@@ -122,8 +389,8 @@ export default function SendFilePopup(props: {
               </div>
             </button>
           </div>
-        </form>
-      </div>
+        </div>
+      </form>
     </div>
   ) : null;
 }

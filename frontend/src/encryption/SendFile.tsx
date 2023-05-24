@@ -25,10 +25,37 @@ async function sendFile(
   file: File,
   groupId: number,
   digitalSignature: File | undefined,
+  encryption_algorithm: forge.cipher.Algorithm,
+  signature_algorithm: string,
+  mac_algorithm: forge.md.Algorithm,
 ) {
   const user_id = getCookie("user_id");
   const fileBuffer = await file.arrayBuffer();
   const fileBytes = new Uint8Array(fileBuffer);
+  
+  let md = null;
+
+  // Convert signature_algorithm
+  switch (signature_algorithm) {
+    case "SHA1":
+      md = forge.md.sha1.create();
+      break;
+    case "SHA256":
+      md = forge.md.sha256.create();
+      break;
+    case "SHA384":
+      md = forge.md.sha384.create();
+      break;
+    case "SHA512":
+      md = forge.md.sha512.create();
+      break;
+    case "MD5":
+      md = forge.md.md5.create();
+      break;
+    default:
+      md = forge.md.sha256.create();
+      break;
+  }
 
   let publicKey: forge.pki.rsa.PublicKey;
   let encryptedSymetricKey: string;
@@ -43,7 +70,7 @@ async function sendFile(
   const iv = forge.random.getBytesSync(16);
 
   // AES - CBC or AES - GCM
-  const cipher = forge.cipher.createCipher("AES-CBC", symetricKey);
+  const cipher = forge.cipher.createCipher( encryption_algorithm, symetricKey);
   cipher.start({ iv: iv });
   cipher.update(forge.util.createBuffer(fileBytes));
   cipher.finish();
@@ -59,14 +86,13 @@ async function sendFile(
     const privateKeyString = new TextDecoder().decode(privateKeyFileBuffer);
     const privateKey = forge.pki.privateKeyFromPem(privateKeyString);
     // sign the encrypted file
-    const md = forge.md.sha256.create();
     md.update(base64EncryptedFile);
     signature = privateKey.sign(md);
   }
 
   // message authentication code
   const hmac = forge.hmac.create();
-  hmac.start("sha256", symetricKey);
+  hmac.start(mac_algorithm, symetricKey);
   hmac.update(base64EncryptedFile);
   const hmacHex = hmac.digest().toHex();
 
@@ -76,12 +102,12 @@ async function sendFile(
     file_size: file.size,
     encrypted_file: base64EncryptedFile,
     iv: forge.util.encode64(iv).toString(),
-    algorithm: "AES-CBC",
+    algorithm: encryption_algorithm,
     // if signature is empty, the file is not signed
     signature: signature ? forge.util.encode64(signature).toString() : "",
-    signature_algorithm: "SHA256",
+    signature_algorithm: signature_algorithm,
     mac: forge.util.encode64(hmacHex).toString(),
-    mac_algorithm: "SHA256",
+    mac_algorithm: mac_algorithm,
     user_id: Number(user_id),
     group_id: Number(groupId),
   };
