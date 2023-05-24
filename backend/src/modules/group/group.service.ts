@@ -1,4 +1,4 @@
-import { diffieH } from "../../utils/diffie";
+import { diffieH2 } from "../../utils/diffie";
 import prisma from "../../utils/prisma";
 import {
   GetUserFromGroupInput,
@@ -6,6 +6,7 @@ import {
   GroupAddMembersInput,
   GroupInput,
 } from "./group.schema";
+import crypto from "crypto";
 
 // export async function createGroup(input: GroupInput) {
 //   const data = {
@@ -53,20 +54,66 @@ export async function createGroup(input: GroupInput) {
     data,
   });
 
-  // const nMembers = 2;
-  // processDiffieH(nMembers);
+  const nMembers = 2;
+  processDiffieH(nMembers, group.id);
 
   return group;
 }
 
-async function processDiffieH(nMembers: number): Promise<void> {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const x = diffieH(nMembers);
-      console.log(x);
+async function processDiffieH(
+  nMembers: number,
+  groupId: number
+): Promise<void> {
+  return new Promise(async (resolve) => {
+    setTimeout(async () => {
+      // get group members public keys
+      const groupMembers = await prisma.group.findUnique({
+        where: {
+          id: groupId,
+        },
+        include: {
+          members: true,
+        },
+      });
+
+      const x = diffieH2(nMembers);
+      console.log("result of diffieH: " + x);
+
+      // // encrypt x with each member's public key
+      const encryptedData = groupMembers?.members.map((member) => {
+        const encryptedX = encryptWithPublicKey(x, member.public_key);
+        return {
+          user_id: member.id,
+          encrypted_x: encryptedX,
+        };
+      });
+
+      console.log(encryptedData);
+
+      // store encrypted chunks in the database
+      await prisma.group.update({
+        where: {
+          id: groupId,
+        },
+        data: {
+          group_key: {
+            encryptedData,
+          },
+        },
+      });
+
+      console.log("Group key for group " + groupId + " stored in the database");
       resolve();
-    }, 1000); // Delay of 1 second (adjust as needed)
+    }, 2000); // Delay of 1 second (adjust as needed)
   });
+}
+
+// Function to encrypt x with public key
+function encryptWithPublicKey(x: any, publicKey: string): string {
+  const buffer = Buffer.from(x); // Convert x to a buffer
+  const encryptedBuffer = crypto.publicEncrypt(publicKey, buffer); // Encrypt the buffer using the public key
+  const encryptedX = encryptedBuffer.toString("base64"); // Convert the encrypted buffer to a base64 string
+  return encryptedX;
 }
 
 // add files to group

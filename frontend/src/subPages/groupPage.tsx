@@ -10,8 +10,8 @@ type Group = {
 function GroupPage() {
   // variables for group
   const [group, setGroup] = useState<Group>({
-    name: "",
-    files: [1],
+    name: "Random243",
+    files: [],
     members: ["diogo@diogo.com", "fernando.cruz@ubi.pt"],
   });
 

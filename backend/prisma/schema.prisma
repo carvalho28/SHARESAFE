@@ -44,6 +44,7 @@ model Group {
   id         Int             @id @default(autoincrement())
   name       String
   created_at DateTime        @default(now())
+  group_key  Json[]
   files      EncryptedFile[] @relation("GroupFile")
   members    User[]          @relation("GroupMember")
 }
