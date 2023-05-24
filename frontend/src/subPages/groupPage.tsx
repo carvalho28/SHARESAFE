@@ -116,6 +116,7 @@ function GroupPage() {
 
   const handleCreateForm = () => {
     setIsShowingCreateForm(!isShowingCreateForm);
+    (isShowingEditForm ? setIsShowingEditForm(!isShowingEditForm) : setIsShowingEditForm(isShowingEditForm));
   }
 
   useEffect(() => {
@@ -126,33 +127,40 @@ function GroupPage() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [members, setMembers] = useState<string[]>([]);
-  const [errorMembersMessage, setErrorMembersMessage] = useState("");
-  const [errorNameMessage, setErrorNameMessage] = useState("");
+
   const [errorMessage, setErrorMessage] = useState("");
+
+  const [showErrorMessage, setShowErrorMessage] = useState(false);
 
 
   const handleAddMember = () => {
     if (email.trim() !== '') {
+      setShowErrorMessage(false);
       // email exists?
       if (validEmails.includes(email)) {
+        setShowErrorMessage(false);
         // duplicated email?
         if (!members.includes(email)) {
+          setShowErrorMessage(false);
           setMembers((prevMembers) => [...prevMembers, email]);
         }
         else {
           // email duplicated
-          setErrorMembersMessage("Email duplicated!");
+          setShowErrorMessage(true);
+          setErrorMessage("Email duplicated!");
         }
       }
       else {
         // invalid email
-        setErrorMembersMessage("That email does not exist for this service!");
+        setShowErrorMessage(true);
+        setErrorMessage("That email does not exist for this service!");
       }
       setEmail('');
     }
     else {
       // empty field
-      setErrorMembersMessage("Empty Field!");
+      setShowErrorMessage(true);
+      setErrorMessage("Empty Field!");
     }
   };
 
@@ -162,10 +170,12 @@ function GroupPage() {
 
   const handleCreateGroup = async () => {
     if(name == ""){
-      setErrorNameMessage("Group name required!");
+      setShowErrorMessage(true);
+      setErrorMessage("Group name required!");
       return;
     }
     if (members.length == 0){
+      setShowErrorMessage(true);
       setErrorMessage("Missing members!");
       return;
     }
@@ -191,6 +201,31 @@ function GroupPage() {
   };
 
 
+  /**
+   * 
+   * 
+   * Edit group
+   * 
+   */
+
+  const [isShowingEditForm, setIsShowingEditForm] = useState(false);
+
+  const handleEditForm = (id: number) => {
+    console.log(id);
+    setIsShowingEditForm(!isShowingEditForm);
+    (isShowingCreateForm ? setIsShowingCreateForm(!isShowingCreateForm) : setIsShowingCreateForm(isShowingCreateForm));
+  }
+
+  const handleAddNewMember = async () => {
+    // add nem member to the group, i.e., update the members from the db
+  }
+
+  const handleRemoveMember = async (email: string) => {
+    // remove member from group
+    console.log(email);
+
+  }
+
 
   return (
     <div>
@@ -215,6 +250,7 @@ function GroupPage() {
                   Files
                 </th>*/}
                 <th>Created At</th>
+                <th></th>
               </tr>
             </thead>
 
@@ -224,11 +260,12 @@ function GroupPage() {
                 <tr
                   key={group.id}
                   className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 cursor:pointer"
-                  onClick={() => handleGroupClick(group)}
                   onMouseOver={handleMouseOver}
                   onMouseOut={handleMouseOut}
                 >
-                  <th>
+                  <th 
+                    onClick={() => handleGroupClick(group)}
+                  >
                       {group.name}
                   </th>
                 {/*<td className="px-6 py-4">
@@ -237,7 +274,18 @@ function GroupPage() {
                 <td className="px-6 py-4">
                   {group.files}
                 </td>*/}
-                  <td className="px-6 py-4">{group.created_at.substring(0,10)}</td>
+                  <td 
+                    className="px-6 py-4"
+                    onClick={() => handleGroupClick(group)}
+                  >
+                    {group.created_at.substring(0,10)}
+                  </td>
+                  <td 
+                    className="underline"
+                    onClick={() => handleEditForm(group.id)}
+                  >
+                    Edit
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -258,7 +306,7 @@ function GroupPage() {
             {/** Buttons */}
           <div className="w-full text-center flex">
 
-            <div className="w-1/2 bg-orange-100">
+            <div className="w-1/2">
               <button
                 className="shadow appearance-none border rounded w-1/2 py-2 bg-blue-900 hover:bg-blue-600 text-white font-bold text-xl"
                 onClick={handleCreateForm}
@@ -267,15 +315,24 @@ function GroupPage() {
               </button>
             </div>
 
-            <div className="w-1/2 bg-yellow-100">
-              <p>Edit Group</p>
-            </div>
+          </div>
+    </div>
 
+
+          <div className="px-4 sm:ml-64">
+            <hr
+              style={{
+              background: 'black',
+              height: '3px',
+              }}
+            />
           </div>
 
+
+      <div className="p-4 sm:ml-64">
           {/** Create Group */}
           {isShowingCreateForm && (
-            <form className="w-full bg-green-100 text-center pt-5">
+            <form className="w-full text-center pt-5">
 
               <h1>Create Group</h1>
               
@@ -289,31 +346,6 @@ function GroupPage() {
                   onChange={(e) => setName(e.target.value)}
                 />
               </div>
-
-              {errorNameMessage != "" && (
-                <div
-                  className="flex items-center justify-center mb-2 p-1 text-center text-l text-red-800 border border-red-300 rounded-lg bg-red-5 dark:text-red-400 dark:border-red-800"
-                  role="alert"
-                >
-                  <svg
-                    aria-hidden="true"
-                    className="flex-shrink-0 inline w-5 h-5 mr-3"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  <span className="sr-only">Info</span>
-                  <div>
-                    <span className="font-medium">{errorNameMessage}</span>
-                  </div>
-                </div>
-              )}
             
               <div className="py-3 flex justify-center">
                 <input
@@ -325,31 +357,6 @@ function GroupPage() {
                   value={email}
                 />
               </div>
-
-              {errorMembersMessage != "" && (
-                <div
-                  className="flex items-center justify-center mb-2 p-1 text-center text-l text-red-800 border border-red-300 rounded-lg bg-red-5 dark:text-red-400 dark:border-red-800"
-                  role="alert"
-                >
-                  <svg
-                    aria-hidden="true"
-                    className="flex-shrink-0 inline w-5 h-5 mr-3"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  <span className="sr-only">Info</span>
-                  <div>
-                    <span className="font-medium">{errorMembersMessage}</span>
-                  </div>
-                </div>
-              )}
 
               <div className="pt-1 pb-5 flex justify-center">
                 <button
@@ -374,7 +381,9 @@ function GroupPage() {
                   <tbody>
 
                     {members.map((member, index) => (
-                      <tr key={index} className="bg-gray-100 cursor:pointer">
+                      <tr key={index} 
+                        className="bg-gray-100 cursor:pointer"
+                      >
                         <th>{member}</th>
                       </tr>
                     ))}
@@ -383,7 +392,7 @@ function GroupPage() {
                 </table>
               </div>
 
-              {errorMessage != "" && (
+              {showErrorMessage && (
                 <div
                   className="flex items-center justify-center mb-2 p-1 text-center text-l text-red-800 border border-red-300 rounded-lg bg-red-5 dark:text-red-400 dark:border-red-800"
                   role="alert"
@@ -421,6 +430,89 @@ function GroupPage() {
             </form>
           )}
           
+          {/** Edit Group */}
+          {isShowingEditForm && (
+            <form className="w-full text-center pt-5">
+              
+              <h1>Edit Group</h1>
+
+              <div className="flex justify-center py-5">
+                <table className="w-1/2 text-sm text-center text-black">
+                  <thead className="text-xs text-gray-700 uppercase bg-gray-200">
+                    <tr>
+                      <th scope="col" className="px-6 py-3">
+                        Members
+                      </th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+
+                    {members.map((member, index) => (
+                      <tr key={index} 
+                        className="bg-gray-100 cursor:pointer"
+                        onClick={() => handleRemoveMember(member)}
+                        onMouseOver={handleMouseOver}
+                        onMouseOut={handleMouseOut}>
+                        <th>{member}</th>
+                      </tr>
+                    ))}
+                    
+                      
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="py-3 flex justify-center">
+                
+                <input
+                  className="shadow appearance-none w-1/2 border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-xl"
+                  id="email"
+                  type="email"
+                  placeholder="Enter new member email"
+                  onChange={(e) => setEmail(e.target.value)}
+                  value={email}
+                />
+                
+              </div>
+
+              {showErrorMessage && (
+                <div
+                  className="flex items-center justify-center mb-2 p-1 text-center text-l text-red-800 border border-red-300 rounded-lg bg-red-5 dark:text-red-400 dark:border-red-800"
+                  role="alert"
+                >
+                  <svg
+                    aria-hidden="true"
+                    className="flex-shrink-0 inline w-5 h-5 mr-3"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  <span className="sr-only">Info</span>
+                  <div>
+                    <span className="font-medium">{errorMessage}</span>
+                  </div>
+                </div>
+              )}
+
+              <div className="pt-1 pb-5 flex justify-center">
+                <button
+                  type="button"
+                  className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+                  onClick={handleAddNewMember}
+                >
+                  Add member
+                </button>
+              </div>
+
+            </form>
+          )}
 
 
 
