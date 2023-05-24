@@ -5,7 +5,7 @@
   "scripts": {
     "frontend:init": "cd frontend && yarn install",
     "backend:init": "cd backend && yarn install",
-    "inst:all": "concurrently \"yarn backend:init\" \"yarn frontend:init\"",
+    "install:deps": "concurrently \"yarn backend:init\" \"yarn frontend:init\"",
     "frontend": "cd frontend && yarn dev",
     "backend": "cd backend && yarn start:dev",
     "docs": "cd frontend/sharesafe-docs && yarn start",

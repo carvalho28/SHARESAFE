@@ -60,7 +60,7 @@ function FilePage() {
   // Call getGroupsUser function when component is mounted
   useEffect(() => {
     getGroupsUser();
-  }, []);
+  }, [user_id]);
 
   // Group Name
   const [selectedGroup, setSelectedGroup] = useState<any>(null);
