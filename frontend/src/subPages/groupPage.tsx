@@ -4,7 +4,7 @@ import Sidebar from "../components/sidebar";
 type Group = {
   name: string;
   files: number[];
-  members: number[];
+  members: string[];
 };
 
 function GroupPage() {
@@ -12,7 +12,7 @@ function GroupPage() {
   const [group, setGroup] = useState<Group>({
     name: "",
     files: [1],
-    members: [1],
+    members: ["diogo@diogo.com", "fernando.cruz@ubi.pt"],
   });
 
   // create a new group with a post request
@@ -24,7 +24,7 @@ function GroupPage() {
       },
       body: JSON.stringify({
         name: group.name,
-        files: group.files,
+        // files: group.files,
         members: group.members,
       }),
     });

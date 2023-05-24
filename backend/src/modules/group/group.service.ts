@@ -30,23 +30,31 @@ import {
 //   return group;
 // }
 export async function createGroup(input: GroupInput) {
+  const userIds = await prisma.user.findMany({
+    where: {
+      email: {
+        in: input.members,
+      },
+    },
+  });
+
   const data = {
     name: input.name,
     created_at: new Date(),
     // files: {
     //   connect: input.files.map((fileId) => ({ id: fileId })),
     // },
-    // members: {
-    //   connect: input.members.map((memberId) => ({ id: memberId })),
-    // },
+    members: {
+      connect: userIds.map((user) => ({ id: user.id })),
+    },
   };
 
   const group = await prisma.group.create({
     data,
   });
 
-  const nMembers = 2;
-  processDiffieH(nMembers);
+  // const nMembers = 2;
+  // processDiffieH(nMembers);
 
   return group;
 }
