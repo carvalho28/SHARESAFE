@@ -20,7 +20,7 @@ export function App() {
       <Route path="/inbox/group/:id" element={<FilePage />} />
       <Route path="/group" element={<GroupPage />} />
       <Route path="/sent" element={<SentPage />} />
-      <Route path="/help" element={<HelpPage />} />
+      {/* <Route path="/help" element={<HelpPage />} /> */}
       <Route path="/settings" element={<SettingsPage />} />
       <Route path="*" element={<NotFound />} />
     </Routes>

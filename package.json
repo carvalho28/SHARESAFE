@@ -8,7 +8,8 @@
     "inst:all": "concurrently \"yarn backend:init\" \"yarn frontend:init\"",
     "frontend": "cd frontend && yarn dev",
     "backend": "cd backend && yarn start:dev",
-    "dev": "concurrently \"yarn backend\" \"yarn frontend\""
+    "docs": "cd frontend/sharesafe-docs && yarn start",
+    "dev": "concurrently \"yarn backend\" \"yarn frontend\" \"yarn docs\""
   },
   "license": "MIT",
   "devDependencies": {
