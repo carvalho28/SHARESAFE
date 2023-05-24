@@ -37,7 +37,6 @@ export default function SendFilePopup(props: {
 }) {
   const [file, setFile] = useState<File>();
   const [filePreview, setFilePreview] = useState<filePreview | undefined>();
-  // const [fileName, setFileName] = useState<string>("");
   const [digitalSignature, setDigitalSignature] = useState<File | undefined>(
     undefined,
   );
@@ -48,9 +47,13 @@ export default function SendFilePopup(props: {
   const [symmetricKey, setSymmetricKey] = useState<string>("");
   const [ownKey, setOwnKey] = useState<boolean>(false);
 
-  const [algorithm_sign, setAlgorithm_sign] = useState<string>(algorithmMDOptions[0].value);
-  const [algorithm_encrypt, setAlgorithm_encrypt] = useState<forge.cipher.Algorithm>("AES-CBC");
-  const [algorithm_hmac, setAlgorithm_hmac] = useState<forge.md.Algorithm>("sha256");
+  const [algorithm_sign, setAlgorithm_sign] = useState<string>(
+    algorithmMDOptions[0].value,
+  );
+  const [algorithm_encrypt, setAlgorithm_encrypt] =
+    useState<forge.cipher.Algorithm>("AES-CBC");
+  const [algorithm_hmac, setAlgorithm_hmac] =
+    useState<forge.md.Algorithm>("sha256");
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
@@ -77,14 +80,14 @@ export default function SendFilePopup(props: {
   const handleAlgorithmChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.name === "algorithm-Sign") {
       setAlgorithm_sign(e.target.value);
-    } 
+    }
     if (e.target.name === "algorithm-Encrypt") {
-      setAlgorithm_encrypt(e.target.value);
-    } 
+      setAlgorithm_encrypt(e.target.value as forge.cipher.Algorithm);
+    }
     if (e.target.name === "algorithm-HMAC") {
-      setAlgorithm_hmac(e.target.value);
-    } 
-  }
+      setAlgorithm_hmac(e.target.value as forge.md.Algorithm);
+    }
+  };
 
   const handleDigitalSignatureChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
@@ -112,7 +115,6 @@ export default function SendFilePopup(props: {
       className="fixed inset-0 p-4 sm:ml-64 bg-black bg-opacity-5 backdrop-blur-sm 
     flex justify-center items-center"
     >
-      {/* <button onClick={() => sendFile(file, 1)}>teste</button> */}
       <form className="flex items-center justify-center w-8/12">
         <div
           className="px-10 pt-4 flex flex-col items-center justify-center w-full h-full border-2

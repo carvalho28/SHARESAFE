@@ -12,10 +12,36 @@ type File = {
   file_type: string;
   file_size: number;
   algorithm: string;
-  signatureV: string;
+  signature: string;
+  signature_algorithm: string;
   created_at: string;
   user_id: number;
 };
+
+function useMDForAlgorithm(algorithm: string) {
+  let md = null;
+  switch (algorithm) {
+    case "SHA1":
+      md = forge.md.sha1.create();
+      break;
+    case "SHA256":
+      md = forge.md.sha256.create();
+      break;
+    case "SHA384":
+      md = forge.md.sha384.create();
+      break;
+    case "SHA512":
+      md = forge.md.sha512.create();
+      break;
+    case "MD5":
+      md = forge.md.md5.create();
+      break;
+    default:
+      md = forge.md.sha256.create();
+      break;
+  }
+  return md;
+}
 
 function FilePage() {
   // Get group id from url
@@ -81,6 +107,7 @@ function FilePage() {
   const [privateKey, setPrivateKey] = useState<String>();
 
   const [validSignatures, setValidSignatures] = useState<any>([]);
+  const [algoSignature, setAlgoSignature] = useState<any>([]);
 
   useEffect(() => {
     const getFiles = async () => {
@@ -89,6 +116,11 @@ function FilePage() {
         console.log("receiveData", receiveData);
         setGroupData(receiveData);
         setdataFile(receiveData.group.files);
+        setAlgoSignature(
+          receiveData.group.files.map((file: any) => {
+            return file.signature_algorithm;
+          }),
+        );
         // verify the signature using the public key inside receivedData.group.files.user.public_key
         // if the signature is valid, decrypt the file using the private key
       } catch (error) {
@@ -97,6 +129,10 @@ function FilePage() {
     };
     getFiles();
   }, []);
+
+  useEffect(() => {
+    console.log("algo", algoSignature);
+  }, [algoSignature]);
 
   useEffect(() => {
     if (dataFile.length === 0) {
@@ -112,7 +148,9 @@ function FilePage() {
         if (!signature) {
           return false;
         }
-        const md = forge.md.sha256.create();
+        // const md = forge.md.sha256.create();
+        // get the md algorithm from the file
+        const md = useMDForAlgorithm(algoSignature[index]);
         // console.log("groupData.files[index]", groupData.files[index]);
         md.update(groupData.files[index]);
         console.log("md", md);
