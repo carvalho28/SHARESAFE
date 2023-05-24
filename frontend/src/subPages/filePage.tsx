@@ -184,6 +184,7 @@ function FilePage() {
       const receiveData = await decryptFile(
         {
           algorithm: fileInfo.algorithm,
+          mac_algorithm: fileInfo.mac_algorithm,
           iv: fileInfo.iv,
           encryptedKey: String(encriptedKey),
           encrypted_file: encryptedFile,
@@ -209,11 +210,6 @@ function FilePage() {
       console.log(error);
     }
   };
-
-  // TODO: DELETE THIS AFTER TESTING
-  useEffect(() => {
-    // console.log(privateKey);
-  }, [privateKey]);
 
   function handleFileChange(e: any) {
     const reader = new FileReader();

@@ -2,6 +2,7 @@ import forge from "node-forge";
 
 type FileInput = {
   algorithm: forge.cipher.Algorithm;
+  mac_algorithm: forge.md.Algorithm;
   iv: string;
   encryptedKey: string;
   encrypted_file: any;
@@ -27,7 +28,7 @@ async function decryptFile(
 
   // verify the hmac
   const hmac = forge.hmac.create();
-  hmac.start("sha256", symetricKey);
+  hmac.start(input.mac_algorithm, symetricKey);
   hmac.update(input.encrypted_file);
   const calculatedMac = hmac.digest().toHex();
   if (calculatedMac !== forge.util.decode64(receivedMac))

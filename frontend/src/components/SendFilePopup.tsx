@@ -1,7 +1,8 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import sendFile from "../encryption/SendFile";
 import { FaFileAlt, FaKey } from "react-icons/fa";
 import Dropdown from "./Dropdown";
+import forge from "node-forge";
 
 type filePreview = {
   name: string;
@@ -9,9 +10,25 @@ type filePreview = {
   arrayBuffer: ArrayBuffer | unknown;
 };
 
-const algorithmOptions = [
+const algorithmEncOptions = [
   { value: "AES-CBC", label: "AES-CBC" },
+  { value: "AES-ECB", label: "AES-ECB" },
+  { value: "AES-CFB", label: "AES-CFB" },
+  { value: "AES-OFB", label: "AES-OFB" },
+  { value: "AES-CTR", label: "AES-CTR" },
   { value: "AES-GCM", label: "AES-GCM" },
+  { value: "3DES-ECB", label: "3DES-ECB" },
+  { value: "3DES-CBC", label: "3DES-CBC" },
+  { value: "DES-ECB", label: "DES-ECB" },
+  { value: "DES-CBC", label: "DES-CBC" },
+];
+
+const algorithmMDOptions = [
+  { value: "SHA1", label: "SHA1" },
+  { value: "SHA256", label: "SHA256" },
+  { value: "SHA384", label: "SHA384" },
+  { value: "SHA512", label: "SHA512" },
+  { value: "MD5", label: "MD5" },
 ];
 
 export default function SendFilePopup(props: {
@@ -30,6 +47,10 @@ export default function SendFilePopup(props: {
 
   const [symmetricKey, setSymmetricKey] = useState<string>("");
   const [ownKey, setOwnKey] = useState<boolean>(false);
+
+  const [algorithm_sign, setAlgorithm_sign] = useState<string>(algorithmMDOptions[0].value);
+  const [algorithm_encrypt, setAlgorithm_encrypt] = useState<forge.cipher.Algorithm>("AES-CBC");
+  const [algorithm_hmac, setAlgorithm_hmac] = useState<forge.md.Algorithm>("sha256");
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
@@ -52,6 +73,18 @@ export default function SendFilePopup(props: {
 
     e.target.value = "";
   };
+
+  const handleAlgorithmChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.name === "algorithm-Sign") {
+      setAlgorithm_sign(e.target.value);
+    } 
+    if (e.target.name === "algorithm-Encrypt") {
+      setAlgorithm_encrypt(e.target.value);
+    } 
+    if (e.target.name === "algorithm-HMAC") {
+      setAlgorithm_hmac(e.target.value);
+    } 
+  }
 
   const handleDigitalSignatureChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
@@ -252,22 +285,28 @@ export default function SendFilePopup(props: {
             <div className="mt-8">
               <Dropdown
                 label="Algorithm to Sign"
-                defaultValue={algorithmOptions[0]}
-                items={algorithmOptions}
+                name="algorithm-Sign"
+                onSelect={handleAlgorithmChange}
+                defaultValue={algorithmMDOptions[1]}
+                items={algorithmMDOptions}
               />
             </div>
             <div className="mt-8">
               <Dropdown
                 label="Algorithm to Encrypt"
-                defaultValue={algorithmOptions[0]}
-                items={algorithmOptions}
+                name="algorithm-Encrypt"
+                onSelect={handleAlgorithmChange}
+                defaultValue={algorithmEncOptions[0]}
+                items={algorithmEncOptions}
               />
             </div>
             <div className="mt-8">
               <Dropdown
                 label="Algorithm to HMAC"
-                defaultValue={algorithmOptions[0]}
-                items={algorithmOptions}
+                name="algorithm-HMAC"
+                onSelect={handleAlgorithmChange}
+                defaultValue={algorithmMDOptions[1]}
+                items={algorithmMDOptions}
               />
             </div>
           </div>
@@ -316,9 +355,9 @@ export default function SendFilePopup(props: {
                   file!,
                   1,
                   digitalSignature,
-                  "AES-CBC",
-                  "sha256",
-                  "sha256",
+                  algorithm_encrypt,
+                  algorithm_sign,
+                  algorithm_hmac,
                 ).catch((error) => {
                   console.error("Error sending file:", error);
                 });
