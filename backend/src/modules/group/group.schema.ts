@@ -3,9 +3,8 @@ import { z } from "zod";
 
 const groupCore = z.object({
   name: z.string(),
-  created_at: z.string(),
-  files: z.array(z.any()),
-  members: z.array(z.any()),
+  // created_at: z.string(),
+  // members: z.array(z.any()),
 });
 
 // only add files to group

@@ -1,3 +1,4 @@
+import { diffieH } from "../../utils/diffie";
 import prisma from "../../utils/prisma";
 import {
   GetUserFromGroupInput,
@@ -6,23 +7,58 @@ import {
   GroupInput,
 } from "./group.schema";
 
+// export async function createGroup(input: GroupInput) {
+//   const data = {
+//     name: input.name,
+//     created_at: new Date(),
+//     // files: {
+//     //   connect: input.files.map((fileId) => ({ id: fileId })),
+//     // },
+//     // members: {
+//     //   connect: input.members.map((memberId) => ({ id: memberId })),
+//     // },
+//   };
+
+//   const group = await prisma.group.create({
+//     data,
+//   });
+
+//   const nMembers = 2;
+//   const x = diffieH(nMembers);
+//   console.log(x);
+
+//   return group;
+// }
 export async function createGroup(input: GroupInput) {
   const data = {
     name: input.name,
     created_at: new Date(),
-    files: {
-      connect: input.files.map((fileId) => ({ id: fileId })),
-    },
-    members: {
-      connect: input.members.map((memberId) => ({ id: memberId })),
-    },
+    // files: {
+    //   connect: input.files.map((fileId) => ({ id: fileId })),
+    // },
+    // members: {
+    //   connect: input.members.map((memberId) => ({ id: memberId })),
+    // },
   };
 
   const group = await prisma.group.create({
     data,
   });
 
+  const nMembers = 2;
+  processDiffieH(nMembers);
+
   return group;
+}
+
+async function processDiffieH(nMembers: number): Promise<void> {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const x = diffieH(nMembers);
+      console.log(x);
+      resolve();
+    }, 1000); // Delay of 1 second (adjust as needed)
+  });
 }
 
 // add files to group
