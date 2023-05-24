@@ -25,6 +25,9 @@ async function sendFile(
   file: File,
   groupId: number,
   digitalSignature: File | undefined,
+  encryption_algorithm: string,
+  signature_algorithm: string,
+  mac_algorithm: string,
 ) {
   const user_id = getCookie("user_id");
   const fileBuffer = await file.arrayBuffer();
