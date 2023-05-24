@@ -22,8 +22,8 @@ SHARESAFE
 |   ├── src                    # Source code
 |   ├──   ├── modules          # Modules
 |   ├──   ├── utils            # Utility functions (e.g. password hashing)
-|   |──   ├── ...              # Other essential files (e.g. server)
 |   |──   ├── tests            # Server tests - using Tap
+|   |──   ├── ...              # Other essential files (e.g. server)
 ├── frontend                   # Client related files
 │   ├── sharesafe-docs         # Documentation files
 │   ├── src                    # Source code for the app
@@ -31,7 +31,7 @@ SHARESAFE
 │   ├──   ├── components       # React components
 |   ├──   ├── encryption       # Encryption related files
 |   ├──   ├── subPages         # Subpages
-|   ├──   ├── test            # Client tests - using Vitest
+|   ├──   ├── test             # Client tests - using Vitest
 |   ├──   ├── ...              # Other essential files (e.g. App.tsx)
 ```
 
@@ -44,6 +44,16 @@ SHARESAFE
 - [Prisma](https://www.prisma.io/) - Database toolkit
 - [React](https://reactjs.org/) - JavaScript library for building user interfaces
 - [TypeScript](https://www.typescriptlang.org/) - Typed JavaScript
+
+## Cryptographic Tools
+
+### Backend
+
+The library used for cryptography is [crypto](https://nodejs.org/api/crypto.html) which was used to hash secure passwords, using hashes.
+
+### Frontend
+
+The library used for encryption is [Node-forge](https://github.com/digitalbazaar/forge) which is a JavaScript toolkit for encryption, decryption, digital signatures, and more.
 
 ## Getting Started
 
