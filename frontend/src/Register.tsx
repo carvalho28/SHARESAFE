@@ -77,7 +77,7 @@ function Register() {
   }
 
   return (
-    <div className="lg:flex lg:items-center lg:justify-center lg:h-screen">
+    <div className="lg:flex lg:items-center lg:justify-center lg:h-screen bg-[#ffffff] dark:bg-[#1a1a1a]">
       <div className="lg:w-1/3 lg:flex-col lg:pr-[200px] lg:min-w-[600px] flex items-center justify-center">
         <img
           className="lg:w-full w-1/3 min-h-[300px] min-w-[400px]"
@@ -86,19 +86,19 @@ function Register() {
         />
       </div>
 
-      <div className="lg:visible collapse h-[80%] w-[4px] min-w-[4px] rounded-lg bg-gray-100" />
+      <div className="lg:visible collapse h-[80%] w-[4px] min-w-[4px] rounded-lg bg-gray-100 dark:bg-[#9c9c9c]"/>
 
       <div className="lg:collapse visible flex items-center justify-center">
-        <hr className="w-[80%] h-[4px] my-[50px] min-w-[80%] rounded bg-gray-100" />
+        <hr className="w-[80%] h-[4px] my-[50px] min-w-[80%] rounded bg-gray-100 dark:bg-[#9c9c9c]"/>
       </div>
 
       <div className="lg:w-1/3 lg:flex-col lg:pl-[200px] lg:min-w-[600px] flex items-center justify-center">
-        <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+        <form className="shadow-md rounded px-8 pt-6 pb-8 mb-4 bg-white dark:bg-[#242424]">
           <div className="flex items-center justify-center">
-            <p className="text-6xl text-blue-900">Register</p>
+            <p className="text-6xl text-[#203169] dark:text-[#d9d9d9]">Register</p>
           </div>
           <div className="flex items-center justify-center pt-3">
-            <p className="text-xs font-bold">
+            <p className="text-xs font-bold text-[#203169] dark:text-[#d9d9d9]">
               WELCOME TO SHARESAFE, LET&apos;S GET STARTED
             </p>
           </div>
@@ -134,7 +134,7 @@ function Register() {
           </div>
           <div className="pt-3 pb-2 flex items-center justify-center">
             <input
-              className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-xl"
+              className="shadow appearance-none rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-xl"
               id="confirmPassword"
               type="password"
               placeholder="Confirm password"
@@ -145,7 +145,7 @@ function Register() {
 
           {errorMessage != "" && (
             <div
-              className="flex items-center justify-center p-2 mx-[64px] text-l text-red-800 border border-red-300 rounded-lg bg-red-5 dark:text-red-400 dark:border-red-800"
+              className="flex items-center justify-center mt-3 p-2 mx-[64px] text-l text-red-800 border border-red-300 rounded-lg bg-red-5 dark:text-red-400 dark:border-red-800"
               role="alert"
             >
               <svg
@@ -176,7 +176,7 @@ function Register() {
 
           <div className="flex items-center justify-center pt-10 pb-1 px-[63px]">
             <button
-              className="shadow appearance-none border rounded w-full py-2 bg-blue-900 hover:bg-blue-600 text-white font-bold text-xl"
+              className="shadow appearance-none border rounded w-full py-2 font-bold text-xl text-white dark:text-[#d9d9d9] bg-[#101832] hover:bg-[#203169] dark:bg-[#333333] dark:hover:bg-[#383838]"
               id="registerBtn"
               type="button"
               onClick={() => registerUser()}
@@ -184,21 +184,13 @@ function Register() {
               Register
             </button>
           </div>
-          {isLoading && (
-            <div className="pt-5">
-              <Spinner />
-            </div>
-          )}
-
-          <div className="pt-1">
-            <div className="flex items-center justify-center">
-              <p className="text-xs">
-                Already have an account? Click{" "}
-                <Link to="/" className="font-bold">
-                  here.
-                </Link>
-              </p>
-            </div>
+          <div className="flex items-center justify-center mt-1">
+            <p className="text-xs text-[#203169] dark:text-[#d9d9d9]">
+              Already have an account? Click{" "}
+              <Link to="/" className="font-bold">
+                here.
+              </Link>
+            </p>
           </div>
         </form>
       </div>
