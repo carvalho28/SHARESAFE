@@ -12,6 +12,7 @@ import {
   getGroupsForUser,
   getUsersFromGroup,
   getGroupKeys,
+  removeUserFromGroup
 } from "./group.service";
 
 // get users from a given group
@@ -22,6 +23,18 @@ export async function getUsersFromGroupHandler(
   try {
     const users = await getUsersFromGroup(request.body);
     return reply.code(200).send(users);
+  } catch (error) {
+    return reply.code(400).send(error);
+  }
+}
+
+export async function removeUserFromGroupHandler(
+  request: FastifyRequest<{ Body: { group_id: number, user_id: number } }>,
+  reply: FastifyReply
+) {
+  try {
+    const result = await removeUserFromGroup(request.body);
+    return reply.code(200).send(result);
   } catch (error) {
     return reply.code(400).send(error);
   }

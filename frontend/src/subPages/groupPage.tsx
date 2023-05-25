@@ -126,6 +126,7 @@ function GroupPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [members, setMembers] = useState<string[]>([]);
+  const [groupIdEdit ,setGroupIdEdit] = useState<number>();
 
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -168,6 +169,36 @@ function GroupPage() {
   useEffect(() => {
     console.log("useEffect members", members);
   }, [members]);
+
+  const handleLeaveGroup = async () => {
+    if (user_id && groupIdEdit) {
+      await fetch("http://localhost:3000/api/groups/removeUserFromGroup", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json; charset=UTF-8",
+          },
+          body: JSON.stringify({
+            group_id: groupIdEdit,
+            user_id: user_id
+          }),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            console.log(data);
+            
+            if (data.status === "success") {
+              setGroups(groups.filter(group => group.id !== groupIdEdit));
+              setIsShowingEditForm(false);
+            } else {
+              console.error(data.message);
+            }
+          })
+          .catch((err) => {
+            console.log(err.message);
+            setErrorMessage("Unable to leave group!");
+          });
+    }
+    };
 
   const handleCreateGroup = async () => {
     if (name == "") {
@@ -235,7 +266,7 @@ function GroupPage() {
   const [isShowingEditForm, setIsShowingEditForm] = useState(false);
 
   const handleEditForm = (id: number) => {
-    console.log(id);
+    setGroupIdEdit(id);
     if (!(id === 1)) {
       setIsShowingEditForm(!isShowingEditForm);
       isShowingCreateForm
@@ -518,6 +549,16 @@ function GroupPage() {
                 onClick={handleAddNewMember}
               >
                 Add member
+              </button>
+            </div>
+
+            <div className="pt-1 pb-5 flex justify-center">
+              <button
+                type="button"
+                className="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2 mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-300"
+                onClick={handleLeaveGroup}
+              >
+                Leave Group
               </button>
             </div>
           </form>

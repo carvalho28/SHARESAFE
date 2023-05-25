@@ -4,6 +4,7 @@ import {
   getGroupsHandler,
   getUsersFromGroupHandler,
   getDiffieKey,
+  removeUserFromGroupHandler
 } from "./group.controller";
 
 async function groupRoutes(server: FastifyInstance) {
@@ -11,6 +12,7 @@ async function groupRoutes(server: FastifyInstance) {
   server.post("/getGroups", getGroupsHandler);
   server.post("/getUsers", getUsersFromGroupHandler);
   server.post("/getDiffieKey", getDiffieKey);
+  server.post("/removeUserFromGroup", removeUserFromGroupHandler);
 }
 
 export default groupRoutes;
