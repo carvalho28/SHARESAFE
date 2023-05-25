@@ -21,7 +21,11 @@ type userInformation = {
   encrypted_key: string;
 };
 
+export type typesEnc = "random" | "userKey" | "diffie";
+
 async function sendFile(
+  encryptionType: typesEnc,
+  own_key: string,
   private_key: string,
   diffieKey: string,
   file: File,
@@ -31,23 +35,37 @@ async function sendFile(
   signature_algorithm: string,
   mac_algorithm: forge.md.Algorithm,
 ) {
-  if (private_key) {
-    // decrypt the private key
-    const privateKey = forge.pki.privateKeyFromPem(String(private_key));
-    console.log("privateKey", privateKey);
-    console.log("diffieKey", forge.util.decode64(diffieKey));
-    const decryptedX = privateKey.decrypt(
-      forge.util.decode64(diffieKey),
-      "RSA-OAEP",
+  let symetricKey: string = "";
+  if (encryptionType === "random") {
+    console.log("random");
+    symetricKey = forge.random.getBytesSync(32);
+  } else if (encryptionType === "userKey") {
+    console.log("userKey");
+    // create symetric key from own key
+    symetricKey = forge.pkcs5.pbkdf2(
+      own_key,
+      forge.random.getBytesSync(32),
+      10000,
+      32,
     );
-    console.log("decryptedX", decryptedX);
-    return null;
+  } else if (encryptionType === "diffie") {
+    console.log("diffie");
+    if (private_key) {
+      // decrypt the private key
+      const privateKey = forge.pki.privateKeyFromPem(String(private_key));
+      console.log("privateKey", privateKey);
+      const decryptedX = privateKey.decrypt(
+        forge.util.decode64(diffieKey),
+        "RSA-OAEP",
+      );
+      symetricKey = forge.util.hexToBytes(decryptedX);
+      console.log("symetricKey", symetricKey);
+    }
   }
-  return null;
   const user_id = getCookie("user_id");
   const fileBuffer = await file.arrayBuffer();
   const fileBytes = new Uint8Array(fileBuffer);
-  
+
   let md = null;
 
   // Convert signature_algorithm
@@ -81,11 +99,13 @@ async function sendFile(
   // 16 bytes = 128 bits
   // 32 bytes = 256 bits
   // 64 bytes = 512 bits
-  const symetricKey = forge.random.getBytesSync(32);
   const iv = forge.random.getBytesSync(16);
 
+  console.log("encryption_algorithm", encryption_algorithm);
+  console.log("iv", iv);
+  console.log("symetricKey", symetricKey);
   // AES - CBC or AES - GCM
-  const cipher = forge.cipher.createCipher( encryption_algorithm, symetricKey);
+  const cipher = forge.cipher.createCipher(encryption_algorithm, symetricKey);
   cipher.start({ iv: iv });
   cipher.update(forge.util.createBuffer(fileBytes));
   cipher.finish();
@@ -162,8 +182,6 @@ async function sendFile(
     file_info,
     users_group,
   };
-
-  // console.log("envio de ficheiro: ", body);
 
   await fetch("http://localhost:3000/api/files/upload", {
     method: "POST",
