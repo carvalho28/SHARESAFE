@@ -96,8 +96,9 @@ export default function Sidebar() {
               </Link>
             </li>
             <li>
-              <Link
-                to="/help"
+              <a
+                href="http://localhost:5174/"
+                target="_blank"
                 className="flex items-center p-2 text-base font-normal rounded-lg text-white hover:bg-[#569DAA] dark:hover:bg-[#383838]"
               >
                 <svg
@@ -116,7 +117,7 @@ export default function Sidebar() {
                   <line x1="12" y1="17" x2="12.01" y2="17" />
                 </svg>
                 <span className="flex-1 ml-3 whitespace-nowrap">Help</span>
-              </Link>
+              </a>
             </li>
             <li>
               <span
