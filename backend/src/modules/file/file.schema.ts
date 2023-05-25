@@ -36,10 +36,16 @@ const FileReceiveCore = z.object({
   id: z.number(),
 });
 
+const fileDeleteCore = z.object({
+  id: z.number(),
+});
+
 export type FileInput = z.infer<typeof fileUploadCore>;
 export type FileReceive = z.infer<typeof FileReceiveCore>;
+export type FileDelete = z.infer<typeof fileDeleteCore>;
 
 export const { schemas: fileSchemas, $ref } = buildJsonSchemas({
   fileUploadCore,
   FileReceiveCore,
+  fileDeleteCore,
 });
