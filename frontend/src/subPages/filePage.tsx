@@ -51,7 +51,7 @@ function FilePage() {
   const group_id = +id;
 
   // Get user_id to query the db
-  const user_id = getCookie('user_id');
+  const user_id = getCookie("user_id");
 
   const [groups, setGroups] = useState<
     {
@@ -187,6 +187,7 @@ function FilePage() {
   }, [user]);
 
   function getUserById(id: number) {
+    if (!dataFile) return;
     // console.log("Owner", id);
     const userWithID: any = user.find((user: any) => user.id === id);
     return userWithID.name;

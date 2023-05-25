@@ -268,12 +268,6 @@ function GroupPage() {
               <th scope="col" className="px-6 py-3">
                 Group
               </th>
-              {/*<th scope="col" className="px-6 py-3">
-                  Members
-                </th>
-                <th scope="col" className="px-6 py-3">
-                  Files
-                </th>*/}
               <th>Created At</th>
               <th></th>
             </tr>
@@ -289,12 +283,6 @@ function GroupPage() {
                 onMouseOut={handleMouseOut}
               >
                 <th onClick={() => handleGroupClick(group)}>{group.name}</th>
-                {/*<td className="px-6 py-4">
-                  {group.members}
-                </td>
-                <td className="px-6 py-4">
-                  {group.files}
-                </td>*/}
                 <td
                   className="px-6 py-4"
                   onClick={() => handleGroupClick(group)}
