@@ -1,6 +1,7 @@
 import { diffieH2 } from "../../utils/diffie";
 import prisma from "../../utils/prisma";
 import {
+  GetGroupKeysInput,
   GetUserFromGroupInput,
   GroupAddFilesInput,
   GroupAddMembersInput,
@@ -8,28 +9,6 @@ import {
 } from "./group.schema";
 import crypto from "crypto";
 
-// export async function createGroup(input: GroupInput) {
-//   const data = {
-//     name: input.name,
-//     created_at: new Date(),
-//     // files: {
-//     //   connect: input.files.map((fileId) => ({ id: fileId })),
-//     // },
-//     // members: {
-//     //   connect: input.members.map((memberId) => ({ id: memberId })),
-//     // },
-//   };
-
-//   const group = await prisma.group.create({
-//     data,
-//   });
-
-//   const nMembers = 2;
-//   const x = diffieH(nMembers);
-//   console.log(x);
-
-//   return group;
-// }
 export async function createGroup(input: GroupInput) {
   const userIds = await prisma.user.findMany({
     where: {
@@ -42,9 +21,6 @@ export async function createGroup(input: GroupInput) {
   const data = {
     name: input.name,
     created_at: new Date(),
-    // files: {
-    //   connect: input.files.map((fileId) => ({ id: fileId })),
-    // },
     members: {
       connect: userIds.map((user) => ({ id: user.id })),
     },
@@ -58,6 +34,35 @@ export async function createGroup(input: GroupInput) {
   processDiffieH(nMembers, group.id);
 
   return group;
+}
+
+interface GroupKey {
+  user_id: number;
+  encrypted_x: string;
+}
+
+export async function getGroupKeys(input: GetGroupKeysInput) {
+  const groupId = input.group_id;
+  const userId = input.user_id;
+
+  const group = await prisma.group.findUnique({
+    where: {
+      id: parseInt(groupId.toString()),
+    },
+  });
+  if (!group) {
+    throw new Error("Group not found");
+  }
+
+  const encryptedDataArray = group.group_key as unknown as GroupKey[];
+  const userEncryptedData = encryptedDataArray.find(
+    (data) => data.user_id === parseInt(userId.toString())
+  );
+  const encryptedX = userEncryptedData?.encrypted_x;
+
+  return {
+    diffie_key: encryptedX,
+  };
 }
 
 async function processDiffieH(
@@ -77,10 +82,9 @@ async function processDiffieH(
       });
 
       const x = diffieH2(nMembers);
-      console.log("result of diffieH: " + x);
 
-      // // encrypt x with each member's public key
-      const encryptedData = groupMembers?.members.map((member) => {
+      // console.log(encryptedData);
+      const encryptedDataArray = groupMembers?.members.map((member) => {
         const encryptedX = encryptWithPublicKey(x, member.public_key);
         return {
           user_id: member.id,
@@ -88,17 +92,13 @@ async function processDiffieH(
         };
       });
 
-      console.log(encryptedData);
-
       // store encrypted chunks in the database
       await prisma.group.update({
         where: {
           id: groupId,
         },
         data: {
-          group_key: {
-            encryptedData,
-          },
+          group_key: encryptedDataArray,
         },
       });
 
