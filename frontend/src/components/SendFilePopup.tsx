@@ -36,6 +36,15 @@ export default function SendFilePopup(props: {
   triggered: boolean;
   setTriggered: Function;
 }) {
+  // Get group id from url
+  const currentPathname = window.location.pathname;
+  const splitString = currentPathname.split("/");
+  const id = splitString[splitString.length - 1];
+  const group_id = +id;
+
+  console.log("groupid: "+group_id);
+  
+
   const [file, setFile] = useState<File>();
   const [filePreview, setFilePreview] = useState<filePreview | undefined>();
   const [digitalSignature, setDigitalSignature] = useState<File | undefined>(
@@ -517,7 +526,7 @@ export default function SendFilePopup(props: {
                   String(privateKey),
                   diffieKey!,
                   file!,
-                  1,
+                  group_id,
                   signFile ? digitalSignature : undefined,
                   algorithm_encrypt,
                   algorithm_sign,
