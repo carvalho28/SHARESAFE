@@ -4,10 +4,10 @@ sidebar_position: 3
 
 # Message Authentication Code (MAC)
 
-We opted for HMAC (Hash-based Message Authentication Code) to ensure the integrity of the file.
-HMAC provides a secure way to verify the authenticity and integrity of the file by generating a unique hash code based on the file's contents and a secret key. This ensures that any tampering or modifications to the file can be detected, providing an added layer of data integrity protection.
+We opted for **HMAC** (Hash-based Message Authentication Code) to ensure the integrity of the file.
+**HMAC** provides a secure way to verify the authenticity and integrity of the file by generating a unique hash code based on the file's contents and a secret key. This ensures that any tampering or modifications to the file can be detected, providing an added layer of data integrity protection.
 
-The HMAC is generated using the mac algorithm chosen by the user.
+The **HMAC** is generated using the mac algorithm chosen by the user.
 
 ```typescript title="HMAC"
 const hmac = forge.hmac.create();

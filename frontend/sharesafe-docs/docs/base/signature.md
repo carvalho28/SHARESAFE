@@ -4,7 +4,7 @@ sidebar_position: 4
 
 # File Signature
 
-Lastly, if the user has enable the signature, the encryped file will be signed with the user's signature.
+Lastly, if the user has enable the signature, the encrypted file will be signed with the user's signature.
 This signature is generated using the user's private key, and the signature algorithm chosen by the user.
 
 ````typescript title="Signature"
