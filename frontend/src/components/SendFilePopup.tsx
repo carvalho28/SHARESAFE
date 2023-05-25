@@ -1,7 +1,8 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import sendFile from "../encryption/SendFile";
 import { FaFileAlt, FaKey } from "react-icons/fa";
 import Dropdown from "./Dropdown";
+import { getCookie } from "../auth/Cookies";
 
 type filePreview = {
   name: string;
@@ -73,6 +74,41 @@ export default function SendFilePopup(props: {
 
     e.target.value = "";
   };
+
+  const [diffieKey, setDiffieKey] = useState<string | undefined>(undefined);
+
+  // async function to get diffie hellman key
+  const getDiffieHellmanKey = async () => {
+    const body = {
+      user_id: getCookie("user_id"),
+      group_id: 46,
+    };
+    const response = await fetch(
+      "http://localhost:3000/api/groups/getDiffieKey",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json; charset=UTF-8",
+        },
+        body: JSON.stringify(body),
+      },
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        return data;
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+    return response;
+  };
+
+  useEffect(() => {
+    getDiffieHellmanKey().then((response) => {
+      console.log(response);
+      setDiffieKey(response.diffie_key);
+    });
+  }, []);
 
   return props.triggered ? (
     <div
@@ -347,6 +383,16 @@ export default function SendFilePopup(props: {
                 </svg>
               </div>
             </button>
+            <div className=" w-20">
+              {diffieKey ? (
+                <span className="font-normal text-white truncate w-20">
+                  Diffie-Hellman Key:
+                  {diffieKey}
+                </span>
+              ) : (
+                "No Diffie-Hellman Key"
+              )}
+            </div>
           </div>
         </div>
       </form>
