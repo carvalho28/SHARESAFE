@@ -11,7 +11,8 @@ In case a file needs to be shared across every user, there is a specific folder 
 To share a specific file acrross all users the user must:
 
 1. Go to inbox page;
-2. Click the folder named "Global";
-3. Click the button "Send File";
-4. Fill out the parameters;
-5. Send file.
+2. Click the button "Send File";
+3. Fill out the parameters;
+4. Send file.
+
+Note: if the user is not in inbox page neither in any group page, sending a file will send the it to the Global folder.
