@@ -59,24 +59,24 @@ function Home() {
   }
 
   return (
-    <div className="lg:flex lg:items-center lg:justify-center lg:h-screen">
+    <div className="lg:flex lg:items-center lg:justify-center lg:h-screen bg-[#ffffff] dark:bg-[#1a1a1a]">
       <div className="lg:w-1/3 lg:flex-col lg:pr-[200px] lg:min-w-[600px] flex items-center justify-center">
         <img className="lg:w-full w-1/3 min-h-[300px] min-w-[400px]" alt="Logo" src={logo} />
       </div>
 
-      <div className="collapse lg:visible h-[80%] w-[4px] min-w-[4px] rounded-lg bg-gray-100"/>
+      <div className="collapse lg:visible h-[80%] w-[4px] min-w-[4px] rounded-lg bg-gray-100 dark:bg-[#9c9c9c]"/>
 
       <div className="lg:collapse visible flex items-center justify-center">
-        <hr className="w-[80%] h-[4px] my-[50px] min-w-[80%] rounded bg-gray-100"/>
+        <hr className="w-[80%] h-[4px] my-[50px] min-w-[80%] rounded bg-gray-100 dark:bg-[#9c9c9c]"/>
       </div>
 
       <div className="lg:w-1/3 lg:flex-col lg:pl-[200px] lg:min-w-[600px] flex items-center justify-center">
-        <form className="bg-white shadow-lg rounded px-8 pt-6 pb-6 mb-4">
+        <form className="shadow-lg rounded px-8 pt-6 pb-6 mb-4 bg-white dark:bg-[#242424]">
           <div className="flex items-center justify-center">
-            <p className="text-6xl text-blue-900 ">Login</p>
+            <p className="text-6xl text-[#203169] dark:text-[#d9d9d9]">Login</p>
           </div>
           <div className="pt-3 flex items-center justify-center">
-            <p className="text-xs font-bold">WELCOME BACK TO SHARESAFE</p>
+            <p className="text-xs font-bold text-[#203169] dark:text-[#d9d9d9]">WELCOME BACK TO SHARESAFE</p>
           </div>
           <div className="pt-5 flex items-center justify-center">
             <input
@@ -99,7 +99,7 @@ function Home() {
             />
           </div>
           <div className="pt-1 pb-2 flex items-center justify-center">
-            <p className="text-xs">
+            <p className="text-xs text-[#203169] dark:text-[#d9d9d9]">
               Forgot your password? Click{" "}
               <Link to="/" className="font-bold">
                 here
@@ -109,7 +109,7 @@ function Home() {
 
           {errorMessage != "" && (
             <div
-              className="flex items-center justify-center p-2 mx-[64px] text-l text-red-800 border border-red-300 rounded-lg bg-red-5 dark:text-red-400 dark:border-red-800"
+              className="flex items-center justify-center mt-3 p-2 mx-[64px] text-l text-red-800 border border-red-300 rounded-lg bg-red-5 dark:text-red-400 dark:border-red-800"
               role="alert"
             >
               <svg
@@ -138,9 +138,9 @@ function Home() {
             </div>
           )}
 
-          <div className="flex items-center justify-center pt-10 pb-1 px-[63px]">
+          <div className="flex items-center justify-center pt-10 px-[63px]">
             <button
-              className="shadow appearance-none border rounded w-full py-2 bg-blue-900 hover:bg-blue-600 text-white font-bold text-xl"
+              className="shadow appearance-none rounded w-full py-2 font-bold text-xl bg-[#101832] hover:bg-[#203169] text-white dark:text-[#d9d9d9] dark:bg-[#333333] dark:hover:bg-[#383838]"
               id="loginBtn"
               type="button"
               onClick={() => {
@@ -150,8 +150,8 @@ function Home() {
               Login
             </button>
           </div>
-          <div className="flex items-center justify-center">
-            <p className="text-xs">
+          <div className="flex items-center justify-center mt-1">
+            <p className="text-xs text-[#203169] dark:text-[#d9d9d9]">
               Don&apos;t have an account? Click{" "}
               <Link to="register" className="font-bold">
                 here.
