@@ -3,10 +3,12 @@ import { useState } from "react";
 import { Spinner } from "./components/Spinner";
 import logo from "./images/Logo.png";
 import forge from "node-forge";
+import { useNavigate } from "react-router-dom";
 
 function Register() {
   // const [publicKey, setPublicKey] = useState("");
   // const [privateKey, setPrivateKey] = useState("");
+  const navigate = useNavigate();
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -26,6 +28,11 @@ function Register() {
       setErrorMessage("Empty Fields");
       return;
     }
+    if (password.length < 8) {
+      setIsLoading(false);
+      setErrorMessage("Password too short");
+      return;
+    }
 
     setIsLoading(true);
 
@@ -41,32 +48,48 @@ function Register() {
     console.log(JSON.stringify(data));
     console.log(JSON.stringify(publicKey));
 
-    await fetch("http://localhost:3000/api/users/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json; charset=UTF-8",
-      },
-      body: JSON.stringify(data),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        console.log("private key: ", privateKey);
-        const element = document.createElement("a");
-        const file = new Blob(["PRIVATE KEY:\n" + privateKey], {
-          type: "text/plain",
-        });
-        element.href = URL.createObjectURL(file);
-        element.download = "privateKey.pem";
-        document.body.appendChild(element);
-        element.click();
-        element.remove();
+    let downloadElement;
 
-        setIsLoading(false);
-      })
-      .catch((err) => {
-        console.log(err.message);
+    try {
+      const response = await fetch("http://localhost:3000/api/users/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json; charset=UTF-8",
+        },
+        body: JSON.stringify(data),
       });
+
+      if (!response.ok) {
+        throw new Error("Error registering user");
+      }
+
+      const responseData = await response.json();
+      console.log(responseData);
+      console.log("private key: ", privateKey);
+
+      const element = document.createElement("a");
+      const file = new Blob(["PRIVATE KEY:\n" + privateKey], {
+        type: "text/plain",
+      });
+      element.href = URL.createObjectURL(file);
+      element.download = "privateKey.pem";
+      document.body.appendChild(element);
+      element.click();
+      element.remove();
+
+      setIsLoading(false);
+      navigate("/");
+    } catch (err) {
+      setIsLoading(false);
+      setErrorMessage("Email already in use");
+      console.log(err);
+
+      // Remove the download element if it exists
+      downloadElement = document.querySelector("a[download='privateKey.pem']");
+      if (downloadElement) {
+        downloadElement.remove();
+      }
+    }
   }
 
   async function generateKeys() {
@@ -82,10 +105,10 @@ function Register() {
         <img className="lg:w-2/3 w-1/4 min-w-[250px]" alt="Logo" src={logo} />
       </div>
 
-      <div className="lg:visible collapse h-[80%] w-[4px] min-w-[4px] rounded-lg bg-gray-100 dark:bg-[#9c9c9c]"/>
+      <div className="lg:visible collapse h-[80%] w-[4px] min-w-[4px] rounded-lg bg-gray-100 dark:bg-[#9c9c9c]" />
 
       <div className="lg:collapse visible flex items-center justify-center">
-        <hr className="w-[80%] h-[4px] my-[50px] min-w-[80%] rounded bg-gray-100 dark:bg-[#9c9c9c]"/>
+        <hr className="w-[80%] h-[4px] my-[50px] min-w-[80%] rounded bg-gray-100 dark:bg-[#9c9c9c]" />
       </div>
 
       <div className="lg:w-1/3 lg:flex-col lg:pl-[200px] lg:min-w-[600px] flex items-center justify-center">

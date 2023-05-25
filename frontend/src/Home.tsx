@@ -64,10 +64,10 @@ function Home() {
         <img className="lg:w-2/3 w-1/4 min-w-[250px]" alt="Logo" src={logo} />
       </div>
 
-      <div className="collapse lg:visible h-[80%] w-[4px] min-w-[4px] rounded-lg bg-gray-100 dark:bg-[#9c9c9c]"/>
+      <div className="collapse lg:visible h-[80%] w-[4px] min-w-[4px] rounded-lg bg-gray-100 dark:bg-[#9c9c9c]" />
 
       <div className="lg:collapse visible flex items-center justify-center">
-        <hr className="w-[80%] h-[4px] my-[50px] min-w-[80%] rounded bg-gray-100 dark:bg-[#9c9c9c]"/>
+        <hr className="w-[80%] h-[4px] my-[50px] min-w-[80%] rounded bg-gray-100 dark:bg-[#9c9c9c]" />
       </div>
 
       <div className="lg:w-1/3 lg:flex-col lg:pl-[200px] lg:min-w-[600px] flex items-center justify-center">
@@ -97,14 +97,6 @@ function Home() {
               required
               onChange={(e) => setPassword(e.target.value)}
             />
-          </div>
-          <div className="pt-1 pb-2 flex items-center justify-center">
-            <p className="text-xs text-[#577D86] dark:text-[#d9d9d9]">
-              Forgot your password? Click{" "}
-              <Link to="/" className="font-bold">
-                here
-              </Link>
-            </p>
           </div>
 
           {errorMessage != "" && (
