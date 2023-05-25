@@ -168,8 +168,8 @@ export default function SendFilePopup(props: {
       <form className="flex items-center justify-center w-8/12">
         <div
           className="px-10 pt-4 flex flex-col items-center justify-center w-full h-full border-2
-         border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:bg-gray-700
-         dark:border-gray-600"
+          border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:bg-gray-700
+          dark:border-gray-600"
         >
           <div className="flex flex-row w-full space-x-8">
             <div className="flex w-1/2 flex-col">
@@ -215,7 +215,7 @@ export default function SendFilePopup(props: {
                   </>
                 ) : (
                   <>
-                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                    <div className="flex flex-col items-center justify-center text-center pt-5 pb-6">
                       <svg
                         aria-hidden="true"
                         className="w-10 h-10 mb-3 text-gray-400"
