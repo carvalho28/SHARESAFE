@@ -18,7 +18,17 @@ A popup will appear, where the user can:
 
 ## File Encryption
 
-If the user does not submit a symmetric key, one will be generated randomly. The generated iv is always random.
+For safety purposes, the iv is generated randomly and is different for each file.
+
+The encryption however can be done in three different ways:
+
+- using a symetric key chosen by the user;
+- using a symetric key generated randomly;
+- using the [diffie-hellman](../extras/diffie-hell) key exchange algorithm.
+
+### Random Symetric Key
+
+If the user does not submit a symmetric key, one will be generated randomly.
 
 ```typescript title="Generating symetric key and iv"
 const symetricKey = forge.random.getBytesSync(32);
@@ -33,6 +43,26 @@ cipher.start({ iv: iv });
 cipher.update(forge.util.createBuffer(fileBytes));
 cipher.finish();
 ```
+
+### Symetric Key chosen by the user
+
+If the user submits a symetric key, it will be used to encrypt the file.
+
+```typescript title="Creating symetric key based on user input"
+symetricKey = forge.pkcs5.pbkdf2(
+  own_key,
+  forge.random.getBytesSync(32),
+  10000,
+  32,
+);
+```
+
+This function `forge.pkcs5.pbkdf2` generates a symetric key based on the user's input and a random salt,
+allowing the password to be used as a key, in a secure way.
+
+### Symetric Key generated using Diffie-Hellman
+
+The process of generating the symetric key is explained in the [diffie-hellman](../extras/diffie-hell) page.
 
 ### Allowed encryption algorithms
 
