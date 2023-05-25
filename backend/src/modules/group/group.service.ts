@@ -4,6 +4,7 @@ import {
   GetGroupKeysInput,
   GetUserFromGroupInput,
   GroupAddFilesInput,
+  GroupAddMemberInput,
   GroupAddMembersInput,
   GroupInput,
   UserAndGroupInput
@@ -180,7 +181,7 @@ export async function addFilesToGroup(input: GroupAddFilesInput) {
 }
 
 // add members to group
-export async function addMembersToGroup(input: GroupAddMembersInput) {
+export async function addMembersToGroup(input: GroupAddMembersInput) {  
   const data = {
     members: {
       connect: input.members.map((memberId) => ({ id: memberId })),
@@ -193,6 +194,28 @@ export async function addMembersToGroup(input: GroupAddMembersInput) {
     },
     data,
   });
+
+  return group;
+}
+
+export async function addMemberToGroup(input: GroupAddMemberInput) {  
+  console.log(input);
+  
+  const group = await prisma.group.update({
+    where: {
+      id: input.group_id,
+    },
+    data: {
+      members: {
+        connect: {
+          id: input.user_id,
+        },
+      },
+    },
+  });
+
+  console.log(group);
+  
 
   return group;
 }

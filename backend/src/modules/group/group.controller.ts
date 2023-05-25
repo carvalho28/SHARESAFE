@@ -4,6 +4,7 @@ import {
   GroupAddMembersInput,
   GroupInput,
   GetGroupKeysInput,
+  GroupAddMemberInput,
 } from "./group.schema";
 import {
   addFilesToGroup,
@@ -12,7 +13,8 @@ import {
   getGroupsForUser,
   getUsersFromGroup,
   getGroupKeys,
-  removeUserFromGroup
+  removeUserFromGroup,
+  addMemberToGroup
 } from "./group.service";
 
 // get users from a given group
@@ -78,6 +80,20 @@ export async function addMembersToGroupHandler(
 
   try {
     const group = await addMembersToGroup(body);
+    return reply.code(201).send(group);
+  } catch (error) {
+    return reply.code(400).send(error);
+  }
+}
+
+export async function addMemberToGroupHandler(
+  request: FastifyRequest<{ Body: GroupAddMemberInput }>,
+  reply: FastifyReply
+) {
+  const body = request.body;
+
+  try {
+    const group = await addMemberToGroup(body);
     return reply.code(201).send(group);
   } catch (error) {
     return reply.code(400).send(error);

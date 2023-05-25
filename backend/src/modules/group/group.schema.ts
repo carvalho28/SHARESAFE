@@ -18,6 +18,11 @@ const groupAddMembers = z.object({
   members: z.array(z.any()),
 });
 
+const groupAddMember = z.object({
+  group_id: z.number(),
+  user_id: z.number()
+});
+
 const GetUserFromGroupSchema = z.object({
   group_id: z.number({
     required_error: "Group Id is required",
@@ -45,6 +50,7 @@ const UserAndGroup = z.object({
 export type GroupInput = z.infer<typeof groupCore>;
 export type GroupAddFilesInput = z.infer<typeof groupAddFiles>;
 export type GroupAddMembersInput = z.infer<typeof groupAddMembers>;
+export type GroupAddMemberInput = z.infer<typeof groupAddMember>;
 export type GetUserFromGroupInput = z.infer<typeof GetUserFromGroupSchema>;
 export type GetGroupKeysInput = z.infer<typeof GetGroupKeys>;
 export type UserAndGroupInput = z.infer<typeof UserAndGroup>;

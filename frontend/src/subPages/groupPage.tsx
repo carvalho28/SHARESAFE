@@ -138,6 +138,43 @@ function GroupPage() {
     return userWithID.email;
   }
 
+  const handleAddNewMember = async () => {
+    if (email.trim() !== "") {
+      if (validEmails.includes(email)) {
+        const selectedUser = user.filter(item => item.email === email)
+        console.log(selectedUser);
+        
+        const response = await fetch("http://localhost:3000/api/groups/addMemberToGroup", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            group_id: groupIdEdit,
+            user_id: selectedUser[0].id
+          }),
+        })
+        .then((res) => res.json())
+        .then((data) => {
+          return data;
+        })
+        .catch((err) => {
+          console.log(err.message);
+        });
+
+        console.log(response);
+
+        if (response) {
+          console.log("user added");
+        } else {
+          setErrorMessage("Error adding user");
+          setShowErrorMessage(true);
+        }
+      }
+    }
+    
+  };
+
   const handleAddMember = () => {
     if (email.trim() !== "") {
       setShowErrorMessage(false);
@@ -275,10 +312,6 @@ function GroupPage() {
     }
   };
 
-  const handleAddNewMember = async () => {
-    // add nem member to the group, i.e., update the members from the db
-  };
-
   const handleRemoveMember = async (email: string) => {
     // remove member from group
     console.log(email);
@@ -398,7 +431,7 @@ function GroupPage() {
                 className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
                 onClick={handleAddMember}
               >
-                Add member
+                Add Member
               </button>
             </div>
 
@@ -466,32 +499,6 @@ function GroupPage() {
           <form className="w-full text-center pt-5">
             <h1>Edit Group</h1>
 
-            <div className="flex justify-center py-5">
-              <table className="w-1/2 text-sm text-center text-black">
-                <thead className="text-xs text-gray-700 uppercase bg-gray-200">
-                  <tr>
-                    <th scope="col" className="px-6 py-3">
-                      Members
-                    </th>
-                  </tr>
-                </thead>
-
-                <tbody>
-                  {members.map((member, index) => (
-                    <tr
-                      key={index}
-                      className="bg-gray-100 cursor:pointer"
-                      onClick={() => handleRemoveMember(member)}
-                      onMouseOver={handleMouseOver}
-                      onMouseOut={handleMouseOut}
-                    >
-                      <th>{member}</th>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
             <div className="py-3 flex justify-center">
               <input
                 className="shadow appearance-none w-1/2 border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-xl"
@@ -536,7 +543,7 @@ function GroupPage() {
                 className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
                 onClick={handleAddNewMember}
               >
-                Add member
+                Add Member
               </button>
             </div>
 
