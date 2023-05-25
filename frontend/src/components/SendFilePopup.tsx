@@ -301,14 +301,14 @@ export default function SendFilePopup(props: {
           <div className="flex items-center justify-center w-full mt-2 space-x-20">
             <div className="mt-8">
               <Dropdown
-                label="Algorithm to Sign"
+                label="Algorithm to Encrypt"
                 defaultValue={algorithmOptions[0]}
                 items={algorithmOptions}
               />
             </div>
             <div className="mt-8">
               <Dropdown
-                label="Algorithm to Encrypt"
+                label="Algorithm to Sign"
                 defaultValue={algorithmOptions[0]}
                 items={algorithmOptions}
               />
