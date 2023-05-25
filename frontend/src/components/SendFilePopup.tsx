@@ -36,14 +36,16 @@ export default function SendFilePopup(props: {
   triggered: boolean;
   setTriggered: Function;
 }) {
-  // Get group id from url
-  const currentPathname = window.location.pathname;
-  const splitString = currentPathname.split("/");
-  const id = splitString[splitString.length - 1];
-  const group_id = +id;
-
-  console.log("groupid: "+group_id);
   
+  const [group_id, setGroup_id] = useState(1);
+
+  useEffect(() => {
+    // Get group id from url
+    const currentPathname = window.location.pathname;
+    const splitString = currentPathname.split("/");
+    const id = splitString[splitString.length - 1];
+    setGroup_id(+id);
+  }, [])
 
   const [file, setFile] = useState<File>();
   const [filePreview, setFilePreview] = useState<filePreview | undefined>();

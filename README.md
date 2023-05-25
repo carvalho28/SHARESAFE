@@ -21,7 +21,7 @@ yarn install
 Install the dependencies for both backend and frontend
 
 ```bash
-yarn inst:all
+install:deps
 ```
 
 Run both backend and frontend concurrently

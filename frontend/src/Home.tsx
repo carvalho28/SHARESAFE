@@ -60,12 +60,8 @@ function Home() {
 
   return (
     <div className="lg:flex lg:items-center lg:justify-center lg:h-screen bg-[#ffffff] dark:bg-[#1a1a1a]">
-      <div className="lg:w-1/3 lg:flex-col lg:pr-[200px] lg:min-w-[600px] flex items-center justify-center">
-        <img
-          className="lg:w-full w-1/3 min-h-[300px] min-w-[400px]"
-          alt="Logo"
-          src={logo}
-        />
+      <div className="flex items-center justify-center lg:w-1/3 lg:flex-col lg:pr-[200px] lg:min-w-[600px]">
+        <img className="lg:w-2/3 w-1/4 min-w-[250px]" alt="Logo" src={logo} />
       </div>
 
       <div className="collapse lg:visible h-[80%] w-[4px] min-w-[4px] rounded-lg bg-gray-100 dark:bg-[#9c9c9c]" />
@@ -77,12 +73,10 @@ function Home() {
       <div className="lg:w-1/3 lg:flex-col lg:pl-[200px] lg:min-w-[600px] flex items-center justify-center">
         <form className="shadow-lg rounded px-8 pt-6 pb-6 mb-4 bg-white dark:bg-[#242424]">
           <div className="flex items-center justify-center">
-            <p className="text-6xl text-[#203169] dark:text-[#d9d9d9]">Login</p>
+            <p className="text-6xl text-[#577D86] dark:text-[#d9d9d9]">Login</p>
           </div>
           <div className="pt-3 flex items-center justify-center">
-            <p className="text-xs font-bold text-[#203169] dark:text-[#d9d9d9]">
-              WELCOME BACK TO SHARESAFE
-            </p>
+            <p className="text-xs font-bold text-[#577D86] dark:text-[#d9d9d9]">WELCOME BACK TO SHARESAFE</p>
           </div>
           <div className="pt-5 flex items-center justify-center">
             <input
@@ -138,7 +132,7 @@ function Home() {
 
           <div className="flex items-center justify-center pt-10 px-[63px]">
             <button
-              className="shadow appearance-none rounded w-full py-2 font-bold text-xl bg-[#101832] hover:bg-[#203169] text-white dark:text-[#d9d9d9] dark:bg-[#333333] dark:hover:bg-[#383838]"
+              className="shadow appearance-none rounded w-full py-2 font-bold text-xl bg-[#87CBB9] hover:bg-[#B9EDDD] text-white dark:text-[#d9d9d9] dark:bg-[#333333] dark:hover:bg-[#383838]"
               id="loginBtn"
               type="button"
               onClick={() => {
@@ -149,7 +143,7 @@ function Home() {
             </button>
           </div>
           <div className="flex items-center justify-center mt-1">
-            <p className="text-xs text-[#203169] dark:text-[#d9d9d9]">
+            <p className="text-xs text-[#577D86] dark:text-[#d9d9d9]">
               Don&apos;t have an account? Click{" "}
               <Link to="register" className="font-bold">
                 here.
