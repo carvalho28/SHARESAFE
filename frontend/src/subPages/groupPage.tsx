@@ -11,14 +11,7 @@ type Group = {
 };
 
 function GroupPage() {
-  // variables for group
-  const [group, setGroup] = useState<Group>({
-    name: "Random243",
-    files: [],
-    members: ["diogo@diogo.com", "fernando.cruz@ubi.pt"],
-  });
 
-  const createGroup = async () => {
   const [groups, setGroups] = useState<
     {
       id: number;
