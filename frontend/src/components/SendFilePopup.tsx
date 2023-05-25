@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import sendFile from "../encryption/SendFile";
 import { FaFileAlt, FaKey } from "react-icons/fa";
 import Dropdown from "./Dropdown";
@@ -47,6 +47,7 @@ export default function SendFilePopup(props: {
 
   const [symmetricKey, setSymmetricKey] = useState<string>("");
   const [ownKey, setOwnKey] = useState<boolean>(false);
+  const [useDiffie, setUseDiffie] = useState<boolean>(false);
 
   const [algorithm_sign, setAlgorithm_sign] = useState<string>(
     algorithmMDOptions[0].value,
@@ -368,12 +369,19 @@ export default function SendFilePopup(props: {
                 htmlFor="generatedKey"
                 className="text-sm font-medium text-gray-900 dark:text-white mr-2"
               >
-                Use Own Key
+                Use own key
               </label>
               <input
+                checked={ownKey}
                 type="checkbox"
                 id="generatedKey"
-                onChange={(e) => setOwnKey(e.target.checked)}
+                onChange={(e) => {
+                  // if diffie is selected, deselect it
+                  if (e.target.checked) {
+                    setUseDiffie(false);
+                  }
+                  setOwnKey(e.target.checked);
+                }}
                 className="w-4 h-4 text-blue-500 rounded border-gray-300 focus:ring-blue-500"
               />
             </div>
@@ -392,11 +400,38 @@ export default function SendFilePopup(props: {
                   className="bg-gray-50 border border-gray-300 text-gray-900 
               text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 
               block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 
-              dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 "
+              dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500
+               dark:focus:border-blue-500 "
                 />
               </div>
             ) : null}
           </div>
+
+          {/* checkbox to useDiffie */}
+          <div className="flex items-center justify-center w-full mt-6">
+            <div className="flex items-center justify-center">
+              <label
+                htmlFor="useDiffie"
+                className="text-sm font-medium text-gray-900 dark:text-white mr-2"
+              >
+                Use diffie-hellman
+              </label>
+              <input
+                checked={useDiffie}
+                type="checkbox"
+                id="useDiffie"
+                onChange={(e) => {
+                  // if ownKey is checked, uncheck it
+                  if (ownKey) {
+                    setOwnKey(false);
+                  }
+                  setUseDiffie(e.target.checked);
+                }}
+                className="w-4 h-4 text-blue-500 rounded border-gray-300 focus:ring-blue-500"
+              />
+            </div>
+          </div>
+
           <div className="flex flex-col items-center justify-center w-full mt-2">
             <button
               id="btnSend"
@@ -440,16 +475,6 @@ export default function SendFilePopup(props: {
                 </svg>
               </div>
             </button>
-            <div className=" w-20">
-              {diffieKey ? (
-                <span className="font-normal text-white truncate w-20">
-                  Diffie-Hellman Key:
-                  {diffieKey}
-                </span>
-              ) : (
-                "No Diffie-Hellman Key"
-              )}
-            </div>
           </div>
         </div>
       </form>
