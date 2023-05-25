@@ -3,6 +3,7 @@ import sendFile from "../encryption/SendFile";
 import { FaFileAlt, FaKey } from "react-icons/fa";
 import Dropdown from "./Dropdown";
 import { getCookie } from "../auth/Cookies";
+import forge from "node-forge";
 
 type filePreview = {
   name: string;
@@ -10,9 +11,25 @@ type filePreview = {
   arrayBuffer: ArrayBuffer | unknown;
 };
 
-const algorithmOptions = [
+const algorithmEncOptions = [
   { value: "AES-CBC", label: "AES-CBC" },
+  { value: "AES-ECB", label: "AES-ECB" },
+  { value: "AES-CFB", label: "AES-CFB" },
+  { value: "AES-OFB", label: "AES-OFB" },
+  { value: "AES-CTR", label: "AES-CTR" },
   { value: "AES-GCM", label: "AES-GCM" },
+  { value: "3DES-ECB", label: "3DES-ECB" },
+  { value: "3DES-CBC", label: "3DES-CBC" },
+  { value: "DES-ECB", label: "DES-ECB" },
+  { value: "DES-CBC", label: "DES-CBC" },
+];
+
+const algorithmMDOptions = [
+  { value: "SHA1", label: "SHA1" },
+  { value: "SHA256", label: "SHA256" },
+  { value: "SHA384", label: "SHA384" },
+  { value: "SHA512", label: "SHA512" },
+  { value: "MD5", label: "MD5" },
 ];
 
 export default function SendFilePopup(props: {
@@ -21,7 +38,6 @@ export default function SendFilePopup(props: {
 }) {
   const [file, setFile] = useState<File>();
   const [filePreview, setFilePreview] = useState<filePreview | undefined>();
-  // const [fileName, setFileName] = useState<string>("");
   const [digitalSignature, setDigitalSignature] = useState<File | undefined>(
     undefined,
   );
@@ -31,6 +47,14 @@ export default function SendFilePopup(props: {
 
   const [symmetricKey, setSymmetricKey] = useState<string>("");
   const [ownKey, setOwnKey] = useState<boolean>(false);
+
+  const [algorithm_sign, setAlgorithm_sign] = useState<string>(
+    algorithmMDOptions[0].value,
+  );
+  const [algorithm_encrypt, setAlgorithm_encrypt] =
+    useState<forge.cipher.Algorithm>("AES-CBC");
+  const [algorithm_hmac, setAlgorithm_hmac] =
+    useState<forge.md.Algorithm>("sha256");
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
@@ -56,7 +80,19 @@ export default function SendFilePopup(props: {
 
   const [privateKey, setPrivateKey] = useState<String | undefined>(undefined);
 
-  const handleDigitalSignatureChange = (e: any) => {
+  const handleAlgorithmChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.name === "algorithm-Sign") {
+      setAlgorithm_sign(e.target.value);
+    }
+    if (e.target.name === "algorithm-Encrypt") {
+      setAlgorithm_encrypt(e.target.value as forge.cipher.Algorithm);
+    }
+    if (e.target.name === "algorithm-HMAC") {
+      setAlgorithm_hmac(e.target.value as forge.md.Algorithm);
+    }
+  };
+
+  const handleDigitalSignatureChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
     const file = e.target.files[0];
     setDigitalSignature(file);
@@ -129,7 +165,6 @@ export default function SendFilePopup(props: {
       className="fixed inset-0 p-4 sm:ml-64 bg-black bg-opacity-5 backdrop-blur-sm 
     flex justify-center items-center"
     >
-      {/* <button onClick={() => sendFile(file, 1)}>teste</button> */}
       <form className="flex items-center justify-center w-8/12">
         <div
           className="px-10 pt-4 flex flex-col items-center justify-center w-full h-full border-2
@@ -258,7 +293,7 @@ export default function SendFilePopup(props: {
                     </>
                   ) : (
                     <>
-                      <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                      <div className="flex flex-col items-center justify-center pt-5 pb-6 text-center">
                         <svg
                           aria-hidden="true"
                           className="w-10 h-10 mb-3 text-gray-400"
@@ -301,23 +336,29 @@ export default function SendFilePopup(props: {
           <div className="flex items-center justify-center w-full mt-2 space-x-20">
             <div className="mt-8">
               <Dropdown
-                label="Algorithm to Encrypt"
-                defaultValue={algorithmOptions[0]}
-                items={algorithmOptions}
+                label="Algorithm to Sign"
+                name="algorithm-Sign"
+                onSelect={handleAlgorithmChange}
+                defaultValue={algorithmMDOptions[1]}
+                items={algorithmMDOptions}
               />
             </div>
             <div className="mt-8">
               <Dropdown
-                label="Algorithm to Sign"
-                defaultValue={algorithmOptions[0]}
-                items={algorithmOptions}
+                label="Algorithm to Encrypt"
+                name="algorithm-Encrypt"
+                onSelect={handleAlgorithmChange}
+                defaultValue={algorithmEncOptions[0]}
+                items={algorithmEncOptions}
               />
             </div>
             <div className="mt-8">
               <Dropdown
                 label="Algorithm to HMAC"
-                defaultValue={algorithmOptions[0]}
-                items={algorithmOptions}
+                name="algorithm-HMAC"
+                onSelect={handleAlgorithmChange}
+                defaultValue={algorithmMDOptions[1]}
+                items={algorithmMDOptions}
               />
             </div>
           </div>
@@ -368,9 +409,9 @@ export default function SendFilePopup(props: {
                   file!,
                   1,
                   digitalSignature,
-                  "AES-CBC",
-                  "sha256",
-                  "sha256",
+                  algorithm_encrypt,
+                  algorithm_sign,
+                  algorithm_hmac,
                 ).catch((error) => {
                   console.error("Error sending file:", error);
                 });
