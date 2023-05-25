@@ -1,5 +1,5 @@
 import { ChangeEvent, useEffect, useState } from "react";
-import sendFile from "../encryption/SendFile";
+import sendFile, { typesEnc } from "../encryption/SendFile";
 import { FaFileAlt, FaKey } from "react-icons/fa";
 import Dropdown from "./Dropdown";
 import { getCookie } from "../auth/Cookies";
@@ -41,13 +41,14 @@ export default function SendFilePopup(props: {
   const [digitalSignature, setDigitalSignature] = useState<File | undefined>(
     undefined,
   );
-  const [digitalSignaturePreview, setDigitalSignaturePreview] = useState<
+  const [privateKeyPreview, setprivateKeyPreview] = useState<
     filePreview | undefined
   >();
 
-  const [symmetricKey, setSymmetricKey] = useState<string>("");
   const [ownKey, setOwnKey] = useState<boolean>(false);
   const [useDiffie, setUseDiffie] = useState<boolean>(false);
+
+  const [ownKeyInput, setOwnKeyInput] = useState<string>("");
 
   const [algorithm_sign, setAlgorithm_sign] = useState<string>(
     algorithmMDOptions[0].value,
@@ -114,7 +115,7 @@ export default function SendFilePopup(props: {
 
     reader.addEventListener("load", function () {
       // setFilePreview(reader.result);
-      setDigitalSignaturePreview({
+      setprivateKeyPreview({
         name: file.name,
         type: file.type,
         arrayBuffer: reader.result as ArrayBuffer,
@@ -156,7 +157,6 @@ export default function SendFilePopup(props: {
 
   useEffect(() => {
     getDiffieHellmanKey().then((response) => {
-      console.log(response);
       setDiffieKey(response.diffie_key);
     });
   }, []);
@@ -255,25 +255,25 @@ export default function SendFilePopup(props: {
                 className="text-lg font-medium text-gray-900 dark:text-gray-100 text-center
                         flex flex-col items-center flex-center justify-center mb-4"
               >
-                Digital Signature
+                Private Key
               </h3>
               <div className="flex items-center justify-center w-full">
                 <label
                   htmlFor="dropzone-file-digital-signature"
                   className="flex flex-col items-center justify-center w-full h-44 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
                 >
-                  {digitalSignaturePreview ? (
+                  {privateKeyPreview ? (
                     <>
-                      {digitalSignaturePreview.type.includes("image") ? (
+                      {privateKeyPreview.type.includes("image") ? (
                         <>
                           <img
-                            src={digitalSignaturePreview.arrayBuffer as string}
+                            src={privateKeyPreview.arrayBuffer as string}
                             alt="file preview"
                             className="w-full h-full object-contain p-10"
                           />
                           <p className="mb-2 text-lg text-gray-500 dark:text-gray-400 mt-4">
                             <span className="font-semibold">
-                              {digitalSignaturePreview.name}
+                              {privateKeyPreview.name}
                             </span>
                           </p>
                         </>
@@ -286,7 +286,7 @@ export default function SendFilePopup(props: {
                           </div>
                           <p className="mb-2 text-lg text-gray-500 dark:text-gray-400 mt-4">
                             <span className="font-semibold">
-                              {digitalSignaturePreview.name}
+                              {privateKeyPreview.name}
                             </span>
                           </p>
                         </div>
@@ -376,7 +376,6 @@ export default function SendFilePopup(props: {
                 type="checkbox"
                 id="generatedKey"
                 onChange={(e) => {
-                  // if diffie is selected, deselect it
                   if (e.target.checked) {
                     setUseDiffie(false);
                   }
@@ -395,6 +394,8 @@ export default function SendFilePopup(props: {
                   Key
                 </label>
                 <input
+                  value={ownKeyInput}
+                  onChange={(e) => setOwnKeyInput(e.target.value)}
                   type="text"
                   id="default-input"
                   className="bg-gray-50 border border-gray-300 text-gray-900 
@@ -437,8 +438,18 @@ export default function SendFilePopup(props: {
               id="btnSend"
               className="flex items-center justify-center border-2 my-4 px-2 py-1 rounded hover:bg-gray-600"
               onClick={(event) => {
+                let encType: typesEnc;
+                if (ownKey) {
+                  encType = "userKey";
+                } else if (useDiffie) {
+                  encType = "diffie";
+                } else {
+                  encType = "random";
+                }
                 event.preventDefault();
                 sendFile(
+                  encType,
+                  ownKeyInput,
                   String(privateKey),
                   diffieKey!,
                   file!,
@@ -454,7 +465,7 @@ export default function SendFilePopup(props: {
                 setFile(undefined);
                 setFilePreview(undefined);
                 setDigitalSignature(undefined);
-                setDigitalSignaturePreview(undefined);
+                setprivateKeyPreview(undefined);
                 // close modal
               }}
             >
