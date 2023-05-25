@@ -46,7 +46,7 @@ function Home() {
           setCookie("accessToken", data.accessToken, 7);
           setCookie("user_id", data.id, 7);
           setIsLoading(false);
-          navigate("/mainmenu");
+          navigate("/inbox");
         } else {
           setIsLoading(false);
           setErrorMessage("Wrong Credentials");
@@ -76,7 +76,9 @@ function Home() {
             <p className="text-6xl text-[#577D86] dark:text-[#d9d9d9]">Login</p>
           </div>
           <div className="pt-3 flex items-center justify-center">
-            <p className="text-xs font-bold text-[#577D86] dark:text-[#d9d9d9]">WELCOME BACK TO SHARESAFE</p>
+            <p className="text-xs font-bold text-[#577D86] dark:text-[#d9d9d9]">
+              WELCOME BACK TO SHARESAFE
+            </p>
           </div>
           <div className="pt-5 flex items-center justify-center">
             <input

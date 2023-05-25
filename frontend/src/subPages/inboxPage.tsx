@@ -44,11 +44,10 @@ function useMDForAlgorithm(algorithm: string) {
 
 // this pages only contains the files for the group "Global", common to every user
 function InboxPage() {
-  
-  const heading = "Global"
+  const heading = "Global";
   const group_id: number = 1;
 
-  const user_id = getCookie('user_id');
+  const user_id = getCookie("user_id");
 
   const [dataFile, setdataFile] = useState<any>([]);
   const [groupData, setGroupData] = useState<any>({});
@@ -105,9 +104,7 @@ function InboxPage() {
     );
   }, [dataFile]);
 
-  useEffect(() => {
-    // console.log("dataFile", dataFile);
-  }, [dataFile]);
+  useEffect(() => {}, [dataFile]);
 
   const [user, setUser] = useState<
     {
@@ -145,7 +142,7 @@ function InboxPage() {
   }, [user]);
 
   function getUserById(id: number) {
-    // console.log("Owner", id);
+    if (!dataFile) return;
     const userWithID: any = user.find((user: any) => user.id === id);
     return userWithID.name;
   }
