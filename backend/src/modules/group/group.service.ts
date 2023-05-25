@@ -103,6 +103,7 @@ async function processDiffieH(
       });
 
       console.log("Group key for group " + groupId + " stored in the database");
+      console.log("Group key: " + x);
       resolve();
     }, 2000); // Delay of 1 second (adjust as needed)
   });

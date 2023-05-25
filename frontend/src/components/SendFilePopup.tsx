@@ -54,12 +54,26 @@ export default function SendFilePopup(props: {
     e.target.value = "";
   };
 
-  const handleDigitalSignatureChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const [privateKey, setPrivateKey] = useState<String | undefined>(undefined);
+
+  const handleDigitalSignatureChange = (e: any) => {
     if (!e.target.files) return;
     const file = e.target.files[0];
     setDigitalSignature(file);
+
     // set file preview
     const reader = new FileReader();
+
+    reader.onload = async (e: any) => {
+      const dataURL = e.target.result;
+      const text = atob(dataURL.split(",")[1]); // <-- decode the data URL
+      console.log("text", text);
+      var lines = text?.split("\n");
+      lines?.splice(0, 1);
+      var newtext = lines?.join("\n");
+      console.log("newtext", newtext);
+      setPrivateKey(newtext as string);
+    };
 
     reader.addEventListener("load", function () {
       // setFilePreview(reader.result);
@@ -81,7 +95,7 @@ export default function SendFilePopup(props: {
   const getDiffieHellmanKey = async () => {
     const body = {
       user_id: getCookie("user_id"),
-      group_id: 46,
+      group_id: 52,
     };
     const response = await fetch(
       "http://localhost:3000/api/groups/getDiffieKey",
@@ -349,6 +363,8 @@ export default function SendFilePopup(props: {
               onClick={(event) => {
                 event.preventDefault();
                 sendFile(
+                  String(privateKey),
+                  diffieKey!,
                   file!,
                   1,
                   digitalSignature,

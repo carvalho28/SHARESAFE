@@ -22,6 +22,8 @@ type userInformation = {
 };
 
 async function sendFile(
+  private_key: string,
+  diffieKey: string,
   file: File,
   groupId: number,
   digitalSignature: File | undefined,
@@ -29,6 +31,19 @@ async function sendFile(
   signature_algorithm: string,
   mac_algorithm: string,
 ) {
+  if (private_key) {
+    // decrypt the private key
+    const privateKey = forge.pki.privateKeyFromPem(String(private_key));
+    console.log("privateKey", privateKey);
+    console.log("diffieKey", forge.util.decode64(diffieKey));
+    const decryptedX = privateKey.decrypt(
+      forge.util.decode64(diffieKey),
+      "RSA-OAEP",
+    );
+    console.log("decryptedX", decryptedX);
+    return null;
+  }
+  return null;
   const user_id = getCookie("user_id");
   const fileBuffer = await file.arrayBuffer();
   const fileBytes = new Uint8Array(fileBuffer);

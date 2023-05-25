@@ -89,8 +89,6 @@ function FilePage() {
         console.log("receiveData", receiveData);
         setGroupData(receiveData);
         setdataFile(receiveData.group.files);
-        // verify the signature using the public key inside receivedData.group.files.user.public_key
-        // if the signature is valid, decrypt the file using the private key
       } catch (error) {
         console.log(error);
       }
