@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-# Encryption, MAC and Signature
+# Send File
 
 To send an encrypted file to a user, click on the `Send File` button on the Sidebar.
 
@@ -16,129 +16,13 @@ A popup will appear, where the user can:
   - select the digital signature algorithm to be used (RSA-2048 and SHA-256 default);
 - type the desired symetric key to be used in the file encryption (optional).
 
-## File Encryption
+## Steps
 
-For safety purposes, the iv is generated randomly and is different for each file.
+There are 3 steps to send a file:
 
-The encryption however can be done in three different ways:
-
-- using a symetric key chosen by the user;
-- using a symetric key generated randomly;
-- using the [diffie-hellman](../extras/diffie-hell) key exchange algorithm.
-
-### Random Symetric Key
-
-If the user does not submit a symmetric key, one will be generated randomly.
-
-```typescript title="Generating symetric key and iv"
-const symetricKey = forge.random.getBytesSync(32);
-const iv = forge.random.getBytesSync(16);
-```
-
-Then the file will be encrypted using the symmetric key and iv previously generated and the encryption algorithm chosen by the user.
-
-```typescript title="File encryption"
-const cipher = forge.cipher.createCipher(encryption_algorithm, symetricKey);
-cipher.start({ iv: iv });
-cipher.update(forge.util.createBuffer(fileBytes));
-cipher.finish();
-```
-
-### Symetric Key chosen by the user
-
-If the user submits a symetric key, it will be used to encrypt the file.
-
-```typescript title="Creating symetric key based on user input"
-symetricKey = forge.pkcs5.pbkdf2(
-  own_key,
-  forge.random.getBytesSync(32),
-  10000,
-  32,
-);
-```
-
-This function `forge.pkcs5.pbkdf2` generates a symetric key based on the user's input and a random salt,
-allowing the password to be used as a key, in a secure way.
-
-### Symetric Key generated using Diffie-Hellman
-
-The process of generating the symetric key is explained in the [diffie-hellman](../extras/diffie-hell) page.
-
-### Allowed encryption algorithms
-
-- AES-ECB
-- AES-CBC
-- AES-CFB
-- AES-OFB
-- AES-CTR
-- AES-GCM
-- 3DES-ECB
-- 3DES-CBC
-- DES-ECB
-- DES-CBC
-
-### Location - Encrypted Files
-
-The encrypted files are stored in the `files` folder, in the `backend` folder.
-The decision to store the files in the files folder, rather than the database, was made to optimize storage and improve database performance. Additionally, storing files separately allows for easier file management and enables direct access to the files when needed.
-
-## HMAC
-
-The HMAC is generated using the mac algorithm chosen by the user.
-
-```typescript title="HMAC"
-const hmac = forge.hmac.create();
-hmac.start(mac_algorithm, symetricKey);
-hmac.update(base64EncryptedFile);
-const hmacHex = hmac.digest().toHex();
-```
-
-### Allowed HMAC algorithms
-
-- SHA1
-- SHA256
-- SHA384
-- SHA512
-- MD5
-
-This HMAC is used to verify the integrity of the file, when the user receives it.
-HMAC guarantees:
-
-- **Message authentication**: the receiver can verify that the message comes from the sender.
-- **Message integrity**: the receiver can verify that the message has not been altered.
-
-## File Signature
-
-Lastly, if the user has enable the signature, the encryped file will be sign with the user's signature, his private key and the signature algorithm chosen by the user.
-
-````typescript title="Signature"
-
-```typescript title="Sign the encrypted file"
-if (digitalSignature) {
-  const privateKeyFileBuffer = await digitalSignature?.arrayBuffer();
-  const privateKeyString = new TextDecoder().decode(privateKeyFileBuffer);
-  const privateKey = forge.pki.privateKeyFromPem(privateKeyString);
-  // sign the encrypted file
-  md.update(base64EncryptedFile);
-  signature = privateKey.sign(md);
-}
-````
-
-### Allowed Signature algorithms
-
-- SHA1
-- SHA256
-- SHA384
-- SHA512
-- MD5
-
-The signature is used to verify that the received file was sent by the user who claims to have sent it.
-The signature guarantees:
-
-- **Message authentication**: the receiver can verify that the message comes from the sender.
-- **Message integrity**: the receiver can verify that the message has not been altered.
-- **Non-repudiation**: the sender cannot deny having sent the message.
-- **False-proof**: the receiver cannot forge the signature of the message.
+- [Encryption](./enc.md)
+- [HMAC](./mac.md)
+- [Signature](./signature.md)
 
 ## Notes
 
