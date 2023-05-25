@@ -47,11 +47,11 @@ function FilePage() {
   // Get group id from url
   const currentPathname = window.location.pathname;
   const splitString = currentPathname.split("/");
-  let id = splitString[splitString.length - 1];
-  let group_id = +id;
+  const id = splitString[splitString.length - 1];
+  const group_id = +id;
 
   // Get user_id to query the db
-  let user_id = getCookie("user_id");
+  const user_id = getCookie('user_id');
 
   const [groups, setGroups] = useState<
     {
@@ -86,21 +86,11 @@ function FilePage() {
   // Call getGroupsUser function when component is mounted
   useEffect(() => {
     getGroupsUser();
-  }, []);
+  }, [user_id]);
 
   // Group Name
-  const [selectedGroup, setSelectedGroup] = useState<any>(null);
-  useEffect(() => {
-    if (groups.length > 0) {
-      setSelectedGroup(groups.find((group) => group.id === group_id));
-    }
-  }, [groups]);
-  const [heading, setHeading] = useState<string>("Not Found");
-  useEffect(() => {
-    if (selectedGroup) {
-      setHeading(selectedGroup.name);
-    }
-  }, [selectedGroup]);
+  const selectedGroup = groups.find((group) => group.id === group_id);
+  const heading = selectedGroup ? selectedGroup.name : "Not Found";
 
   const [dataFile, setdataFile] = useState<any>([]);
   const [groupData, setGroupData] = useState<any>({});

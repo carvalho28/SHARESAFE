@@ -243,7 +243,7 @@ export default function SendFilePopup(props: {
                     </>
                   ) : (
                     <>
-                      <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                      <div className="flex flex-col items-center justify-center pt-5 pb-6 text-center">
                         <svg
                           aria-hidden="true"
                           className="w-10 h-10 mb-3 text-gray-400"
