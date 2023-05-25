@@ -114,7 +114,9 @@ function Register() {
       <div className="lg:w-1/3 lg:flex-col lg:pl-[200px] lg:min-w-[600px] flex items-center justify-center">
         <form className="shadow-md rounded px-8 pt-6 pb-8 mb-4 bg-white dark:bg-[#242424]">
           <div className="flex items-center justify-center">
-            <p className="text-6xl text-[#577D86] dark:text-[#d9d9d9]">Register</p>
+            <p className="text-6xl text-[#577D86] dark:text-[#d9d9d9]">
+              Register
+            </p>
           </div>
           <div className="flex items-center justify-center pt-3">
             <p className="text-xs font-bold text-[#577D86] dark:text-[#d9d9d9]">
@@ -197,8 +199,11 @@ function Register() {
             <button
               className="shadow appearance-none border rounded w-full py-2 font-bold text-xl text-white dark:text-[#d9d9d9] bg-[#87CBB9] hover:bg-[#B9EDDD] dark:bg-[#333333] dark:hover:bg-[#383838]"
               id="registerBtn"
-              type="button"
-              onClick={() => registerUser()}
+              type="submit"
+              onClick={(e) => {
+                e.preventDefault();
+                registerUser();
+              }}
             >
               Register
             </button>

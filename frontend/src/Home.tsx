@@ -43,6 +43,7 @@ function Home() {
       .then((data) => {
         console.log(data);
         if (data.accessToken) {
+          console.log("login successful");
           setCookie("accessToken", data.accessToken, 7);
           setCookie("user_id", data.id, 7);
           setIsLoading(false);
@@ -134,10 +135,11 @@ function Home() {
 
           <div className="flex items-center justify-center pt-10 px-[63px]">
             <button
+              type="submit"
               className="shadow appearance-none rounded w-full py-2 font-bold text-xl bg-[#87CBB9] hover:bg-[#B9EDDD] text-white dark:text-[#d9d9d9] dark:bg-[#333333] dark:hover:bg-[#383838]"
               id="loginBtn"
-              type="button"
-              onClick={() => {
+              onClick={(e) => {
+                e.preventDefault();
                 loginUser();
               }}
             >
