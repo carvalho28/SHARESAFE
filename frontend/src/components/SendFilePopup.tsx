@@ -160,12 +160,51 @@ export default function SendFilePopup(props: {
     });
   }, []);
 
-  return props.triggered ? (
+  const [isVisible, setIsVisible] = useState(false);
+
+  // Update the isVisible state when props.triggered changes
+  useEffect(() => {
+    setIsVisible(props.triggered);
+  }, [props.triggered]);
+
+  const handleOutsideClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) {
+      setIsVisible(false);
+      props.setTriggered(false);
+    }
+  };
+
+  return props.triggered && isVisible ? (
     <div
       className="fixed inset-0 p-4 sm:ml-64 bg-black bg-opacity-5 backdrop-blur-sm 
     flex justify-center items-center"
+    onClick={handleOutsideClick}
     >
       <form className="flex items-center justify-center w-8/12">
+      <button
+        type="button"
+        onClick={() => {
+          setIsVisible(false);
+            props.setTriggered(false);
+        }}
+        className="absolute top-4 right-4 text-black dark:text-black hover:text-gray-700 dark:hover:text-gray-200 focus:outline-none"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          className="w-6 h-6"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M6 18L18 6M6 6l12 12"
+          />
+        </svg>
+      </button>
+
         <div
           className="px-10 pt-4 flex flex-col items-center justify-center w-full h-full border-2
           border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:bg-gray-700
