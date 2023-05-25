@@ -2,6 +2,7 @@ import React, { ChangeEvent, useEffect, useState } from "react";
 import sendFile from "../encryption/SendFile";
 import { FaFileAlt, FaKey } from "react-icons/fa";
 import Dropdown from "./Dropdown";
+import { getCookie } from "../auth/Cookies";
 import forge from "node-forge";
 
 type filePreview = {
@@ -77,6 +78,8 @@ export default function SendFilePopup(props: {
     e.target.value = "";
   };
 
+  const [privateKey, setPrivateKey] = useState<String | undefined>(undefined);
+
   const handleAlgorithmChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.name === "algorithm-Sign") {
       setAlgorithm_sign(e.target.value);
@@ -93,8 +96,20 @@ export default function SendFilePopup(props: {
     if (!e.target.files) return;
     const file = e.target.files[0];
     setDigitalSignature(file);
+
     // set file preview
     const reader = new FileReader();
+
+    reader.onload = async (e: any) => {
+      const dataURL = e.target.result;
+      const text = atob(dataURL.split(",")[1]); // <-- decode the data URL
+      console.log("text", text);
+      var lines = text?.split("\n");
+      lines?.splice(0, 1);
+      var newtext = lines?.join("\n");
+      console.log("newtext", newtext);
+      setPrivateKey(newtext as string);
+    };
 
     reader.addEventListener("load", function () {
       // setFilePreview(reader.result);
@@ -109,6 +124,41 @@ export default function SendFilePopup(props: {
 
     e.target.value = "";
   };
+
+  const [diffieKey, setDiffieKey] = useState<string | undefined>(undefined);
+
+  // async function to get diffie hellman key
+  const getDiffieHellmanKey = async () => {
+    const body = {
+      user_id: getCookie("user_id"),
+      group_id: 52,
+    };
+    const response = await fetch(
+      "http://localhost:3000/api/groups/getDiffieKey",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json; charset=UTF-8",
+        },
+        body: JSON.stringify(body),
+      },
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        return data;
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+    return response;
+  };
+
+  useEffect(() => {
+    getDiffieHellmanKey().then((response) => {
+      console.log(response);
+      setDiffieKey(response.diffie_key);
+    });
+  }, []);
 
   return props.triggered ? (
     <div
@@ -354,6 +404,8 @@ export default function SendFilePopup(props: {
               onClick={(event) => {
                 event.preventDefault();
                 sendFile(
+                  String(privateKey),
+                  diffieKey!,
                   file!,
                   1,
                   digitalSignature,
@@ -388,6 +440,16 @@ export default function SendFilePopup(props: {
                 </svg>
               </div>
             </button>
+            <div className=" w-20">
+              {diffieKey ? (
+                <span className="font-normal text-white truncate w-20">
+                  Diffie-Hellman Key:
+                  {diffieKey}
+                </span>
+              ) : (
+                "No Diffie-Hellman Key"
+              )}
+            </div>
           </div>
         </div>
       </form>

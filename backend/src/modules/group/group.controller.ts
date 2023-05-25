@@ -3,6 +3,7 @@ import {
   GroupAddFilesInput,
   GroupAddMembersInput,
   GroupInput,
+  GetGroupKeysInput,
 } from "./group.schema";
 import {
   addFilesToGroup,
@@ -10,6 +11,7 @@ import {
   createGroup,
   getGroupsForUser,
   getUsersFromGroup,
+  getGroupKeys,
 } from "./group.service";
 
 // get users from a given group
@@ -79,6 +81,18 @@ export async function getGroupsHandler(
   try {
     const groups = await getGroupsForUser(user_id);
     return reply.code(200).send(groups);
+  } catch (error) {
+    return reply.code(400).send(error);
+  }
+}
+
+export async function getDiffieKey(
+  request: FastifyRequest<{ Body: GetGroupKeysInput }>,
+  reply: FastifyReply
+) {
+  try {
+    const key = await getGroupKeys(request.body);
+    return reply.code(200).send(key);
   } catch (error) {
     return reply.code(400).send(error);
   }
