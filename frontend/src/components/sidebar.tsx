@@ -24,11 +24,11 @@ export default function Sidebar() {
                 <img className="w-1/2" alt="Logo" src={logo} />
               </div>
             </li>
-            <hr className="border-[#e57b1e] dark:border-[#ffffff] border-2 rounded"/>
+            <hr className="border-[#e57b1e] dark:border-[#9c9c9c] border-2 rounded"/>
             <li>
               <button
                 onClick={() => setTriggered(true)}
-                className="flex w-full border-2 items-center p-2 text-base font-normal rounded-lg text-white hover:bg-[#19376D] dark:hover:bg-[#383838]"
+                className="flex w-full border-2 items-center p-2 text-base font-normal rounded-lg text-white hover:bg-[#19376D] dark:hover:bg-[#333333]"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -52,7 +52,7 @@ export default function Sidebar() {
             <li>
               <Link
                 to="/inbox"
-                className="flex items-center p-2 text-base font-normal rounded-lg text-white hover:bg-[#19376D] dark:hover:bg-[#383838]"
+                className="flex items-center p-2 text-base font-normal rounded-lg text-white hover:bg-[#19376D] dark:hover:bg-[#333333]"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -74,7 +74,7 @@ export default function Sidebar() {
             <li>
               <Link
                 to="/group"
-                className="flex items-center p-2 text-base font-normal rounded-lg text-white hover:bg-[#19376D] dark:hover:bg-[#383838]"
+                className="flex items-center p-2 text-base font-normal rounded-lg text-white hover:bg-[#19376D] dark:hover:bg-[#333333]"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -99,7 +99,7 @@ export default function Sidebar() {
               <a
                 href="http://localhost:5174/"
                 target="_blank"
-                className="flex items-center p-2 text-base font-normal rounded-lg text-white hover:bg-[#19376D] dark:hover:bg-[#383838]"
+                className="flex items-center p-2 text-base font-normal rounded-lg text-white hover:bg-[#19376D] dark:hover:bg-[#333333]"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -121,7 +121,7 @@ export default function Sidebar() {
             </li>
             <li>
               <span
-                className="flex items-center p-2 text-base font-normal rounded-lg text-white hover:bg-[#19376D] dark:hover:bg-[#383838] hover:cursor-pointer"
+                className="flex items-center p-2 text-base font-normal rounded-lg text-white hover:bg-[#19376D] dark:hover:bg-[#333333] hover:cursor-pointer"
                 onClick={() => userLogout(navigate)}
               >
                 <svg
