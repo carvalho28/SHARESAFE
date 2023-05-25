@@ -190,7 +190,7 @@ function Register() {
           )}
 
           {isLoading && (
-            <div className="flex items-center justify-center">
+            <div className="flex items-center justify-center mt-3">
               <Spinner />
             </div>
           )}

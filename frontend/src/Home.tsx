@@ -61,7 +61,7 @@ function Home() {
 
   return (
     <div className="lg:flex lg:items-center lg:justify-center lg:h-screen bg-[#ffffff] dark:bg-[#1a1a1a]">
-      <div className="flex items-center justify-center lg:w-1/3 lg:flex-col lg:pr-[200px] lg:min-w-[600px]">
+      <div className="lg:w-1/3 lg:flex-col lg:pr-[200px] flex items-center justify-center">
         <img className="lg:w-2/3 w-1/4 min-w-[250px]" alt="Logo" src={logo} />
       </div>
 
@@ -71,7 +71,7 @@ function Home() {
         <hr className="w-[80%] h-[4px] my-[50px] min-w-[80%] rounded bg-gray-100 dark:bg-[#9c9c9c]" />
       </div>
 
-      <div className="lg:w-1/3 lg:flex-col lg:pl-[200px] lg:min-w-[600px] flex items-center justify-center">
+      <div className="lg:w-1/3 lg:flex-col lg:pl-[200px] flex items-center justify-center">
         <form className="shadow-lg rounded px-8 pt-6 pb-6 mb-4 bg-white dark:bg-[#242424]">
           <div className="flex items-center justify-center">
             <p className="text-6xl text-[#577D86] dark:text-[#d9d9d9]">Login</p>
@@ -91,7 +91,7 @@ function Home() {
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
-          <div className="pt-3 flex items-center justify-center">
+          <div className="pt-3 pb-2 flex items-center justify-center">
             <input
               className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-xl"
               id="password"
@@ -128,7 +128,7 @@ function Home() {
           )}
 
           {isLoading && (
-            <div className="flex items-center justify-center">
+            <div className="flex items-center justify-center mt-3">
               <Spinner />
             </div>
           )}
