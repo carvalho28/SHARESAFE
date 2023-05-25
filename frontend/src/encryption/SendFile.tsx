@@ -38,7 +38,11 @@ async function sendFile(
   let symetricKey: string = "";
   if (encryptionType === "random") {
     console.log("random");
-    symetricKey = forge.random.getBytesSync(32);
+    if (encryption_algorithm === "3DES-CBC" || encryption_algorithm === "3DES-ECB") {
+      symetricKey = forge.random.getBytesSync(24)
+    } else {
+      symetricKey = forge.random.getBytesSync(32);
+    }
   } else if (encryptionType === "userKey") {
     console.log("userKey");
     // create symetric key from own key
