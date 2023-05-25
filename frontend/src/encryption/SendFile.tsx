@@ -34,14 +34,29 @@ async function sendFile(
   encryption_algorithm: forge.cipher.Algorithm,
   signature_algorithm: string,
   mac_algorithm: forge.md.Algorithm,
+  cypherKeySize: string
 ) {
   let symetricKey: string = "";
   if (encryptionType === "random") {
     console.log("random");
-    if (encryption_algorithm === "3DES-CBC" || encryption_algorithm === "3DES-ECB") {
-      symetricKey = forge.random.getBytesSync(24)
-    } else {
-      symetricKey = forge.random.getBytesSync(32);
+    // if (encryption_algorithm === "3DES-CBC" || encryption_algorithm === "3DES-ECB") {
+    //   symetricKey = forge.random.getBytesSync(24)
+    // } else {
+    //   symetricKey = forge.random.getBytesSync(32);
+    // }
+    switch (cypherKeySize) {
+      case "56 bits": {
+        symetricKey = forge.random.getBytesSync(56/2);
+      }
+      case "128 bits": {
+        symetricKey = forge.random.getBytesSync(128/8);
+      }
+      case "192 bits": {
+        symetricKey = forge.random.getBytesSync(192/8);
+      }
+      case "256 bits": {
+        symetricKey = forge.random.getBytesSync(256/8);
+      }
     }
   } else if (encryptionType === "userKey") {
     console.log("userKey");
