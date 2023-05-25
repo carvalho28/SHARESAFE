@@ -131,7 +131,7 @@ export default function SendFilePopup(props: {
   const getDiffieHellmanKey = async () => {
     const body = {
       user_id: getCookie("user_id"),
-      group_id: 52,
+      group_id: 69,
     };
     const response = await fetch(
       "http://localhost:3000/api/groups/getDiffieKey",
