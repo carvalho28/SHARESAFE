@@ -36,7 +36,6 @@ export default function SendFilePopup(props: {
   triggered: boolean;
   setTriggered: Function;
 }) {
-  
   const [group_id, setGroup_id] = useState(1);
 
   useEffect(() => {
@@ -45,7 +44,7 @@ export default function SendFilePopup(props: {
     const splitString = currentPathname.split("/");
     const id = splitString[splitString.length - 1];
     setGroup_id(+id);
-  }, [])
+  }, []);
 
   const [file, setFile] = useState<File>();
   const [filePreview, setFilePreview] = useState<filePreview | undefined>();
@@ -72,6 +71,7 @@ export default function SendFilePopup(props: {
     useState<forge.md.Algorithm>("sha256");
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    console.log(e.target.files);
     if (!e.target.files) return;
     console.log(e.target.files);
     const file = e.target.files[0];
@@ -192,32 +192,32 @@ export default function SendFilePopup(props: {
     <div
       className="fixed inset-0 p-4 sm:ml-64 bg-black bg-opacity-5 backdrop-blur-sm 
     flex justify-center items-center"
-    onClick={handleOutsideClick}
+      onClick={handleOutsideClick}
     >
       <form className="flex items-center justify-center w-8/12">
-      <button
-        type="button"
-        onClick={() => {
-          setIsVisible(false);
+        <button
+          type="button"
+          onClick={() => {
+            setIsVisible(false);
             props.setTriggered(false);
-        }}
-        className="absolute top-4 right-4 text-black dark:text-black hover:text-gray-700 dark:hover:text-gray-200 focus:outline-none"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          className="w-6 h-6"
+          }}
+          className="absolute top-4 right-4 text-black dark:text-black hover:text-gray-700 dark:hover:text-gray-200 focus:outline-none"
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            d="M6 18L18 6M6 6l12 12"
-          />
-        </svg>
-      </button>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            className="w-6 h-6"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
 
         <div
           className="px-10 pt-4 flex flex-col items-center justify-center w-full h-full border-2
@@ -240,6 +240,13 @@ export default function SendFilePopup(props: {
                   <>
                     {filePreview.type.includes("image") ? (
                       <div className="flex flex-col items-center justify-center w-42 h-42">
+                        <input
+                          type="file"
+                          name="file"
+                          id="dropzone-file"
+                          className="hidden"
+                          onChange={handleFileChange}
+                        />
                         <img
                           src={filePreview.arrayBuffer as string}
                           alt="file preview"
@@ -254,7 +261,13 @@ export default function SendFilePopup(props: {
                     ) : (
                       // show file icon with file name
                       <div className="flex flex-col items-center justify-center w-full h-44">
-                        {/* file icon from react-icons */}
+                        <input
+                          type="file"
+                          name="file"
+                          id="dropzone-file"
+                          className="hidden"
+                          onChange={handleFileChange}
+                        />
                         <div className="text-6xl text-gray-400">
                           <FaFileAlt />
                         </div>
@@ -318,6 +331,14 @@ export default function SendFilePopup(props: {
                     <>
                       {privateKeyPreview.type.includes("image") ? (
                         <>
+                          <input
+                            id="dropzone-file-digital-signature"
+                            type="file"
+                            className="hidden"
+                            onChange={handleDigitalSignatureChange}
+                            // limit a .pem file
+                            accept=".pem"
+                          />
                           <img
                             src={privateKeyPreview.arrayBuffer as string}
                             alt="file preview"
@@ -332,7 +353,14 @@ export default function SendFilePopup(props: {
                       ) : (
                         // show file icon with file name
                         <div className="flex flex-col items-center justify-center w-full h-full">
-                          {/* file icon from react-icons */}
+                          <input
+                            id="dropzone-file-digital-signature"
+                            type="file"
+                            className="hidden"
+                            onChange={handleDigitalSignatureChange}
+                            // limit a .pem file
+                            accept=".pem"
+                          />
                           <div className="text-6xl text-gray-400">
                             <FaKey />
                           </div>
