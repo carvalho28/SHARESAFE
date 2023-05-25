@@ -114,12 +114,12 @@ function Register() {
       <div className="lg:w-1/3 lg:flex-col lg:pl-[200px] lg:min-w-[600px] flex items-center justify-center">
         <form className="shadow-md rounded px-8 pt-6 pb-8 mb-4 bg-white dark:bg-[#242424]">
           <div className="flex items-center justify-center">
-            <p className="text-6xl text-[#577D86] dark:text-[#d9d9d9]">
+            <p className="text-6xl text-[#0B2447] dark:text-[#d9d9d9]">
               Register
             </p>
           </div>
           <div className="flex items-center justify-center pt-3">
-            <p className="text-xs font-bold text-[#577D86] dark:text-[#d9d9d9]">
+            <p className="text-xs font-bold text-black dark:text-[#d9d9d9]">
               WELCOME TO SHARESAFE, LET&apos;S GET STARTED
             </p>
           </div>
@@ -197,7 +197,7 @@ function Register() {
 
           <div className="flex items-center justify-center pt-10 pb-1 px-[63px]">
             <button
-              className="shadow appearance-none border rounded w-full py-2 font-bold text-xl text-white dark:text-[#d9d9d9] bg-[#87CBB9] hover:bg-[#B9EDDD] dark:bg-[#333333] dark:hover:bg-[#383838]"
+              className="shadow appearance-none rounded w-full py-2 font-bold text-xl text-white dark:text-[#d9d9d9] bg-[#0B2447] hover:bg-[#19376D] dark:bg-[#333333] dark:hover:bg-[#383838]"
               id="registerBtn"
               type="submit"
               onClick={(e) => {
@@ -209,9 +209,9 @@ function Register() {
             </button>
           </div>
           <div className="flex items-center justify-center mt-1">
-            <p className="text-xs text-[#577D86] dark:text-[#d9d9d9]">
+            <p className="text-xs text-black dark:text-[#d9d9d9]">
               Already have an account? Click{" "}
-              <Link to="/" className="font-bold">
+              <Link to="/" className="font-bold text-[#E57B1E] dark:text-[#d9d9d9]">
                 here.
               </Link>
             </p>
