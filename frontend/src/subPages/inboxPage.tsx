@@ -5,6 +5,7 @@ import decryptFile from "../encryption/DecryptFile";
 import { getCookie } from "../auth/Cookies";
 import forge from "node-forge";
 import { FaTimes } from "react-icons/fa";
+import { GiThink } from "react-icons/gi";
 
 type File = {
   id: number;
@@ -272,7 +273,7 @@ function InboxPage() {
               </tr>
             </thead>
             {/* Linhas da base de dados */}
-            {dataFile && (
+            {dataFile.length !== 0 && (
               <tbody>
                 {dataFile.map((file: any, index: number) => (
                   <tr
@@ -315,6 +316,12 @@ function InboxPage() {
               </tbody>
             )}
           </table>
+          {dataFile.length === 0 && (
+            <div className="flex justify-center items-center mt-10 flex-col">
+              <p className="text-gray-400 text-4xl">No files yet</p>
+              <GiThink className="ml-2 text-gray-400 mt-10" size={300} />
+            </div>
+          )}
         </section>
       </div>
     </div>
