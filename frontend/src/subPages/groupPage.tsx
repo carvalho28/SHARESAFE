@@ -224,8 +224,10 @@ function GroupPage() {
 
   const handleEditForm = (id: number) => {
     console.log(id);
-    setIsShowingEditForm(!isShowingEditForm);
-    (isShowingCreateForm ? setIsShowingCreateForm(!isShowingCreateForm) : setIsShowingCreateForm(isShowingCreateForm));
+    if (!(id === 1)){
+      setIsShowingEditForm(!isShowingEditForm);
+      (isShowingCreateForm ? setIsShowingCreateForm(!isShowingCreateForm) : setIsShowingCreateForm(isShowingCreateForm));
+    }
   }
 
   const handleAddNewMember = async () => {
@@ -235,7 +237,6 @@ function GroupPage() {
   const handleRemoveMember = async (email: string) => {
     // remove member from group
     console.log(email);
-
   }
 
 
@@ -296,7 +297,7 @@ function GroupPage() {
                     className="underline"
                     onClick={() => handleEditForm(group.id)}
                   >
-                    Edit
+                    {group.id === 1 ? "" : "Edit"}
                   </td>
                 </tr>
               ))}

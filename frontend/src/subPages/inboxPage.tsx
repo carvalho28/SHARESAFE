@@ -7,16 +7,18 @@ import receiveFile from "../encryption/ReceiveFile";
 function InboxPage() {
   
   const heading = "Global"
-  const group_id = 1;
+  const group_id: number = 1;
 
   const [dataFile, setdataFile] = useState<any>([]);
+  const [groupData, setGroupData] = useState<any>({});
 
   useEffect(() => {
     const getFiles = async () => {
       try {
         const receiveData = await receiveFile(group_id);
         console.log("receiveData", receiveData);
-        setdataFile(receiveData);
+        setGroupData(receiveData);
+        setdataFile(receiveData.group.files);
       } catch (error) {
         console.log(error);
       }
