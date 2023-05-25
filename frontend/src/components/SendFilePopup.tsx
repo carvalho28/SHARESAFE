@@ -50,6 +50,8 @@ export default function SendFilePopup(props: {
 
   const [ownKeyInput, setOwnKeyInput] = useState<string>("");
 
+  const [signFile, setSignFile] = useState<boolean>(false);
+
   const [algorithm_sign, setAlgorithm_sign] = useState<string>(
     algorithmMDOptions[0].value,
   );
@@ -335,16 +337,39 @@ export default function SendFilePopup(props: {
             </div>
           </div>
           <div className="flex items-center justify-center w-full mt-2 space-x-20">
-            <div className="mt-8">
-              <Dropdown
-                label="Algorithm to Sign"
-                name="algorithm-Sign"
-                onSelect={handleAlgorithmChange}
-                defaultValue={algorithmMDOptions[1]}
-                items={algorithmMDOptions}
-              />
+            {/* checkbox to enable sign file */}
+            <div className="flex items-center justify-center flex-col mt-8">
+              <div className="flex flex-row items-center justify-center">
+                <input
+                  type="checkbox"
+                  id="sign-file"
+                  name="sign-file"
+                  className="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                  checked={signFile}
+                  onChange={(e) => setSignFile(e.target.checked)}
+                />
+                <label
+                  htmlFor="sign-file"
+                  className="block ml-2 text-sm text-gray-900 dark:text-gray-100"
+                >
+                  Sign File
+                </label>
+              </div>
+              <div className="flex flex-col items-center justify-center">
+                {signFile && (
+                  <div className="mt-8">
+                    <Dropdown
+                      label="Algorithm to Sign"
+                      name="algorithm-Sign"
+                      onSelect={handleAlgorithmChange}
+                      defaultValue={algorithmMDOptions[1]}
+                      items={algorithmMDOptions}
+                    />
+                  </div>
+                )}
+              </div>
             </div>
-            <div className="mt-8">
+            <div className="mt-20">
               <Dropdown
                 label="Algorithm to Encrypt"
                 name="algorithm-Encrypt"
@@ -353,7 +378,7 @@ export default function SendFilePopup(props: {
                 items={algorithmEncOptions}
               />
             </div>
-            <div className="mt-8">
+            <div className="mt-20">
               <Dropdown
                 label="Algorithm to HMAC"
                 name="algorithm-HMAC"
@@ -454,7 +479,7 @@ export default function SendFilePopup(props: {
                   diffieKey!,
                   file!,
                   1,
-                  digitalSignature,
+                  signFile ? digitalSignature : undefined,
                   algorithm_encrypt,
                   algorithm_sign,
                   algorithm_hmac,
@@ -466,7 +491,11 @@ export default function SendFilePopup(props: {
                 setFilePreview(undefined);
                 setDigitalSignature(undefined);
                 setprivateKeyPreview(undefined);
-                // close modal
+
+                setOwnKey(false);
+                setOwnKeyInput("");
+                setUseDiffie(false);
+                setDiffieKey(undefined);
               }}
             >
               <p className="text-xl text-gray-500 dark:text-gray-300">

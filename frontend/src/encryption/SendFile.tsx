@@ -183,8 +183,6 @@ async function sendFile(
     users_group,
   };
 
-  // console.log("envio de ficheiro: ", body);
-
   await fetch("http://localhost:3000/api/files/upload", {
     method: "POST",
     headers: {
