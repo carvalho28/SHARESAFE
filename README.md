@@ -1,5 +1,12 @@
 # SHARESAFE
 
+<!-- image -->
+<div>
+  <p align="center">
+    <img src="./frontend/src/images/Logo.png" width="100"> 
+  </p>
+</div>
+
 ## What is SHARESAFE?
 
 - a web app that helps you share files safely. You can send any kind of file, like documents, photos, or videos;
