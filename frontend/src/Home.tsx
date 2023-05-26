@@ -43,10 +43,11 @@ function Home() {
       .then((data) => {
         console.log(data);
         if (data.accessToken) {
+          console.log("login successful");
           setCookie("accessToken", data.accessToken, 7);
           setCookie("user_id", data.id, 7);
           setIsLoading(false);
-          navigate("/mainmenu");
+          navigate("/inbox");
         } else {
           setIsLoading(false);
           setErrorMessage("Wrong Credentials");
@@ -60,23 +61,25 @@ function Home() {
 
   return (
     <div className="lg:flex lg:items-center lg:justify-center lg:h-screen bg-[#ffffff] dark:bg-[#1a1a1a]">
-      <div className="flex items-center justify-center lg:w-1/3 lg:flex-col lg:pr-[200px] lg:min-w-[600px]">
+      <div className="lg:w-1/3 lg:flex-col lg:pr-[200px] flex items-center justify-center">
         <img className="lg:w-2/3 w-1/4 min-w-[250px]" alt="Logo" src={logo} />
       </div>
 
-      <div className="collapse lg:visible h-[80%] w-[4px] min-w-[4px] rounded-lg bg-gray-100 dark:bg-[#9c9c9c]"/>
+      <div className="collapse lg:visible h-[80%] w-[4px] min-w-[4px] rounded-lg bg-gray-100 dark:bg-[#9c9c9c]" />
 
       <div className="lg:collapse visible flex items-center justify-center">
-        <hr className="w-[80%] h-[4px] my-[50px] min-w-[80%] rounded bg-gray-100 dark:bg-[#9c9c9c]"/>
+        <hr className="w-[80%] h-[4px] my-[50px] min-w-[80%] rounded bg-gray-100 dark:bg-[#9c9c9c]" />
       </div>
 
-      <div className="lg:w-1/3 lg:flex-col lg:pl-[200px] lg:min-w-[600px] flex items-center justify-center">
+      <div className="lg:w-1/3 lg:flex-col lg:pl-[200px] flex items-center justify-center">
         <form className="shadow-lg rounded px-8 pt-6 pb-6 mb-4 bg-white dark:bg-[#242424]">
           <div className="flex items-center justify-center">
-            <p className="text-6xl text-[#577D86] dark:text-[#d9d9d9]">Login</p>
+            <p className="text-6xl text-[#0B2447] dark:text-[#d9d9d9]">Login</p>
           </div>
           <div className="pt-3 flex items-center justify-center">
-            <p className="text-xs font-bold text-[#577D86] dark:text-[#d9d9d9]">WELCOME BACK TO SHARESAFE</p>
+            <p className="text-xs font-bold text-black dark:text-[#d9d9d9]">
+              WELCOME BACK TO SHARESAFE
+            </p>
           </div>
           <div className="pt-5 flex items-center justify-center">
             <input
@@ -88,7 +91,7 @@ function Home() {
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
-          <div className="pt-3 flex items-center justify-center">
+          <div className="pt-3 pb-2 flex items-center justify-center">
             <input
               className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-xl"
               id="password"
@@ -97,14 +100,6 @@ function Home() {
               required
               onChange={(e) => setPassword(e.target.value)}
             />
-          </div>
-          <div className="pt-1 pb-2 flex items-center justify-center">
-            <p className="text-xs text-[#577D86] dark:text-[#d9d9d9]">
-              Forgot your password? Click{" "}
-              <Link to="/" className="font-bold">
-                here
-              </Link>
-            </p>
           </div>
 
           {errorMessage != "" && (
@@ -133,17 +128,18 @@ function Home() {
           )}
 
           {isLoading && (
-            <div className="flex items-center justify-center">
+            <div className="flex items-center justify-center mt-3">
               <Spinner />
             </div>
           )}
 
           <div className="flex items-center justify-center pt-10 px-[63px]">
             <button
-              className="shadow appearance-none rounded w-full py-2 font-bold text-xl bg-[#87CBB9] hover:bg-[#B9EDDD] text-white dark:text-[#d9d9d9] dark:bg-[#333333] dark:hover:bg-[#383838]"
+              type="submit"
+              className="shadow appearance-none rounded w-full py-2 font-bold text-xl bg-[#0B2447] hover:bg-[#19376D] text-white dark:text-[#d9d9d9] dark:bg-[#333333] dark:hover:bg-[#383838]"
               id="loginBtn"
-              type="button"
-              onClick={() => {
+              onClick={(e) => {
+                e.preventDefault();
                 loginUser();
               }}
             >
@@ -151,9 +147,9 @@ function Home() {
             </button>
           </div>
           <div className="flex items-center justify-center mt-1">
-            <p className="text-xs text-[#577D86] dark:text-[#d9d9d9]">
+            <p className="text-xs text-black dark:text-[#d9d9d9]">
               Don&apos;t have an account? Click{" "}
-              <Link to="register" className="font-bold">
+              <Link to="register" className="font-bold text-[#E57B1E] dark:text-[#d9d9d9]">
                 here.
               </Link>
             </p>

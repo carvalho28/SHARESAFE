@@ -67,7 +67,6 @@ export default function SendFilePopup(props: {
   triggered: boolean;
   setTriggered: Function;
 }) {
-  
   const [group_id, setGroup_id] = useState(1);
 
   useEffect(() => {
@@ -75,8 +74,9 @@ export default function SendFilePopup(props: {
     const currentPathname = window.location.pathname;
     const splitString = currentPathname.split("/");
     const id = splitString[splitString.length - 1];
+    if (id === "inbox") return;
     setGroup_id(+id);
-  }, [])
+  }, []);
 
   const [file, setFile] = useState<File>();
   const [filePreview, setFilePreview] = useState<filePreview | undefined>();
@@ -110,6 +110,7 @@ export default function SendFilePopup(props: {
     useState<forge.md.Algorithm>("sha256");
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    console.log(e.target.files);
     if (!e.target.files) return;
     console.log(e.target.files);
     const file = e.target.files[0];
@@ -207,7 +208,7 @@ export default function SendFilePopup(props: {
   const getDiffieHellmanKey = async () => {
     const body = {
       user_id: getCookie("user_id"),
-      group_id: 69,
+      group_id: group_id,
     };
     const response = await fetch(
       "http://localhost:3000/api/groups/getDiffieKey",
@@ -251,56 +252,62 @@ export default function SendFilePopup(props: {
 
   return props.triggered && isVisible ? (
     <div
-      className="fixed inset-0 p-4 sm:ml-64 bg-black bg-opacity-5 backdrop-blur-sm 
-    flex justify-center items-center"
-    onClick={handleOutsideClick}
+      className="fixed inset-0 p-4 sm:ml-64 bg-black bg-opacity-5 backdrop-blur-sm flex justify-center items-center"
+      onClick={handleOutsideClick}
     >
       <form className="flex items-center justify-center w-8/12">
-      <button
-        type="button"
-        onClick={() => {
-          setIsVisible(false);
+        <button
+          type="button"
+          onClick={() => {
+            setIsVisible(false);
             props.setTriggered(false);
-        }}
-        className="absolute top-4 right-4 text-black dark:text-black hover:text-gray-700 dark:hover:text-gray-200 focus:outline-none"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          className="w-6 h-6"
+          }}
+          className="absolute top-4 right-4 text-black dark:text-black hover:text-gray-700 dark:hover:text-gray-200 focus:outline-none"
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            d="M6 18L18 6M6 6l12 12"
-          />
-        </svg>
-      </button>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            className="w-6 h-6"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
 
         <div
           className="px-10 pt-4 flex flex-col items-center justify-center w-full h-full border-2
-          border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:bg-gray-700
-          dark:border-gray-600"
+          border-[#E57B1E] border-dashed rounded-lg cursor-pointer bg-[#0B2447] dark:bg-[#242424]
+          dark:border-[#383838]"
         >
           <div className="flex flex-row w-full space-x-8">
             <div className="flex w-1/2 flex-col">
               <h3
-                className="text-lg font-medium text-gray-900 dark:text-gray-100 text-center 
-                        flex flex-col items-center flex-center justify-center mb-4"
+                className="text-lg font-medium text-gray-100 text-center 
+                          flex flex-col items-center flex-center justify-center mb-4"
               >
                 Upload File
               </h3>
               <label
                 htmlFor="dropzone-file"
-                className="flex flex-col items-center justify-center w-full h-44 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+                className="flex flex-col items-center justify-center w-full h-44 border-2 border-[#E57B1E] border-dashed rounded-lg cursor-pointer bg-[#0B2447] dark:hover:bg-bray-800 dark:bg-[#242424] hover:bg-[#19376D] dark:border-[#383838] dark:hover:bg-[#333333]"
               >
                 {filePreview ? (
                   <>
                     {filePreview.type.includes("image") ? (
                       <div className="flex flex-col items-center justify-center w-42 h-42">
+                        <input
+                          type="file"
+                          name="file"
+                          id="dropzone-file"
+                          className="hidden"
+                          onChange={handleFileChange}
+                        />
                         <img
                           src={filePreview.arrayBuffer as string}
                           alt="file preview"
@@ -315,7 +322,13 @@ export default function SendFilePopup(props: {
                     ) : (
                       // show file icon with file name
                       <div className="flex flex-col items-center justify-center w-full h-44">
-                        {/* file icon from react-icons */}
+                        <input
+                          type="file"
+                          name="file"
+                          id="dropzone-file"
+                          className="hidden"
+                          onChange={handleFileChange}
+                        />
                         <div className="text-6xl text-gray-400">
                           <FaFileAlt />
                         </div>
@@ -365,7 +378,7 @@ export default function SendFilePopup(props: {
             </div>
             <div className="flex w-1/2 justify-between flex-col">
               <h3
-                className="text-lg font-medium text-gray-900 dark:text-gray-100 text-center
+                className="text-lg font-medium text-gray-100 text-center
                         flex flex-col items-center flex-center justify-center mb-4"
               >
                 Private Key
@@ -373,12 +386,20 @@ export default function SendFilePopup(props: {
               <div className="flex items-center justify-center w-full">
                 <label
                   htmlFor="dropzone-file-digital-signature"
-                  className="flex flex-col items-center justify-center w-full h-44 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+                  className="flex flex-col items-center justify-center w-full h-44 border-2 border-[#E57B1E] border-dashed rounded-lg cursor-pointer bg-[#0B2447] dark:hover:bg-bray-800 dark:bg-[#242424] hover:bg-[#19376D] dark:border-[#383838] dark:hover:bg-[#333333]"
                 >
                   {privateKeyPreview ? (
                     <>
                       {privateKeyPreview.type.includes("image") ? (
                         <>
+                          <input
+                            id="dropzone-file-digital-signature"
+                            type="file"
+                            className="hidden"
+                            onChange={handleDigitalSignatureChange}
+                            // limit a .pem file
+                            accept=".pem"
+                          />
                           <img
                             src={privateKeyPreview.arrayBuffer as string}
                             alt="file preview"
@@ -393,7 +414,14 @@ export default function SendFilePopup(props: {
                       ) : (
                         // show file icon with file name
                         <div className="flex flex-col items-center justify-center w-full h-full">
-                          {/* file icon from react-icons */}
+                          <input
+                            id="dropzone-file-digital-signature"
+                            type="file"
+                            className="hidden"
+                            onChange={handleDigitalSignatureChange}
+                            // limit a .pem file
+                            accept=".pem"
+                          />
                           <div className="text-6xl text-gray-400">
                             <FaKey />
                           </div>
@@ -461,7 +489,7 @@ export default function SendFilePopup(props: {
                 />
                 <label
                   htmlFor="sign-file"
-                  className="block ml-2 text-sm text-gray-900 dark:text-gray-100"
+                  className="block ml-2 text-sm text-gray-100"
                 >
                   Sign File
                 </label>
@@ -512,7 +540,7 @@ export default function SendFilePopup(props: {
             <div className="flex items-center justify-center">
               <label
                 htmlFor="generatedKey"
-                className="text-sm font-medium text-gray-900 dark:text-white mr-2"
+                className="text-sm font-medium text-gray-100 mr-2"
               >
                 Use own key
               </label>
@@ -534,7 +562,7 @@ export default function SendFilePopup(props: {
               <div className="flex items-center justify-center w-1/2">
                 <label
                   htmlFor="default-input"
-                  className="text-sm font-medium text-gray-900 dark:text-white mr-4"
+                  className="text-sm font-medium text-gray-100 mr-4"
                 >
                   Key
                 </label>
@@ -546,8 +574,8 @@ export default function SendFilePopup(props: {
                   className="bg-gray-50 border border-gray-300 text-gray-900 
               text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 
               block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 
-              dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500
-               dark:focus:border-blue-500 "
+            dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500
+            dark:focus:border-blue-500 "
                 />
               </div>
             ) : null}
@@ -558,7 +586,7 @@ export default function SendFilePopup(props: {
             <div className="flex items-center justify-center">
               <label
                 htmlFor="useDiffie"
-                className="text-sm font-medium text-gray-900 dark:text-white mr-2"
+                className="text-sm font-medium text-gray-100 mr-2"
               >
                 Use diffie-hellman
               </label>
@@ -583,7 +611,7 @@ export default function SendFilePopup(props: {
           <div className="flex flex-col items-center justify-center w-full mt-2">
             <button
               id="btnSend"
-              className="flex items-center justify-center border-2 my-4 px-2 py-1 rounded hover:bg-gray-600"
+              className="flex items-center justify-center border-2 border-dashed border-[#E57B1E] dark:border-[#383838] my-4 px-2 py-1 rounded hover:bg-19376D hover:bg-[#19376D] dark:hover:bg-[#333333]"
               onClick={(event) => {
                 let encType: typesEnc;
                 if (ownKey) {
@@ -621,7 +649,7 @@ export default function SendFilePopup(props: {
                 setDiffieKey(undefined);
               }}
             >
-              <p className="text-xl text-gray-500 dark:text-gray-300">
+              <p className="text-xl text-gray-100">
                 Send <span className="font-semibold">File</span>
               </p>
 
@@ -631,7 +659,7 @@ export default function SendFilePopup(props: {
                   width="22"
                   height="22"
                   fill="currentColor"
-                  className="bi bi-send text-gray-300"
+                  className="bi bi-send text-gray-200"
                   viewBox="0 0 16 16"
                 >
                   <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576 6.636 10.07Zm6.787-8.201L1.591 6.602l4.339 2.76 7.494-7.493Z" />

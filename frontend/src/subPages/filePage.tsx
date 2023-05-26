@@ -3,8 +3,12 @@ import { useState, useEffect } from "react";
 import receiveFile from "../encryption/ReceiveFile";
 import { getCookie } from "../auth/Cookies";
 import forge from "node-forge";
+import { GiThink } from "react-icons/gi";
 
 import decryptFile from "../encryption/DecryptFile";
+import { FaTimes } from "react-icons/fa";
+import { Spinner } from "../components/Spinner";
+import DownloadFilePopup from "../components/DownloadFilePopup";
 
 type File = {
   id: number;
@@ -51,7 +55,9 @@ function FilePage() {
   const group_id = +id;
 
   // Get user_id to query the db
-  const user_id = getCookie('user_id');
+  const user_id = getCookie("user_id");
+
+  const [loading, setLoading] = useState<boolean>(true);
 
   const [groups, setGroups] = useState<
     {
@@ -110,8 +116,7 @@ function FilePage() {
             return file.signature_algorithm;
           }),
         );
-        // verify the signature using the public key inside receivedData.group.files.user.public_key
-        // if the signature is valid, decrypt the file using the private key
+        setLoading(false);
       } catch (error) {
         console.log(error);
       }
@@ -119,9 +124,7 @@ function FilePage() {
     getFiles();
   }, []);
 
-  useEffect(() => {
-    console.log("algo", algoSignature);
-  }, [algoSignature]);
+  useEffect(() => {}, [algoSignature]);
 
   useEffect(() => {
     if (dataFile.length === 0) {
@@ -187,6 +190,7 @@ function FilePage() {
   }, [user]);
 
   function getUserById(id: number) {
+    if (!dataFile) return;
     // console.log("Owner", id);
     const userWithID: any = user.find((user: any) => user.id === id);
     return userWithID.name;
@@ -236,26 +240,58 @@ function FilePage() {
     }
   };
 
-  function handleFileChange(e: any) {
-    const reader = new FileReader();
-    reader.onload = async (e: any) => {
-      const text = e.target.result;
+  const [triggered, setTriggered] = useState(false);
+  const [ownerFile, setOwnerFile] = useState("");
+  const [signedFile, setSignedFile] = useState("");
+  const [file, setFile] = useState();
+  const [fileData, setFileData] = useState(undefined);
 
-      var lines = text.split("\n");
-      lines.splice(0, 1);
-      var newtext = lines.join("\n");
-
-      setPrivateKey(newtext);
-    };
-    reader.readAsText(e.target.files[0]);
-  }
+  const deleteFile = async (file_id: number) => {
+    // show alert
+    const confirm = window.confirm(
+      "Are you sure you want to delete this file?",
+    );
+    if (!confirm) {
+      return;
+    }
+    console.log("file_id", file_id);
+    console.log("body", JSON.stringify({ id: file_id }));
+    try {
+      await fetch("http://localhost:3000/api/files/delete", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json; charset=UTF-8",
+        },
+        body: JSON.stringify({ id: file_id }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          // reload page
+          window.location.reload();
+        })
+        .catch((err) => {
+          console.log(err.message);
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div>
       <Sidebar />
-
+      <DownloadFilePopup
+        triggered={triggered}
+        setTriggered={setTriggered}
+        files={file}
+        setFile={setFile}
+        fileData={fileData}
+        setFileData={setFileData}
+        ownerFile={ownerFile}
+        signedFile={signedFile}
+      />
       <div className="p-4 sm:ml-64">
-        <input type="file" id="file" onChange={(e) => handleFileChange(e)} />
         <section>
           {/* Ficheiros */}
           <h2 className="text-center underline">{heading}</h2>
@@ -280,10 +316,11 @@ function FilePage() {
                   Signed
                 </th>
                 <th></th>
+                <th></th>
               </tr>
             </thead>
             {/* Linhas da base de dados */}
-            {dataFile && (
+            {dataFile.length !== 0 && loading === false && (
               <tbody>
                 {dataFile.map((file: any, index: number) => (
                   <tr
@@ -297,24 +334,48 @@ function FilePage() {
                     <td className="px-6 py-4">
                       {validSignatures[index] ? "Yes" : "No"}
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-6 py-4 hover:cursor-pointer">
                       <button
-                        onClick={() =>
-                          handleDownloadClick(
-                            file,
-                            groupData.files[index],
-                            index,
-                          )
-                        }
+                        onClick={() => {
+                          setTriggered(true);
+                          setFile(file);
+                          setFileData(groupData.files[index]);
+                          setOwnerFile(getUserById(file.user_id));
+                          setSignedFile(validSignatures[index] ? "Yes" : "No");
+                        }}
                       >
                         Download
                       </button>
                     </td>
+                    {file.user_id == user_id && (
+                      <td className="px-6 py-4 hover:text-red-500 dark:hover:text-red-400">
+                        <button
+                          className="text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-500"
+                          onClick={() => {
+                            deleteFile(file.id);
+                          }}
+                        >
+                          <FaTimes />
+                        </button>
+                      </td>
+                    )}
                   </tr>
                 ))}
               </tbody>
             )}
           </table>
+          {loading && (
+            <div className="text-center justify-center items-center w-full mt-10">
+              <Spinner width="100" height="100" />
+            </div>
+          )}
+          {/* if empty show No files yet */}
+          {dataFile.length === 0 && loading === false && (
+            <div className="flex justify-center items-center mt-10 flex-col">
+              <p className="text-gray-400 text-4xl">No files yet</p>
+              <GiThink className="ml-2 text-gray-400 mt-10" size={300} />
+            </div>
+          )}
         </section>
       </div>
     </div>

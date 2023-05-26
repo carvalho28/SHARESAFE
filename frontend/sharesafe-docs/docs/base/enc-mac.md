@@ -14,15 +14,15 @@ A popup will appear, where the user can:
 - select the MAC algorithm to be used (SHA-256 default);
 - enable the digital signature (optional);
   - select the digital signature algorithm to be used (RSA-2048 and SHA-256 default);
-- type the desired symetric key to be used in the file encryption (optional).
+- type the desired symetric key to be used in the file encryption (optional);
+- enable the use of diffie-hellman (optional).
 
-## Steps
-
-There are 3 steps to send a file:
+## Send File Logic
 
 - [Encryption](./enc.md)
 - [HMAC](./mac.md)
 - [Signature](./signature.md)
+- [Diffie-Hellman](../extras/diffie-hell.md)
 
 ## Notes
 

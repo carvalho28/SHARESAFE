@@ -4,10 +4,55 @@ import {
   GetGroupKeysInput,
   GetUserFromGroupInput,
   GroupAddFilesInput,
+  GroupAddMemberInput,
   GroupAddMembersInput,
   GroupInput,
+  UserAndGroupInput
 } from "./group.schema";
 import crypto from "crypto";
+
+export async function removeUserFromGroup(input: UserAndGroupInput) {
+  let message;
+  let status;
+
+  const user = await prisma.user.findUnique({
+    where: { id: input.user_id },
+    include: { groups: true },
+  });
+  
+  
+  const group = user?.groups.find(group => group.id === input.group_id);
+  
+  if (user && group) {
+
+    await prisma.group.update({
+      where: {
+        id: input.group_id,
+      },
+      data: {
+        members: {
+          disconnect: {
+            id: input.user_id,
+          },
+        },
+      },
+    });
+    
+    message = `User ${user.name} removed from the group ${group.name}.`;
+    status = "success";
+    console.log(message);
+
+  } else {
+    message = "User or group not found.";
+    status = "error";
+    console.log(message);
+  }
+
+  return {
+    status: status,
+    message: message
+  };
+}
 
 export async function createGroup(input: GroupInput) {
   const userIds = await prisma.user.findMany({
@@ -136,7 +181,7 @@ export async function addFilesToGroup(input: GroupAddFilesInput) {
 }
 
 // add members to group
-export async function addMembersToGroup(input: GroupAddMembersInput) {
+export async function addMembersToGroup(input: GroupAddMembersInput) {  
   const data = {
     members: {
       connect: input.members.map((memberId) => ({ id: memberId })),
@@ -149,6 +194,28 @@ export async function addMembersToGroup(input: GroupAddMembersInput) {
     },
     data,
   });
+
+  return group;
+}
+
+export async function addMemberToGroup(input: GroupAddMemberInput) {  
+  console.log(input);
+  
+  const group = await prisma.group.update({
+    where: {
+      id: input.group_id,
+    },
+    data: {
+      members: {
+        connect: {
+          id: input.user_id,
+        },
+      },
+    },
+  });
+
+  console.log(group);
+  
 
   return group;
 }

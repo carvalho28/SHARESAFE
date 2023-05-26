@@ -1,47 +1,91 @@
-## SHARESAFE
+# SHARESAFE
 
-## Table of Contents
+<!-- image -->
+<div>
+  <p align="center">
+    <img src="./frontend/src/images/Logo.png" width="100"> 
+  </p>
+</div>
 
-...
+## What is SHARESAFE?
 
-### Setup
+- a web app that helps you share files safely. You can send any kind of file, like documents, photos, or videos;
+- makes sure only the people you want can see your files (groups);
+- easy to use and cares about your privacy.
 
-#### Prerequisites
+> Share more, worry less.
 
-- ...
+## App Structure
 
-### Install
-
-Install base dependencies to execute scripts
-
-```bash
-yarn install
+```
+SHARESAFE
+├── backend                    # Server related files
+│   ├── files                  # Encrypted files
+|   ├── prisma                 # Database "schema" and migrations
+|   ├── src                    # Source code
+|   ├──   ├── modules          # Modules
+|   ├──   ├── utils            # Utility functions (e.g. password hashing)
+|   |──   ├── tests            # Server tests - using Tap
+|   |──   ├── ...              # Other essential files (e.g. server)
+├── frontend                   # Client related files
+│   ├── sharesafe-docs         # Documentation files
+│   ├── src                    # Source code for the app
+│   ├──   ├── auth             # Authentication related files
+│   ├──   ├── components       # React components
+|   ├──   ├── encryption       # Encryption related files
+|   ├──   ├── subPages         # Subpages
+|   ├──   ├── test             # Client tests - using Vitest
+|   ├──   ├── ...              # Other essential files (e.g. App.tsx)
 ```
 
-Install the dependencies for both backend and frontend
+## Tech Stack
+
+<img align="left" alt="TypeScript" width="30px" style="padding-right:10px;" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg" />
+<img align="left" alt="React" width="30px" style="padding-right:10px;" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" />
+<img align="left" alt="NodeJS" width="30px" style="padding-right:10px;" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" />
+<img align="left" alt="Postgre" width="30px" style="padding-right:10px;" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg" />
+... and more!
+
+<br />
+<br />
+
+## Setup
+
+### What you'll need
+
+- [Node.js](https://nodejs.org/en/download/) version 16.14 or above:
+  - When installing Node.js, you are recommended to check all checkboxes related to dependencies.
+
+### Clone the Repository
+
+Go to your desired folder in your computer and clone the repo using:
 
 ```bash
-install:deps
+git clone https://github.com/carvalho28/SHARESAFE
 ```
 
-Run both backend and frontend concurrently
+### Install the Dependencies
+
+After cloning the repo, navigate to the created folder using:
+
+```bash
+cd SHARESAFE
+```
+
+Then install all the necessary dependencies using:
+
+```bash
+yarn install:deps
+```
+
+### Development Server
+
+To run the development server after installing the dependencies, use:
 
 ```bash
 yarn dev
 ```
 
-### For Backend - Important Commands
+The development server of the app will be running at http://localhost:5173/.
 
-The .env file should not be shared, it is only on git to facilitate between members, it will be excluded after.
-
-Init database with prisma
-
-```bash
-npx prisma init --datasource-provider postgresql
-```
-
-Migrate
-
-```bash
-npx prisma migrate dev --name init
-```
+The development server of the docs will be running at http://localhost:5174/.

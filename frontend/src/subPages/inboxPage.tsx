@@ -4,8 +4,12 @@ import receiveFile from "../encryption/ReceiveFile";
 import decryptFile from "../encryption/DecryptFile";
 import { getCookie } from "../auth/Cookies";
 import forge from "node-forge";
+import { FaTimes } from "react-icons/fa";
+import { GiThink } from "react-icons/gi";
+import { Spinner } from "../components/Spinner";
+import DownloadFilePopup from "../components/DownloadFilePopup";
 
-type File = {
+export type FileType = {
   id: number;
   file_name: string;
   file_type: string;
@@ -44,11 +48,10 @@ function useMDForAlgorithm(algorithm: string) {
 
 // this pages only contains the files for the group "Global", common to every user
 function InboxPage() {
-  
-  const heading = "Global"
+  const heading = "Global";
   const group_id: number = 1;
 
-  const user_id = getCookie('user_id');
+  const user_id = getCookie("user_id");
 
   const [dataFile, setdataFile] = useState<any>([]);
   const [groupData, setGroupData] = useState<any>({});
@@ -56,6 +59,8 @@ function InboxPage() {
 
   const [validSignatures, setValidSignatures] = useState<any>([]);
   const [algoSignature, setAlgoSignature] = useState<any>([]);
+
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const getFiles = async () => {
@@ -68,8 +73,7 @@ function InboxPage() {
             return file.signature_algorithm;
           }),
         );
-        // verify the signature using the public key inside receivedData.group.files.user.public_key
-        // if the signature is valid, decrypt the file using the private key
+        setLoading(false);
       } catch (error) {
         console.log(error);
       }
@@ -77,9 +81,7 @@ function InboxPage() {
     getFiles();
   }, []);
 
-  useEffect(() => {
-    console.log("algo", algoSignature);
-  }, [algoSignature]);
+  useEffect(() => {}, [algoSignature]);
 
   useEffect(() => {
     if (dataFile.length === 0) {
@@ -105,9 +107,7 @@ function InboxPage() {
     );
   }, [dataFile]);
 
-  useEffect(() => {
-    // console.log("dataFile", dataFile);
-  }, [dataFile]);
+  useEffect(() => {}, [dataFile]);
 
   const [user, setUser] = useState<
     {
@@ -145,7 +145,7 @@ function InboxPage() {
   }, [user]);
 
   function getUserById(id: number) {
-    // console.log("Owner", id);
+    if (!dataFile) return;
     const userWithID: any = user.find((user: any) => user.id === id);
     return userWithID.name;
   }
@@ -194,33 +194,69 @@ function InboxPage() {
     }
   };
 
-  function handleFileChange(e: any) {
-    const reader = new FileReader();
-    reader.onload = async (e: any) => {
-      const text = e.target.result;
+  const [triggered, setTriggered] = useState(false);
+  const [ownerFile, setOwnerFile] = useState("");
+  const [signedFile, setSignedFile] = useState("");
+  const [file, setFile] = useState();
+  const [fileData, setFileData] = useState(undefined);
 
-      var lines = text.split("\n");
-      lines.splice(0, 1);
-      var newtext = lines.join("\n");
+  const deleteFile = async (file_id: number) => {
+    // show alert
+    const confirm = window.confirm(
+      "Are you sure you want to delete this file?",
+    );
+    if (!confirm) {
+      return;
+    }
 
-      setPrivateKey(newtext);
-    };
-    reader.readAsText(e.target.files[0]);
-  }
+    try {
+      await fetch("http://localhost:3000/api/files/delete", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json; charset=UTF-8",
+        },
+        body: JSON.stringify({ id: file_id }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          // reload page
+          window.location.reload();
+        })
+        .catch((err) => {
+          console.log(err.message);
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    console.log("user_id", user_id);
+    console.log("dataFile", dataFile);
+  }, [user_id, dataFile]);
 
   return (
     <div>
       <Sidebar />
-
+      <DownloadFilePopup
+        triggered={triggered}
+        setTriggered={setTriggered}
+        files={file}
+        setFile={setFile}
+        fileData={fileData}
+        setFileData={setFileData}
+        ownerFile={ownerFile}
+        signedFile={signedFile}
+      />
       <div className="p-4 sm:ml-64">
-        <input type="file" id="file" onChange={(e) => handleFileChange(e)} />
         <section>
           {/* Ficheiros */}
           <h2 className="text-center underline">{heading}</h2>
           <br></br>
-          <table className="w-full text-sm text-center text-gray-500 dark:text-gray-400">
+          <table className="w-full text-sm text-center text-gray-100">
             {/* Cabecalho */}
-            <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <thead className="text-xs uppercase text-gray-100 bg-[#0B2447] dark:bg-[#242424]">
               <tr>
                 <th scope="col" className="px-6 py-3">
                   File Name
@@ -238,15 +274,15 @@ function InboxPage() {
                   Signed
                 </th>
                 <th></th>
+                <th></th>
               </tr>
             </thead>
-            {/* Linhas da base de dados */}
-            {dataFile && (
+            {dataFile.length !== 0 && loading === false && (
               <tbody>
                 {dataFile.map((file: any, index: number) => (
                   <tr
                     key={file.id}
-                    className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+                    className="bg-[#19376D] dark:bg-[#333333] border-b"
                   >
                     <th>{file.file_name}</th>
                     <td className="px-6 py-4">{file.file_size}</td>
@@ -255,24 +291,48 @@ function InboxPage() {
                     <td className="px-6 py-4">
                       {validSignatures[index] ? "Yes" : "No"}
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-6 py-4 hover:cursor-pointer">
                       <button
-                        onClick={() =>
-                          handleDownloadClick(
-                            file,
-                            groupData.files[index],
-                            index,
-                          )
-                        }
+                        onClick={() => {
+                          setTriggered(true);
+                          setFile(file);
+                          setFileData(groupData.files[index]);
+                          setOwnerFile(getUserById(file.user_id));
+                          setSignedFile(validSignatures[index] ? "Yes" : "No");
+                        }}
                       >
                         Download
                       </button>
                     </td>
+                    {/* if user_id is equal to the user logged in, show delete button */}
+                    {file.user_id == user_id && (
+                      <td className="px-6 py-4 hover:text-red-500 dark:hover:text-red-400">
+                        <button
+                          className="text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-500"
+                          onClick={() => {
+                            deleteFile(file.id);
+                          }}
+                        >
+                          <FaTimes />
+                        </button>
+                      </td>
+                    )}
                   </tr>
                 ))}
               </tbody>
             )}
           </table>
+          {loading && (
+            <div className="text-center justify-center items-center w-full mt-10">
+              <Spinner width="100" height="100" />
+            </div>
+          )}
+          {dataFile.length === 0 && loading === false && (
+            <div className="flex justify-center items-center mt-10 flex-col">
+              <p className="text-gray-400 text-4xl">No files yet</p>
+              <GiThink className="ml-2 text-gray-400 mt-10" size={300} />
+            </div>
+          )}
         </section>
       </div>
     </div>

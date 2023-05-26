@@ -3,10 +3,12 @@ import { useState } from "react";
 import { Spinner } from "./components/Spinner";
 import logo from "./images/Logo.png";
 import forge from "node-forge";
+import { useNavigate } from "react-router-dom";
 
 function Register() {
   // const [publicKey, setPublicKey] = useState("");
   // const [privateKey, setPrivateKey] = useState("");
+  const navigate = useNavigate();
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -26,6 +28,11 @@ function Register() {
       setErrorMessage("Empty Fields");
       return;
     }
+    if (password.length < 8) {
+      setIsLoading(false);
+      setErrorMessage("Password too short");
+      return;
+    }
 
     setIsLoading(true);
 
@@ -41,32 +48,48 @@ function Register() {
     console.log(JSON.stringify(data));
     console.log(JSON.stringify(publicKey));
 
-    await fetch("http://localhost:3000/api/users/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json; charset=UTF-8",
-      },
-      body: JSON.stringify(data),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        console.log("private key: ", privateKey);
-        const element = document.createElement("a");
-        const file = new Blob(["PRIVATE KEY:\n" + privateKey], {
-          type: "text/plain",
-        });
-        element.href = URL.createObjectURL(file);
-        element.download = "privateKey.pem";
-        document.body.appendChild(element);
-        element.click();
-        element.remove();
+    let downloadElement;
 
-        setIsLoading(false);
-      })
-      .catch((err) => {
-        console.log(err.message);
+    try {
+      const response = await fetch("http://localhost:3000/api/users/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json; charset=UTF-8",
+        },
+        body: JSON.stringify(data),
       });
+
+      if (!response.ok) {
+        throw new Error("Error registering user");
+      }
+
+      const responseData = await response.json();
+      console.log(responseData);
+      console.log("private key: ", privateKey);
+
+      const element = document.createElement("a");
+      const file = new Blob(["PRIVATE KEY:\n" + privateKey], {
+        type: "text/plain",
+      });
+      element.href = URL.createObjectURL(file);
+      element.download = "privateKey.pem";
+      document.body.appendChild(element);
+      element.click();
+      element.remove();
+
+      setIsLoading(false);
+      navigate("/");
+    } catch (err) {
+      setIsLoading(false);
+      setErrorMessage("Email already in use");
+      console.log(err);
+
+      // Remove the download element if it exists
+      downloadElement = document.querySelector("a[download='privateKey.pem']");
+      if (downloadElement) {
+        downloadElement.remove();
+      }
+    }
   }
 
   async function generateKeys() {
@@ -82,19 +105,21 @@ function Register() {
         <img className="lg:w-2/3 w-1/4 min-w-[250px]" alt="Logo" src={logo} />
       </div>
 
-      <div className="lg:visible collapse h-[80%] w-[4px] min-w-[4px] rounded-lg bg-gray-100 dark:bg-[#9c9c9c]"/>
+      <div className="lg:visible collapse h-[80%] w-[4px] min-w-[4px] rounded-lg bg-gray-100 dark:bg-[#9c9c9c]" />
 
       <div className="lg:collapse visible flex items-center justify-center">
-        <hr className="w-[80%] h-[4px] my-[50px] min-w-[80%] rounded bg-gray-100 dark:bg-[#9c9c9c]"/>
+        <hr className="w-[80%] h-[4px] my-[50px] min-w-[80%] rounded bg-gray-100 dark:bg-[#9c9c9c]" />
       </div>
 
       <div className="lg:w-1/3 lg:flex-col lg:pl-[200px] lg:min-w-[600px] flex items-center justify-center">
         <form className="shadow-md rounded px-8 pt-6 pb-8 mb-4 bg-white dark:bg-[#242424]">
           <div className="flex items-center justify-center">
-            <p className="text-6xl text-[#577D86] dark:text-[#d9d9d9]">Register</p>
+            <p className="text-6xl text-[#0B2447] dark:text-[#d9d9d9]">
+              Register
+            </p>
           </div>
           <div className="flex items-center justify-center pt-3">
-            <p className="text-xs font-bold text-[#577D86] dark:text-[#d9d9d9]">
+            <p className="text-xs font-bold text-black dark:text-[#d9d9d9]">
               WELCOME TO SHARESAFE, LET&apos;S GET STARTED
             </p>
           </div>
@@ -165,25 +190,28 @@ function Register() {
           )}
 
           {isLoading && (
-            <div className="flex items-center justify-center">
+            <div className="flex items-center justify-center mt-3">
               <Spinner />
             </div>
           )}
 
           <div className="flex items-center justify-center pt-10 pb-1 px-[63px]">
             <button
-              className="shadow appearance-none border rounded w-full py-2 font-bold text-xl text-white dark:text-[#d9d9d9] bg-[#87CBB9] hover:bg-[#B9EDDD] dark:bg-[#333333] dark:hover:bg-[#383838]"
+              className="shadow appearance-none rounded w-full py-2 font-bold text-xl text-white dark:text-[#d9d9d9] bg-[#0B2447] hover:bg-[#19376D] dark:bg-[#333333] dark:hover:bg-[#383838]"
               id="registerBtn"
-              type="button"
-              onClick={() => registerUser()}
+              type="submit"
+              onClick={(e) => {
+                e.preventDefault();
+                registerUser();
+              }}
             >
               Register
             </button>
           </div>
           <div className="flex items-center justify-center mt-1">
-            <p className="text-xs text-[#577D86] dark:text-[#d9d9d9]">
+            <p className="text-xs text-black dark:text-[#d9d9d9]">
               Already have an account? Click{" "}
-              <Link to="/" className="font-bold">
+              <Link to="/" className="font-bold text-[#E57B1E] dark:text-[#d9d9d9]">
                 here.
               </Link>
             </p>
