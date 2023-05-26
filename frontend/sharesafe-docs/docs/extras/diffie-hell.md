@@ -4,7 +4,7 @@ sidebar_position: 3
 
 # Diffie-Hellman
 
-Upon joining or leaving a group, an algorithm that simulates Diffie-Hellman for multiple parties is executed. The original Diffe-Hellman key exchange algorithm consists of creating a secret key between two entities, usually Alice and Bob, that takes advantage of the discrete logarithm problem. 
+<!-- Upon joining or leaving a group, an algorithm that simulates Diffie-Hellman for multiple parties is executed. The original Diffe-Hellman key exchange algorithm consists of creating a secret key between two entities, usually Alice and Bob, that takes advantage of the discrete logarithm problem. 
 
 The idea behind the group version of the Diffie-Hellman algorithm is that, instead of the usual binary group of Alice and Bob, we have a group of $N$ people for which we want a secret key.
 
@@ -32,4 +32,109 @@ To circumvent this problem, the secret key is created on the server, and every t
   }
 ```
 
-Finally, in order to distribute the key to the users, $n$ keys are saved, each signed by the user's own public RSA key, and saved in a database, from where it is retrieved by the user when they need it. In order to use it to encrypt files, the user only needs to decrypt the key with his/her secret RSA key.
+Finally, in order to distribute the key to the users, $n$ keys are saved, each signed by the user's own public RSA key, and saved in a database, from where it is retrieved by the user when they need it. In order to use it to encrypt files, the user only needs to decrypt the key with his/her secret RSA key. -->
+
+The Diffie-Hellman key exchange is a method used by multiple parties to establish a shared secret key over an insecure channel.
+
+Let's consider a scenario with three participants: Alice, Bob, and Charlie. Here's a step-by-step graphical representation of how they can perform the Diffie-Hellman key exchange:
+
+Step 1: Initialization
+
+```scss
+          Public Parameters
+       (Prime Number, Primitive Root)
+
+           /       |        \
+          /        |         \
+     Alice       Bob       Charlie
+    (a=?)      (b=?)      (c=?)
+```
+
+In this step, all participants agree on public parameters: a prime number and a generator. These parameters are shared among the participants.
+
+Step 2: Private Values
+
+```scss
+          Public Parameters
+       (Prime Number, Primitive Root)
+
+           /       |        \
+          /        |         \
+     Alice       Bob       Charlie
+    (a=5)      (b=7)      (c=3)
+```
+
+Each participant chooses a private value. In this example, Alice chooses 5, Bob chooses 7, and Charlie chooses 3.
+
+Step 3: Compute Public Values
+
+```scss
+          Public Parameters
+       (Prime Number, Primitive Root)
+
+        /              |           \
+       /               |            \
+  Alice               Bob         Charlie
+ (a=5)               (b=7)        (c=3)
+(publicA=?)     (publicB=?)   (publicC=?)
+```
+
+
+Each participant computes their public value by raising the generator to the power of their private value modulo the prime number. For example, Alice calculates $publicA = Generator^a mod Prime Number$.
+
+Step 4: Exchange Public Values
+
+```scss
+          Public Parameters
+       (Prime Number, Primitive Root)
+
+        /              |           \
+       /               |            \
+  Alice       <---   Bob       <---   Charlie
+ (a=5)              (b=7)         (c=3)
+(publicA=?)    (publicB=?)   (publicC=?)
+```
+
+Participants exchange their computed public values with each other.
+
+Step 5: Compute Shared Secret
+
+```scss
+          Public Parameters
+       (Prime Number, Primitive Root)
+
+        /              |           \
+       /               |            \
+  Alice               Bob         Charlie
+ (a=5)               (b=7)        (c=3)
+(publicA=?)     (publicB=?)   (publicC=?)
+   sharedA=         sharedB=       sharedC=
+    (computed       (computed     (computed
+   by Alice)       by Bob)       by Charlie)
+```
+
+Each participant computes the shared secret by raising the received public value to the power of their private value modulo the prime number. For example, Alice calculates $sharedA = publicB^a$ mod Prime Number.
+
+Step 6: Shared Secret
+
+```scss
+          Public Parameters
+       (Prime Number, Primitive Root)
+
+        /              |           \
+       /               |            \
+  Alice               Bob         Charlie
+ (a=5)               (b=7)        (c=3)
+(publicA=?)     (publicB=?)   (publicC=?)
+   sharedA=         sharedB=       sharedC=
+    (computed       (computed     (computed
+   by Alice)       by Bob)       by Charlie)
+     (shared        (shared        (shared
+    secret of      secret of      secret of
+     Alice)         Bob)         Charlie)
+
+```
+
+After performing the necessary computations, all participants have a shared secret key. In this example, Alice, Bob, and Charlie have established the shared secret, which is the same for all of them.
+
+Please note that the numbers and calculations shown in this graphical representation are simplified for illustrative purposes. In practice, much larger prime numbers and complex calculations are used to ensure the security of the key exchange.
