@@ -76,7 +76,7 @@ export default function SendFilePopup(props: {
     const id = splitString[splitString.length - 1];
     if (id === "inbox") return;
     setGroup_id(+id);
-  }, []);
+  }, [group_id]);
 
   const [file, setFile] = useState<File>();
   const [filePreview, setFilePreview] = useState<filePreview | undefined>();
@@ -244,7 +244,7 @@ export default function SendFilePopup(props: {
   // Update the isVisible state when props.triggered changes
   useEffect(() => {
     setIsVisible(props.triggered);
-  }, [props.triggered]);
+  }, []);
 
   const handleOutsideClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
@@ -253,7 +253,7 @@ export default function SendFilePopup(props: {
     }
   };
 
-  return props.triggered && isVisible ? (
+  return isVisible ? (
     <div
       className="fixed inset-0 p-4 sm:ml-64 bg-black bg-opacity-5 backdrop-blur-sm flex justify-center items-center"
       onClick={handleOutsideClick}
@@ -643,6 +643,7 @@ export default function SendFilePopup(props: {
                   algorithm_hmac,
                   key_size,
                 ).catch((error) => {
+                  setIsVisible(true);
                   console.error("Error sending file:", error);
                 });
                 //clear file input
@@ -650,7 +651,6 @@ export default function SendFilePopup(props: {
                 setFilePreview(undefined);
                 setDigitalSignature(undefined);
                 setprivateKeyPreview(undefined);
-
                 setOwnKey(false);
                 setOwnKeyInput("");
                 setUseDiffie(false);
