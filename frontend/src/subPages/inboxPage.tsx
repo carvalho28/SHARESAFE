@@ -208,8 +208,7 @@ function InboxPage() {
     if (!confirm) {
       return;
     }
-    console.log("file_id", file_id);
-    console.log("body", JSON.stringify({ id: file_id }));
+
     try {
       await fetch("http://localhost:3000/api/files/delete", {
         method: "DELETE",
@@ -231,6 +230,11 @@ function InboxPage() {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    console.log("user_id", user_id);
+    console.log("dataFile", dataFile);
+  }, [user_id, dataFile]);
 
   return (
     <div>
@@ -300,7 +304,7 @@ function InboxPage() {
                         Download
                       </button>
                     </td> */}
-                    <td className="px-6 py-4">
+                    <td className="px-6 py-4 hover:cursor-pointer">
                       <button
                         onClick={() => {
                           setTriggered(true);
@@ -313,17 +317,19 @@ function InboxPage() {
                         Download
                       </button>
                     </td>
-                    <td className="px-6 py-4 hover:text-red-500 dark:hover:text-red-400">
-                      {/* cross icon to delete from react icons */}
-                      <button
-                        className="text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-500"
-                        onClick={() => {
-                          deleteFile(file.id);
-                        }}
-                      >
-                        <FaTimes />
-                      </button>
-                    </td>
+                    {/* if user_id is equal to the user logged in, show delete button */}
+                    {file.user_id == user_id && (
+                      <td className="px-6 py-4 hover:text-red-500 dark:hover:text-red-400">
+                        <button
+                          className="text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-500"
+                          onClick={() => {
+                            deleteFile(file.id);
+                          }}
+                        >
+                          <FaTimes />
+                        </button>
+                      </td>
+                    )}
                   </tr>
                 ))}
               </tbody>

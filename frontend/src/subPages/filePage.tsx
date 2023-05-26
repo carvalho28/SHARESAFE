@@ -346,17 +346,18 @@ function FilePage() {
                         Download
                       </button>
                     </td>
-                    <td className="px-6 py-4 hover:text-red-500 dark:hover:text-red-400">
-                      {/* cross icon to delete from react icons */}
-                      <button
-                        className="text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-500"
-                        onClick={() => {
-                          deleteFile(file.id);
-                        }}
-                      >
-                        <FaTimes />
-                      </button>
-                    </td>
+                    {file.user_id == user_id && (
+                      <td className="px-6 py-4 hover:text-red-500 dark:hover:text-red-400">
+                        <button
+                          className="text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-500"
+                          onClick={() => {
+                            deleteFile(file.id);
+                          }}
+                        >
+                          <FaTimes />
+                        </button>
+                      </td>
+                    )}
                   </tr>
                 ))}
               </tbody>

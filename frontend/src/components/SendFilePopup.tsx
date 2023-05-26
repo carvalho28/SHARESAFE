@@ -43,6 +43,7 @@ export default function SendFilePopup(props: {
     const currentPathname = window.location.pathname;
     const splitString = currentPathname.split("/");
     const id = splitString[splitString.length - 1];
+    if (id === "inbox") return;
     setGroup_id(+id);
   }, []);
 
@@ -146,7 +147,7 @@ export default function SendFilePopup(props: {
   const getDiffieHellmanKey = async () => {
     const body = {
       user_id: getCookie("user_id"),
-      group_id: 69,
+      group_id: group_id,
     };
     const response = await fetch(
       "http://localhost:3000/api/groups/getDiffieKey",
