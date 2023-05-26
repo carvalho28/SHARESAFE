@@ -291,19 +291,6 @@ function InboxPage() {
                     <td className="px-6 py-4">
                       {validSignatures[index] ? "Yes" : "No"}
                     </td>
-                    {/* <td className="px-6 py-4">
-                      <button
-                        onClick={() =>
-                          handleDownloadClick(
-                            file,
-                            groupData.files[index],
-                            index,
-                          )
-                        }
-                      >
-                        Download
-                      </button>
-                    </td> */}
                     <td className="px-6 py-4 hover:cursor-pointer">
                       <button
                         onClick={() => {
