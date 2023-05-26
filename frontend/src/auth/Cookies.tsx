@@ -53,7 +53,7 @@ async function verifyLogin(navigate: any) {
         }
       })
       .catch((error) => {
-        console.log(error);
+        
       });
   } else {
     navigate("/");
@@ -61,7 +61,7 @@ async function verifyLogin(navigate: any) {
 }
 
 function userLogout(navigate: any) {
-  console.log("logout");
+  
   deleteCookie("accessToken");
   navigate("/");
 }

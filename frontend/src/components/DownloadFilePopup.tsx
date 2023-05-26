@@ -41,11 +41,11 @@ export default function DownloadFilePopup(props: {
     reader.onload = async (e: any) => {
       const dataURL = e.target.result;
       const text = atob(dataURL.split(",")[1]); // <-- decode the data URL
-      console.log("text", text);
+      
       var lines = text?.split("\n");
       lines?.splice(0, 1);
       var newtext = lines?.join("\n");
-      console.log("newtext", newtext);
+      
       setPrivateKey(newtext as string);
     };
 
@@ -119,7 +119,7 @@ export default function DownloadFilePopup(props: {
       setErrorMessage("");
       setShowErrorMessage(false);
     } catch (error) {
-      console.log(error);
+      
       setErrorMessage("There was a problem with encryption");
       setShowErrorMessage(true);
     }

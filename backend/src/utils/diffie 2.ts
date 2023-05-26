@@ -14,8 +14,6 @@ export function diffieH(nUsers: number) {
     return key;
   }
 
-  console.log(key);
-
   user = crypto.createDiffieHellman(prime, generator);
   user.setPrivateKey(user.generateKeys());
   user = user.computeSecret(key);

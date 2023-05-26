@@ -39,7 +39,7 @@ async function sendFile(
 ) {
   let symetricKey: string = "";
   if (encryptionType === "random") {
-    console.log("random");
+    
     switch (cypherKeySize) {
       case "56 bits": {
         symetricKey = forge.random.getBytesSync(56 / 8);
@@ -64,7 +64,7 @@ async function sendFile(
         }
     }
   } else if (encryptionType === "userKey") {
-    console.log("userKey");
+    
     // create symetric key from own key
     symetricKey = forge.pkcs5.pbkdf2(
       own_key,
@@ -73,17 +73,17 @@ async function sendFile(
       32,
     );
   } else if (encryptionType === "diffie") {
-    console.log("diffie");
+    
     if (private_key) {
       // decrypt the private key
       const privateKey = forge.pki.privateKeyFromPem(String(private_key));
-      console.log("privateKey", privateKey);
+      
       const decryptedX = privateKey.decrypt(
         forge.util.decode64(diffieKey),
         "RSA-OAEP",
       );
       symetricKey = forge.util.hexToBytes(decryptedX);
-      console.log("symetricKey", symetricKey);
+      
     }
   }
   const user_id = getCookie("user_id");
@@ -125,9 +125,9 @@ async function sendFile(
   // 64 bytes = 512 bits
   const iv = forge.random.getBytesSync(16);
 
-  console.log("encryption_algorithm", encryption_algorithm);
-  console.log("iv", iv);
-  console.log("symetricKey", symetricKey);
+  
+  
+  
   // AES - CBC or AES - GCM
   const cipher = forge.cipher.createCipher(encryption_algorithm, symetricKey);
   cipher.start({ iv: iv });
@@ -171,7 +171,7 @@ async function sendFile(
     group_id: Number(groupId),
   };
 
-  console.log("group_id", groupId);
+  
   const bodyGetUsers = {
     group_id: groupId,
   };
@@ -185,7 +185,7 @@ async function sendFile(
   })
     .then((res) => res.json())
     .then((data) => {
-      console.log("recebido", data);
+      
 
       // Encrypt symetric key with user public key
       data.members.forEach((user: { public_key: string; id: number }) => {
@@ -200,7 +200,7 @@ async function sendFile(
       });
     })
     .catch((err: any) => {
-      console.log("Error: ", err);
+      
       return err;
     });
 
@@ -219,10 +219,10 @@ async function sendFile(
   })
     .then((res) => res.json())
     .then((data) => {
-      console.log(data);
+      
     })
     .catch((err) => {
-      console.log(err.message);
+      
     });
 }
 

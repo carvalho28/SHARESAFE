@@ -87,7 +87,7 @@ function FilePage() {
         setGroups(data);
       })
       .catch((err) => {
-        console.log(err.message);
+        
       });
   }
 
@@ -120,7 +120,7 @@ function FilePage() {
         );
         setLoading(false);
       } catch (error) {
-        console.log(error);
+        
       }
     };
     getFiles();
@@ -134,11 +134,11 @@ function FilePage() {
     }
     setValidSignatures(
       groupData.group.files.map((file: any, index: number) => {
-        // console.log("file", file);
+        // 
         const publicKey = forge.pki.publicKeyFromPem(file.user.public_key);
-        // console.log("publicKey", publicKey);
+        // 
         const signature = forge.util.decode64(file.signature);
-        // console.log("signature", signature);
+        // 
         if (!signature) {
           return false;
         }
@@ -153,7 +153,7 @@ function FilePage() {
   }, [dataFile]);
 
   useEffect(() => {
-    // console.log("dataFile", dataFile);
+    // 
   }, [dataFile]);
 
   const [user, setUser] = useState<
@@ -182,19 +182,19 @@ function FilePage() {
           setUser(data);
         })
         .catch((err) => {
-          console.log(err.message);
+          
         });
     };
     getUser();
   }, []);
 
   useEffect(() => {
-    // console.log("user", user);
+    // 
   }, [user]);
 
   function getUserById(id: number) {
     if (!dataFile) return;
-    // console.log("Owner", id);
+    // 
     const userWithID: any = user.find((user: any) => user.id === id);
     return userWithID.name;
   }
@@ -239,7 +239,7 @@ function FilePage() {
       element.click();
       element.remove();
     } catch (error) {
-      console.log(error);
+      
     }
   };
 
@@ -257,8 +257,8 @@ function FilePage() {
     if (!confirm) {
       return;
     }
-    console.log("file_id", file_id);
-    console.log("body", JSON.stringify({ id: file_id }));
+    
+    
     try {
       await fetch(api_url + "/files/delete", {
         method: "DELETE",
@@ -270,15 +270,15 @@ function FilePage() {
       })
         .then((res) => res.json())
         .then((data) => {
-          console.log(data);
+          
           // reload page
           window.location.reload();
         })
         .catch((err) => {
-          console.log(err.message);
+          
         });
     } catch (error) {
-      console.log(error);
+      
     }
   };
 

@@ -38,11 +38,9 @@ export async function removeUserFromGroup(input: UserAndGroupInput) {
 
     message = `User ${user.name} removed from the group ${group.name}.`;
     status = "success";
-    console.log(message);
   } else {
     message = "User or group not found.";
     status = "error";
-    console.log(message);
   }
 
   const nMembers = await prisma.group.count({
@@ -133,7 +131,7 @@ export async function processDiffieH(
       });
       const x = diffieH2(nMembers);
 
-      // console.log(encryptedData);
+      //
       const encryptedDataArray = groupMembers?.members.map((member) => {
         const encryptedX = encryptWithPublicKey(x, member.public_key);
         return {
@@ -152,7 +150,6 @@ export async function processDiffieH(
         },
       });
 
-      console.log("Group key for group " + groupId + " stored in the database");
       resolve();
     }, 2000); // Delay of 1 second (adjust as needed)
   });

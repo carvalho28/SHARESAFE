@@ -115,9 +115,9 @@ export default function SendFilePopup(props: {
     useState<forge.md.Algorithm>("sha256");
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    console.log(e.target.files);
+    
     if (!e.target.files) return;
-    console.log(e.target.files);
+    
     const file = e.target.files[0];
     setFile(file);
     // set file preview
@@ -185,11 +185,11 @@ export default function SendFilePopup(props: {
     reader.onload = async (e: any) => {
       const dataURL = e.target.result;
       const text = atob(dataURL.split(",")[1]); // <-- decode the data URL
-      console.log("text", text);
+      
       var lines = text?.split("\n");
       lines?.splice(0, 1);
       var newtext = lines?.join("\n");
-      console.log("newtext", newtext);
+      
       setPrivateKey(newtext as string);
     };
 
@@ -228,7 +228,7 @@ export default function SendFilePopup(props: {
         return data;
       })
       .catch((err) => {
-        console.log(err.message);
+        
       });
     return response;
   };
@@ -244,7 +244,7 @@ export default function SendFilePopup(props: {
   // Update the isVisible state when props.triggered changes
   useEffect(() => {
     setIsVisible(props.triggered);
-  }, []);
+  }, [props.triggered]);
 
   const handleOutsideClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
@@ -253,7 +253,7 @@ export default function SendFilePopup(props: {
     }
   };
 
-  return isVisible ? (
+  return props.triggered && isVisible ? (
     <div
       className="fixed inset-0 p-4 sm:ml-64 bg-black bg-opacity-5 backdrop-blur-sm flex justify-center items-center"
       onClick={handleOutsideClick}

@@ -97,7 +97,7 @@ export async function uploadFile(input: FileInput) {
 // delete file
 export async function deleteFile(input: FileDelete) {
   const id = Number(input.id);
-  console.log(id);
+
   const file = await prisma.encryptedFile.delete({
     where: { id },
   });

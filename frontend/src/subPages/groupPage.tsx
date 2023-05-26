@@ -39,11 +39,11 @@ function GroupPage() {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
+        
         setGroups(data);
       })
       .catch((err) => {
-        console.log(err.message);
+        
       });
   }
 
@@ -53,7 +53,7 @@ function GroupPage() {
   }, []);
 
   useEffect(() => {
-    console.log("groups: ", groups);
+    
   }, [groups]);
 
   // construct url and navigate to the group url
@@ -61,7 +61,7 @@ function GroupPage() {
     const encodedGroupId = encodeURIComponent(group.id.toString());
     const currentPathname = window.location.pathname;
     const url = `${currentPathname}/group/${encodedGroupId}`;
-    console.log(url);
+    
     window.location.href = url;
   };
 
@@ -106,14 +106,14 @@ function GroupPage() {
         .then((res) => res.json())
         .then((data) => {
           if (!data) return;
-          console.log("users", data);
+          
           setUser(data);
           const emails = data.map((user: any) => user.email);
           setValidEmails(emails);
           setLoading(false);
         })
         .catch((err) => {
-          console.log(err.message);
+          
           setErrorMessage("Unable to create group!");
           setLoading(false);
         });
@@ -131,7 +131,7 @@ function GroupPage() {
   };
 
   useEffect(() => {
-    console.log("emails", validEmails);
+    
   }, [validEmails]);
 
   const [name, setName] = useState("");
@@ -144,17 +144,17 @@ function GroupPage() {
   const [showErrorMessage, setShowErrorMessage] = useState(false);
 
   function getEmailById(id: number) {
-    console.log("Owner", id);
+    
     const userWithID: any = user.find((user: any) => user.id === id);
     return userWithID.email;
   }
 
   const handleAddNewMember = async () => {
-    console.log("add new member");
+    
     if (email.trim() !== "") {
       if (validEmails.includes(email)) {
         const selectedUser = user.filter((item) => item.email === email);
-        console.log(selectedUser);
+        
 
         const response = await fetch(api_url + "/groups/addMemberToGroup", {
           method: "POST",
@@ -169,18 +169,18 @@ function GroupPage() {
         })
           .then((res) => res.json())
           .then((data) => {
-            console.log(data);
+            
 
             return data;
           })
           .catch((err) => {
-            console.log(err.message);
+            
           });
 
-        console.log(response);
+        
 
         if (response) {
-          console.log("user added");
+          
           setMembers((prevMembers: any) => [
             ...prevMembers,
             ...user.filter((item) => item.email === email),
@@ -222,7 +222,7 @@ function GroupPage() {
   };
 
   useEffect(() => {
-    console.log("useEffect members", members);
+    
   }, [members]);
 
   const handleLeaveGroup = async () => {
@@ -240,7 +240,7 @@ function GroupPage() {
       })
         .then((res) => res.json())
         .then((data) => {
-          console.log(data);
+          
 
           if (data.status === "success") {
             setGroups(groups.filter((group) => group.id !== groupIdEdit));
@@ -250,7 +250,7 @@ function GroupPage() {
           }
         })
         .catch((err) => {
-          console.log(err.message);
+          
           setErrorMessage("Unable to leave group!");
         });
     }
@@ -301,7 +301,7 @@ function GroupPage() {
       throw new Error(errorMessage);
     }
     const data = await response.json();
-    console.log(data);
+    
     // refresh groups
     getGroupsUser();
     // delete fields
@@ -344,11 +344,11 @@ function GroupPage() {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data.members);
+        
         setMembers(data.members);
       })
       .catch((err) => {
-        console.log(err.message);
+        
       });
   };
 
@@ -367,7 +367,7 @@ function GroupPage() {
       })
         .then((res) => res.json())
         .then((data) => {
-          console.log(data);
+          
           setLoading(false);
 
           if (data.status === "success") {
@@ -379,7 +379,7 @@ function GroupPage() {
           }
         })
         .catch((err) => {
-          console.log(err.message);
+          
           setErrorMessage("Unable to leave group!");
           setLoading(false);
         });

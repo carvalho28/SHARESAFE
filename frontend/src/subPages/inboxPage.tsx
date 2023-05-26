@@ -76,7 +76,7 @@ function InboxPage() {
         );
         setLoading(false);
       } catch (error) {
-        console.log(error);
+        
       }
     };
     getFiles();
@@ -88,11 +88,11 @@ function InboxPage() {
     }
     setValidSignatures(
       groupData.group.files.map((file: any, index: number) => {
-        // console.log("file", file);
+        // 
         const publicKey = forge.pki.publicKeyFromPem(file.user.public_key);
-        // console.log("publicKey", publicKey);
+        // 
         const signature = forge.util.decode64(file.signature);
-        // console.log("signature", signature);
+        // 
         if (!signature) {
           return false;
         }
@@ -132,7 +132,7 @@ function InboxPage() {
           setUser(data);
         })
         .catch((err) => {
-          console.log(err.message);
+          
         });
     };
     getUser();
@@ -184,7 +184,7 @@ function InboxPage() {
       element.click();
       // element.remove();
     } catch (error) {
-      console.log(error);
+      
     }
   };
 
@@ -214,15 +214,15 @@ function InboxPage() {
       })
         .then((res) => res.json())
         .then((data) => {
-          console.log(data);
+          
           // reload page
           window.location.reload();
         })
         .catch((err) => {
-          console.log(err.message);
+          
         });
     } catch (error) {
-      console.log(error);
+      
     }
   };
 

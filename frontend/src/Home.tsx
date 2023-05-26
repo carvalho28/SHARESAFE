@@ -18,7 +18,7 @@ function Home() {
 
   async function loginUser() {
     if (password === "" || email === "") {
-      console.log("empty fields");
+      
       setErrorMessage("Empty Fields");
       return;
     }
@@ -30,7 +30,7 @@ function Home() {
       password,
     };
 
-    console.log(JSON.stringify(data));
+    
 
     await fetch("http://localhost:3000/api/users/login", {
       method: "POST",
@@ -41,9 +41,9 @@ function Home() {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
+        
         if (data.accessToken) {
-          console.log("login successful");
+          
           setCookie("accessToken", data.accessToken, 7);
           setCookie("user_id", data.id, 7);
           setIsLoading(false);

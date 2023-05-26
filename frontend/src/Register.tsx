@@ -47,8 +47,8 @@ function Register() {
       public_key: publicKey,
     };
 
-    console.log(JSON.stringify(data));
-    console.log(JSON.stringify(publicKey));
+    
+    
 
     let downloadElement;
 
@@ -66,8 +66,8 @@ function Register() {
       }
 
       const responseData = await response.json();
-      console.log(responseData);
-      console.log("private key: ", privateKey);
+      
+      
 
       const element = document.createElement("a");
       const file = new Blob(["PRIVATE KEY:\n" + privateKey], {
@@ -84,7 +84,7 @@ function Register() {
     } catch (err) {
       setIsLoading(false);
       setErrorMessage("Email already in use");
-      console.log(err);
+      
 
       // Remove the download element if it exists
       downloadElement = document.querySelector("a[download='privateKey.pem']");
