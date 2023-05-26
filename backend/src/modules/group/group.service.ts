@@ -203,8 +203,6 @@ export async function addMembersToGroup(input: GroupAddMembersInput) {
 }
 
 export async function addMemberToGroup(input: GroupAddMemberInput) {
-  console.log(input);
-
   const group = await prisma.group.update({
     where: {
       id: input.group_id,

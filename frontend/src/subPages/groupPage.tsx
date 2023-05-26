@@ -51,6 +51,10 @@ function GroupPage() {
     getGroupsUser();
   }, []);
 
+  useEffect(() => {
+    console.log("groups: ", groups);
+  }, [groups]);
+
   // construct url and navigate to the group url
   const handleGroupClick = (group: Group) => {
     const encodedGroupId = encodeURIComponent(group.id.toString());
@@ -100,6 +104,7 @@ function GroupPage() {
       })
         .then((res) => res.json())
         .then((data) => {
+          if (!data) return;
           console.log("users", data);
           setUser(data);
           const emails = data.map((user: any) => user.email);
@@ -142,6 +147,7 @@ function GroupPage() {
   }
 
   const handleAddNewMember = async () => {
+    console.log("add new member");
     if (email.trim() !== "") {
       if (validEmails.includes(email)) {
         const selectedUser = user.filter((item) => item.email === email);
@@ -160,6 +166,8 @@ function GroupPage() {
         })
           .then((res) => res.json())
           .then((data) => {
+            console.log(data);
+            setMembers((prevMembers) => [...prevMembers, email]);
             return data;
           })
           .catch((err) => {
@@ -315,6 +323,25 @@ function GroupPage() {
         ? setIsShowingCreateForm(!isShowingCreateForm)
         : setIsShowingCreateForm(isShowingCreateForm);
     }
+
+    const response = fetch(api_url + "/groups/getUsers", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + getCookie("accessToken"),
+      },
+      body: JSON.stringify({
+        group_id: id,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data.members);
+        setMembers(data.members);
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
   };
 
   const handleRemoveMember = async (email: string) => {
@@ -343,30 +370,34 @@ function GroupPage() {
           </thead>
 
           {/* Linhas da base de dados */}
-          <tbody>
-            {groups.map((group) => (
-              <tr
-                key={group.id}
-                className="bg-[#19376D] dark:bg-[#333333] cursor:pointer border-b"
-                onMouseOver={handleMouseOver}
-                onMouseOut={handleMouseOut}
-              >
-                <th onClick={() => handleGroupClick(group)}>{group.name}</th>
-                <td
-                  className="px-6 py-4"
-                  onClick={() => handleGroupClick(group)}
+          {groups.length != 0 ? (
+            <tbody>
+              {groups.map((group) => (
+                <tr
+                  key={group.id}
+                  className="bg-[#19376D] dark:bg-[#333333] cursor:pointer border-b"
+                  onMouseOver={handleMouseOver}
+                  onMouseOut={handleMouseOut}
                 >
-                  {group.created_at.substring(0, 10)}
-                </td>
-                <td
-                  className="underline"
-                  onClick={() => handleEditForm(group.id)}
-                >
-                  {group.id === 1 ? "" : "Edit"}
-                </td>
-              </tr>
-            ))}
-          </tbody>
+                  <th onClick={() => handleGroupClick(group)}>{group.name}</th>
+                  <td
+                    className="px-6 py-4"
+                    onClick={() => handleGroupClick(group)}
+                  >
+                    {group.created_at.substring(0, 10)}
+                  </td>
+                  <td
+                    className="underline"
+                    onClick={() => handleEditForm(group.id)}
+                  >
+                    {group.id === 1 ? "" : "Edit"}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          ) : (
+            <tbody></tbody>
+          )}
         </table>
 
         <hr className="border-[#e57b1e] dark:border-[#9c9c9c] border-2 rounded my-5" />
@@ -500,7 +531,7 @@ function GroupPage() {
                   </thead>
 
                   <tbody>
-                    {members.map((member, index) => (
+                    {members.map((member: any, index) => (
                       <tr
                         key={index}
                         className="text-gray-100 bg-[#19376D] dark:bg-[#333333] cursor:pointer border-b"
@@ -508,7 +539,7 @@ function GroupPage() {
                         onMouseOver={handleMouseOver}
                         onMouseOut={handleMouseOut}
                       >
-                        <th>{member}</th>
+                        <th>{member.email}</th>
                       </tr>
                     ))}
                   </tbody>

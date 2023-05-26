@@ -19,6 +19,7 @@ function Register() {
   const [isLoading, setIsLoading] = useState(false);
 
   async function registerUser() {
+    setIsLoading(true);
     if (password !== confirmPassword) {
       setIsLoading(false);
       setErrorMessage("Passowrds not Matching");

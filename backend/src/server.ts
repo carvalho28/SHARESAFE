@@ -35,7 +35,6 @@ function buildServer() {
   server.decorate(
     "authentication",
     async (request: FastifyRequest, reply: FastifyReply) => {
-      console.log(request.headers.authorization);
       try {
         await request.jwtVerify();
       } catch (err) {
