@@ -49,17 +49,18 @@ async function sendFile(
       case "192 bits": {
         symetricKey = forge.random.getBytesSync(192 / 8);
       }
-      case "256 bits": {
-        symetricKey = forge.random.getBytesSync(256 / 8);
-      }
-    }
-    if (
-      encryption_algorithm === "3DES-CBC" ||
-      encryption_algorithm === "3DES-ECB"
-    ) {
-      symetricKey = forge.random.getBytesSync(24);
-    } else {
-      symetricKey = forge.random.getBytesSync(32);
+      case "256 bits":
+        {
+          symetricKey = forge.random.getBytesSync(256 / 8);
+        }
+        if (
+          encryption_algorithm === "3DES-CBC" ||
+          encryption_algorithm === "3DES-ECB"
+        ) {
+          symetricKey = forge.random.getBytesSync(24);
+        } else {
+          symetricKey = forge.random.getBytesSync(32);
+        }
     }
   } else if (encryptionType === "userKey") {
     console.log("userKey");
