@@ -10,6 +10,8 @@ const config = {
   tagline: "Share more, worry less.",
   favicon: "img/favicon.ico",
 
+  staticDirectories: ["static"],
+
   // Set the production url of your site here
   url: "https://your-docusaurus-test-site.com",
   // Set the /<baseUrl>/ pathname under which your site is served
@@ -42,7 +44,7 @@ const config = {
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-            "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/",
+            "https://github.com/carvalho28/SHARESAFE/edit/main/frontend/sharesafe-docs/",
         },
         theme: {
           customCss: require.resolve("./src/css/custom.css"),
@@ -72,7 +74,7 @@ const config = {
       },
       footer: {
         style: "dark",
-        copyright: `Copyright © ${new Date().getFullYear()} SHARESAFE`,
+        copyright: `Copyright © ${new Date().getFullYear()} SHARESAFE - Team M`,
       },
       prism: {
         theme: lightCodeTheme,
