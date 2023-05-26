@@ -6,11 +6,11 @@ sidebar_position: 4
 
 For safety purposes, the iv is generated randomly and is different for each file.
 
-The encryption however can be done in three different ways:
+The encryption, however, can be done in three different ways:
 
 - using a symmetric key chosen by the user;
 - using a symmetric key generated randomly;
-- using the [diffie-hellman](../extras/diffie-hell) key exchange algorithm.
+- using the [Diffie-Hellman](../extras/diffie-hell) key exchange algorithm.
 
 ## Random Symmetric Key
 
@@ -44,11 +44,11 @@ symmetricKey = forge.pkcs5.pbkdf2(
 ```
 
 This function `forge.pkcs5.pbkdf2` generates a symmetric key based on the user's input and a random salt,
-allowing the password to be used as a key, in a secure way.
+allowing the password to be used as a key, securely.
 
 ## Symmetric Key generated using Diffie-Hellman
 
-The process of generating the symmetric key is explained in the [diffie-hellman](../extras/diffie-hell) page.
+The process of generating the symmetric key is explained in the [Diffie-Hellman](../extras/diffie-hell) page.
 
 ## Allowed encryption algorithms
 
@@ -66,4 +66,4 @@ The process of generating the symmetric key is explained in the [diffie-hellman]
 ## Location - Encrypted Files
 
 The encrypted files are stored in the `files` folder, in the `backend` folder.
-The decision to store the files in the files folder, rather than the database, was made to optimize storage and improve database performance. Additionally, storing files separately allows for easier file management and enables direct access to the files when needed.
+The decision to store the files in the `files` folder, rather than the database, was made to optimize storage and improve database performance. Additionally, storing files separately allows for easier file management and enables direct access to the files when needed.
