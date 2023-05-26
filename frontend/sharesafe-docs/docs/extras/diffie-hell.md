@@ -100,17 +100,16 @@ Participants exchange their computed public values with each other.
 Step 5: Compute Shared Secret
 
 ```scss
-          Public Parameters
-       (Prime Number, Primitive Root)
+               Public Parameters
+            (Prime Number, Primitive Root)
 
-        /              |           \
-       /               |            \
-  Alice               Bob         Charlie
- (a=5)               (b=7)        (c=3)
-(publicA=?)     (publicB=?)   (publicC=?)
-   sharedA=         sharedB=       sharedC=
-    (computed       (computed     (computed
-   by Alice)       by Bob)       by Charlie)
+        /                     |                 \
+       /                      |                  \
+     Alice                   Bob                  Charlie
+   (a=5)                    (b=7)                  (c=3)
+  (publicA=?)             (publicB=?)              (publicC=?)
+sharedA=...                sharedB=...              sharedC=...
+(computed by Alice)     (computed by Bob)          (computed by Charlie)                     
 ```
 
 Each participant computes the shared secret by raising the received public value to the power of their private value modulo the prime number. For example, Alice calculates $sharedA = publicB^a$ mod Prime Number.
@@ -118,20 +117,17 @@ Each participant computes the shared secret by raising the received public value
 Step 6: Shared Secret
 
 ```scss
-          Public Parameters
-       (Prime Number, Primitive Root)
+              Public Parameters
+          (Prime Number, Primitive Root)
 
-        /              |           \
-       /               |            \
-  Alice               Bob         Charlie
- (a=5)               (b=7)        (c=3)
-(publicA=?)     (publicB=?)   (publicC=?)
-   sharedA=         sharedB=       sharedC=
-    (computed       (computed     (computed
-   by Alice)       by Bob)       by Charlie)
-     (shared        (shared        (shared
-    secret of      secret of      secret of
-     Alice)         Bob)         Charlie)
+        /                         |           \
+       /                          |            \
+  Alice                          Bob              Charlie
+ (a=5)                        (b=7)                (c=3)
+(publicA=?)                  (publicB=?)           (publicC=?)
+sharedA=...                  sharedB=...               sharedC=...
+(computed by Alice)         (computed by Bob)          (computed by Charlie)
+(shared secret of Alice)    (shared secret of Bob)    (shared secret of Charlie)
 
 ```
 
