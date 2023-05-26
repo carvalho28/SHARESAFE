@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { FileInput, FileReceive } from "./file.schema";
-import { uploadFile, receiveFile } from "./file.service";
+import { FileInput, FileReceive, FileDelete } from "./file.schema";
+import { uploadFile, receiveFile, deleteFile } from "./file.service";
 
 export async function uploadFileHandler(
   request: FastifyRequest<{ Body: FileInput }>,
@@ -24,6 +24,20 @@ export async function receiveFileHandler(
 
   try {
     const files = await receiveFile(body);
+    return reply.code(201).send(files);
+  } catch (error) {
+    return reply.code(400).send(error);
+  }
+}
+
+export async function deleteFileHandler(
+  request: FastifyRequest<{ Body: FileReceive }>,
+  reply: FastifyReply
+) {
+  const body = request.body;
+
+  try {
+    const files = await deleteFile(body);
     return reply.code(201).send(files);
   } catch (error) {
     return reply.code(400).send(error);

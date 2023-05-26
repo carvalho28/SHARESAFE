@@ -126,6 +126,7 @@ function GroupPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [members, setMembers] = useState<string[]>([]);
+  const [groupIdEdit ,setGroupIdEdit] = useState<number>();
 
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -136,6 +137,43 @@ function GroupPage() {
     const userWithID: any = user.find((user: any) => user.id === id);
     return userWithID.email;
   }
+
+  const handleAddNewMember = async () => {
+    if (email.trim() !== "") {
+      if (validEmails.includes(email)) {
+        const selectedUser = user.filter(item => item.email === email)
+        console.log(selectedUser);
+        
+        const response = await fetch("http://localhost:3000/api/groups/addMemberToGroup", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            group_id: groupIdEdit,
+            user_id: selectedUser[0].id
+          }),
+        })
+        .then((res) => res.json())
+        .then((data) => {
+          return data;
+        })
+        .catch((err) => {
+          console.log(err.message);
+        });
+
+        console.log(response);
+
+        if (response) {
+          console.log("user added");
+        } else {
+          setErrorMessage("Error adding user");
+          setShowErrorMessage(true);
+        }
+      }
+    }
+    
+  };
 
   const handleAddMember = () => {
     if (email.trim() !== "") {
@@ -168,6 +206,36 @@ function GroupPage() {
   useEffect(() => {
     console.log("useEffect members", members);
   }, [members]);
+
+  const handleLeaveGroup = async () => {
+    if (user_id && groupIdEdit) {
+      await fetch("http://localhost:3000/api/groups/removeUserFromGroup", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json; charset=UTF-8",
+          },
+          body: JSON.stringify({
+            group_id: groupIdEdit,
+            user_id: user_id
+          }),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            console.log(data);
+            
+            if (data.status === "success") {
+              setGroups(groups.filter(group => group.id !== groupIdEdit));
+              setIsShowingEditForm(false);
+            } else {
+              console.error(data.message);
+            }
+          })
+          .catch((err) => {
+            console.log(err.message);
+            setErrorMessage("Unable to leave group!");
+          });
+    }
+    };
 
   const handleCreateGroup = async () => {
     if (name == "") {
@@ -235,17 +303,13 @@ function GroupPage() {
   const [isShowingEditForm, setIsShowingEditForm] = useState(false);
 
   const handleEditForm = (id: number) => {
-    console.log(id);
+    setGroupIdEdit(id);
     if (!(id === 1)) {
       setIsShowingEditForm(!isShowingEditForm);
       isShowingCreateForm
         ? setIsShowingCreateForm(!isShowingCreateForm)
         : setIsShowingCreateForm(isShowingCreateForm);
     }
-  };
-
-  const handleAddNewMember = async () => {
-    // add nem member to the group, i.e., update the members from the db
   };
 
   const handleRemoveMember = async (email: string) => {
@@ -268,12 +332,6 @@ function GroupPage() {
               <th scope="col" className="px-6 py-3">
                 Group
               </th>
-              {/*<th scope="col" className="px-6 py-3">
-                  Members
-                </th>
-                <th scope="col" className="px-6 py-3">
-                  Files
-                </th>*/}
               <th>Created At</th>
               <th></th>
             </tr>
@@ -289,12 +347,6 @@ function GroupPage() {
                 onMouseOut={handleMouseOut}
               >
                 <th onClick={() => handleGroupClick(group)}>{group.name}</th>
-                {/*<td className="px-6 py-4">
-                  {group.members}
-                </td>
-                <td className="px-6 py-4">
-                  {group.files}
-                </td>*/}
                 <td
                   className="px-6 py-4"
                   onClick={() => handleGroupClick(group)}
@@ -355,15 +407,15 @@ function GroupPage() {
                 />
               </div>
 
-              <div className="pt-1 pb-5 flex justify-center">
-                <button
-                  type="button"
-                  className="bg-[#0B2447] hover:bg-[#19376D] text-white dark:text-[#d9d9d9] dark:bg-[#333333] dark:hover:bg-[#383838] focus:ring-2 focus:ring-[#E57B1E] font-medium rounded-lg text-sm px-5 py-2 mr-2 mb-2 focus:outline-none dark:focus:ring-[#383838]"
-                  onClick={handleAddMember}
-                >
-                  Add member
-                </button>
-              </div>
+            <div className="pt-1 pb-5 flex justify-center">
+              <button
+                type="button"
+                className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+                onClick={handleAddMember}
+              >
+                Add Member
+              </button>
+            </div>
 
               <div className="flex justify-center pb-5">
                 <table className="w-1/2 text-sm text-center text-gray-100">
@@ -499,7 +551,17 @@ function GroupPage() {
                   className="bg-[#0B2447] hover:bg-[#19376D] text-white dark:text-[#d9d9d9] dark:bg-[#333333] dark:hover:bg-[#383838] focus:ring-2 focus:ring-[#E57B1E] font-medium rounded-lg text-sm px-5 py-2 mr-2 mb-2 focus:outline-none dark:focus:ring-[#383838]"
                   onClick={handleAddNewMember}
                 >
-                  Add member
+                  Add Member
+              </button>
+            </div>
+
+            <div className="pt-1 pb-5 flex justify-center">
+              <button
+                type="button"
+                className="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2 mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-300"
+                onClick={handleLeaveGroup}
+              >
+                Leave Group
                 </button>
               </div>
             </form>

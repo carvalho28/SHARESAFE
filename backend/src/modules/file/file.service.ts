@@ -1,5 +1,5 @@
 import prisma from "../../utils/prisma";
-import { FileInput, FileReceive } from "./file.schema";
+import { FileDelete, FileInput, FileReceive } from "./file.schema";
 import fs from "fs";
 
 export async function receiveFile(input: FileReceive) {
@@ -93,4 +93,19 @@ export async function uploadFile(input: FileInput) {
   });
 
   return file;
+}
+
+// delete file
+export async function deleteFile(input: FileDelete) {
+  const id = Number(input.id);
+  console.log(id);
+  const file = await prisma.encryptedFile.delete({
+    where: { id },
+  });
+
+  if (!file) {
+    return JSON.stringify({ message: "File not found" });
+  }
+
+  return JSON.stringify({ message: "File deleted" });
 }

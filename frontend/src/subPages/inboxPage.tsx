@@ -4,6 +4,8 @@ import receiveFile from "../encryption/ReceiveFile";
 import decryptFile from "../encryption/DecryptFile";
 import { getCookie } from "../auth/Cookies";
 import forge from "node-forge";
+import { FaTimes } from "react-icons/fa";
+import { GiThink } from "react-icons/gi";
 
 type File = {
   id: number;
@@ -205,6 +207,38 @@ function InboxPage() {
     reader.readAsText(e.target.files[0]);
   }
 
+  const deleteFile = async (file_id: number) => {
+    // show alert
+    const confirm = window.confirm(
+      "Are you sure you want to delete this file?",
+    );
+    if (!confirm) {
+      return;
+    }
+    console.log("file_id", file_id);
+    console.log("body", JSON.stringify({ id: file_id }));
+    try {
+      await fetch("http://localhost:3000/api/files/delete", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json; charset=UTF-8",
+        },
+        body: JSON.stringify({ id: file_id }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          // reload page
+          window.location.reload();
+        })
+        .catch((err) => {
+          console.log(err.message);
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div>
       <Sidebar />
@@ -235,10 +269,11 @@ function InboxPage() {
                   Signed
                 </th>
                 <th></th>
+                <th></th>
               </tr>
             </thead>
             {/* Linhas da base de dados */}
-            {dataFile && (
+            {dataFile.length !== 0 && (
               <tbody>
                 {dataFile.map((file: any, index: number) => (
                   <tr
@@ -265,11 +300,28 @@ function InboxPage() {
                         Download
                       </button>
                     </td>
+                    <td className="px-6 py-4 hover:text-red-500 dark:hover:text-red-400">
+                      {/* cross icon to delete from react icons */}
+                      <button
+                        className="text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-500"
+                        onClick={() => {
+                          deleteFile(file.id);
+                        }}
+                      >
+                        <FaTimes />
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
             )}
           </table>
+          {dataFile.length === 0 && (
+            <div className="flex justify-center items-center mt-10 flex-col">
+              <p className="text-gray-400 text-4xl">No files yet</p>
+              <GiThink className="ml-2 text-gray-400 mt-10" size={300} />
+            </div>
+          )}
         </section>
       </div>
     </div>

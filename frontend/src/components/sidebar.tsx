@@ -14,12 +14,14 @@ export default function Sidebar() {
       <SendFilePopup triggered={triggered} setTriggered={setTriggered} />
       <aside
         id="default-sidebar"
-        className="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0"
+        className="fixed top-0 left-0 z-40 w-64 h-screen transition-transform 
+        -translate-x-full sm:translate-x-0"
         aria-label="Sidebar"
       >
         <div className="h-full px-3 py-1 overflow-y-auto bg-[#0B2447] dark:bg-[#242424]">
           <ul className="space-y-2">
             <li>
+              <div className="flex items-center justify-center pr-2 mt-10 mb-4">
               <div className="flex items-center justify-center">
                 <img className="w-1/2" alt="Logo" src={logo} />
               </div>
@@ -28,12 +30,15 @@ export default function Sidebar() {
             <li>
               <button
                 onClick={() => setTriggered(true)}
+                className="flex w-full border-2 items-center p-2 text-base 
+                font-normal rounded-lg text-white hover:bg-[#569DAA] 
+                dark:hover:bg-[#383838] mt-8"
                 className="flex w-full border-2 items-center p-2 text-base font-normal rounded-lg text-white hover:bg-[#19376D] dark:hover:bg-[#333333]"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
-                  height="24"
+                  height="32"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="#ffffff"
@@ -52,12 +57,14 @@ export default function Sidebar() {
             <li>
               <Link
                 to="/inbox"
+                className="flex items-center p-2 text-base font-normal rounded-lg
+                text-white hover:bg-[#569DAA] dark:hover:bg-[#383838]"
                 className="flex items-center p-2 text-base font-normal rounded-lg text-white hover:bg-[#19376D] dark:hover:bg-[#333333]"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
-                  height="24"
+                  height="32"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="#ffffff"
@@ -79,7 +86,7 @@ export default function Sidebar() {
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
-                  height="24"
+                  height="32"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="#ffffff"
@@ -104,7 +111,7 @@ export default function Sidebar() {
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
-                  height="24"
+                  height="32"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="#ffffff"
@@ -127,7 +134,7 @@ export default function Sidebar() {
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
-                  height="24"
+                  height="32"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="#ffffff"
