@@ -4,12 +4,10 @@ sidebar_position: 6
 
 # File Signature
 
-Lastly, if the user has enable the signature, the encrypted file will be signed with the user's signature.
-This signature is generated using the user's private key, and the signature algorithm chosen by the user.
+Lastly, if the user has enabled the signature, the encrypted file will be signed with the user's signature. This signature is generated using the user's private key, and the signature algorithm chosen by the user.
 
 ````typescript title="Signature"
 
-```typescript title="Sign the encrypted file"
 if (digitalSignature) {
   const privateKeyFileBuffer = await digitalSignature?.arrayBuffer();
   const privateKeyString = new TextDecoder().decode(privateKeyFileBuffer);
@@ -31,7 +29,7 @@ if (digitalSignature) {
 The signature is used to verify that the received file was sent by the user who claims to have sent it.
 The signature guarantees:
 
-- **Message authentication**: the receiver can verify that the message comes from the sender.
-- **Message integrity**: the receiver can verify that the message has not been altered.
-- **Non-repudiation**: the sender cannot deny having sent the message.
-- **False-proof**: the receiver cannot forge the signature of the message.
+- **message authentication**: the receiver can verify that the message comes from the sender;
+- **message integrity**: the receiver can verify that the message has not been altered;
+- **non-repudiation**: the sender cannot deny having sent the message;
+- **false-proof**: the receiver cannot forge the signature of the message.

@@ -23,7 +23,7 @@ model User {
 }
 ```
 
-As we can see, each user is identified by an `id`, has a `name`, an `email` which is the information used to login.
+As we can see, each user is identified by an `id`, has a `name`, an `email` which is the information used to log in.
 
 ## Password and Salt
 
@@ -42,7 +42,7 @@ salt:        118f166145cebb2035757677cc2af9b14a96f4ed8ee9a6acedc2317d9a...
 
 ### Hashing Password
 
-The funtion used to hash the password is the following:
+The function used to hash the password is the following:
 
 ```typescript title="hashPassword function"
 export function hashPassword(password: string) {
