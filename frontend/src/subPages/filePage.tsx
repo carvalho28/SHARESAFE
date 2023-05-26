@@ -115,8 +115,7 @@ function FilePage() {
             return file.signature_algorithm;
           }),
         );
-        // verify the signature using the public key inside receivedData.group.files.user.public_key
-        // if the signature is valid, decrypt the file using the private key
+        setLoading(false);
       } catch (error) {
         console.log(error);
       }
@@ -124,9 +123,7 @@ function FilePage() {
     getFiles();
   }, []);
 
-  useEffect(() => {
-    console.log("algo", algoSignature);
-  }, [algoSignature]);
+  useEffect(() => {}, [algoSignature]);
 
   useEffect(() => {
     if (dataFile.length === 0) {

@@ -80,9 +80,7 @@ function InboxPage() {
     getFiles();
   }, []);
 
-  useEffect(() => {
-    console.log("algo", algoSignature);
-  }, [algoSignature]);
+  useEffect(() => {}, [algoSignature]);
 
   useEffect(() => {
     if (dataFile.length === 0) {
