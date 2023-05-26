@@ -6,9 +6,21 @@ import {
 } from "./file.controller";
 
 async function fileRoutes(server: FastifyInstance) {
-  server.post("/upload", uploadFileHandler);
-  server.post("/receive", receiveFileHandler);
-  server.delete("/delete", deleteFileHandler);
+  server.post(
+    "/upload",
+    { preHandler: [server.authentication] },
+    uploadFileHandler
+  );
+  server.post(
+    "/receive",
+    { preHandler: [server.authentication] },
+    receiveFileHandler
+  );
+  server.delete(
+    "/delete",
+    { preHandler: [server.authentication] },
+    deleteFileHandler
+  );
 }
 
 export default fileRoutes;

@@ -1,5 +1,6 @@
 import forge from "node-forge";
 import { getCookie } from "../auth/Cookies";
+import { api_url } from "../auth/general";
 
 type fileInformation = {
   file_name: string;
@@ -174,10 +175,11 @@ async function sendFile(
   const bodyGetUsers = {
     group_id: groupId,
   };
-  await fetch("http://localhost:3000/api/groups/getUsers", {
+  await fetch(api_url + "/groups/getUsers", {
     method: "POST",
     headers: {
       "Content-Type": "application/json; charset=UTF-8",
+      Authorization: "Bearer " + getCookie("accessToken"),
     },
     body: JSON.stringify(bodyGetUsers),
   })
@@ -207,10 +209,11 @@ async function sendFile(
     users_group,
   };
 
-  await fetch("http://localhost:3000/api/files/upload", {
+  await fetch(api_url + "/files/upload", {
     method: "POST",
     headers: {
       "Content-Type": "application/json; charset=UTF-8",
+      Authorization: "Bearer " + getCookie("accessToken"),
     },
     body: JSON.stringify(body),
   })
