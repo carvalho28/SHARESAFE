@@ -345,9 +345,38 @@ function GroupPage() {
       });
   };
 
-  const handleRemoveMember = async (email: string) => {
-    // remove member from group
-    console.log(email);
+  const handleRemoveMember = async (user: any) => {
+    console.log("user to be removed",user.name);
+    console.log("id of user to be removed",user.id);
+      if (user && groupIdEdit) {
+        await fetch(api_url + "/groups/removeUserFromGroup", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json; charset=UTF-8",
+            Authorization: "Bearer " + getCookie("accessToken"),
+          },
+          body: JSON.stringify({
+            group_id: groupIdEdit,
+            user_id: user.id,
+          }),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            console.log(data);
+  
+            if (data.status === "success") {
+              // setGroups(groups.filter((group) => group.id !== groupIdEdit));
+              setMembers(members.filter((u: any) => u !== user));
+              setIsShowingEditForm(false);
+            } else {
+              console.error(data.message);
+            }
+          })
+          .catch((err) => {
+            console.log(err.message);
+            setErrorMessage("Unable to leave group!");
+          });
+    }
   };
 
   return (
@@ -528,6 +557,7 @@ function GroupPage() {
                       <th scope="col" className="px-6 py-3">
                         Members
                       </th>
+                      <th></th>
                     </tr>
                   </thead>
 
@@ -536,11 +566,18 @@ function GroupPage() {
                       <tr
                         key={index}
                         className="text-gray-100 bg-[#19376D] dark:bg-[#333333] cursor:pointer border-b"
-                        onClick={() => handleRemoveMember(member)}
-                        onMouseOver={handleMouseOver}
-                        onMouseOut={handleMouseOut}
                       >
                         <th>{member.email}</th>
+                        <th 
+                          onClick={() => handleRemoveMember(member)}
+                          onMouseOver={handleMouseOver}
+                          onMouseOut={handleMouseOut}
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="red" width="16px" height="16px">
+                            <path d="M0 0h24v24H0z" fill="none"/>
+                            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/>
+                          </svg>
+                        </th>
                       </tr>
                     ))}
                   </tbody>
