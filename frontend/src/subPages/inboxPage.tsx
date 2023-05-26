@@ -7,8 +7,9 @@ import forge from "node-forge";
 import { FaTimes } from "react-icons/fa";
 import { GiThink } from "react-icons/gi";
 import { Spinner } from "../components/Spinner";
+import DownloadFilePopup from "../components/DownloadFilePopup";
 
-type File = {
+export type FileType = {
   id: number;
   file_name: string;
   file_type: string;
@@ -193,19 +194,11 @@ function InboxPage() {
     }
   };
 
-  function handleFileChange(e: any) {
-    const reader = new FileReader();
-    reader.onload = async (e: any) => {
-      const text = e.target.result;
-
-      var lines = text.split("\n");
-      lines.splice(0, 1);
-      var newtext = lines.join("\n");
-
-      setPrivateKey(newtext);
-    };
-    reader.readAsText(e.target.files[0]);
-  }
+  const [triggered, setTriggered] = useState(false);
+  const [ownerFile, setOwnerFile] = useState("");
+  const [signedFile, setSignedFile] = useState("");
+  const [file, setFile] = useState();
+  const [fileData, setFileData] = useState(undefined);
 
   const deleteFile = async (file_id: number) => {
     // show alert
@@ -242,8 +235,17 @@ function InboxPage() {
   return (
     <div>
       <Sidebar />
+      <DownloadFilePopup
+        triggered={triggered}
+        setTriggered={setTriggered}
+        files={file}
+        setFile={setFile}
+        fileData={fileData}
+        setFileData={setFileData}
+        ownerFile={ownerFile}
+        signedFile={signedFile}
+      />
       <div className="p-4 sm:ml-64">
-        <input type="file" id="file" onChange={(e) => handleFileChange(e)} />
         <section>
           {/* Ficheiros */}
           <h2 className="text-center underline">{heading}</h2>
@@ -285,7 +287,7 @@ function InboxPage() {
                     <td className="px-6 py-4">
                       {validSignatures[index] ? "Yes" : "No"}
                     </td>
-                    <td className="px-6 py-4">
+                    {/* <td className="px-6 py-4">
                       <button
                         onClick={() =>
                           handleDownloadClick(
@@ -294,6 +296,19 @@ function InboxPage() {
                             index,
                           )
                         }
+                      >
+                        Download
+                      </button>
+                    </td> */}
+                    <td className="px-6 py-4">
+                      <button
+                        onClick={() => {
+                          setTriggered(true);
+                          setFile(file);
+                          setFileData(groupData.files[index]);
+                          setOwnerFile(getUserById(file.user_id));
+                          setSignedFile(validSignatures[index] ? "Yes" : "No");
+                        }}
                       >
                         Download
                       </button>
