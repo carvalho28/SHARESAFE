@@ -243,7 +243,7 @@ function InboxPage() {
                 {dataFile.map((file: any, index: number) => (
                   <tr
                     key={file.id}
-                    className="bg-[#19376D] dark:bg-[#333333]"
+                    className="bg-[#19376D] dark:bg-[#333333] border-b"
                   >
                     <th>{file.file_name}</th>
                     <td className="px-6 py-4">{file.file_size}</td>
