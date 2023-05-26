@@ -82,8 +82,6 @@ function InboxPage() {
     getFiles();
   }, []);
 
-  useEffect(() => {}, [algoSignature]);
-
   useEffect(() => {
     if (dataFile.length === 0) {
       return;
@@ -107,8 +105,6 @@ function InboxPage() {
       }),
     );
   }, [dataFile]);
-
-  useEffect(() => {}, [dataFile]);
 
   const [user, setUser] = useState<
     {
@@ -141,10 +137,6 @@ function InboxPage() {
     };
     getUser();
   }, []);
-
-  useEffect(() => {
-    // console.log("user", user);
-  }, [user]);
 
   function getUserById(id: number) {
     if (!dataFile) return;
@@ -190,7 +182,7 @@ function InboxPage() {
       element.download = fileInfo.file_name;
       document.body.appendChild(element); // Required for this to work in FireFox
       element.click();
-      element.remove();
+      // element.remove();
     } catch (error) {
       console.log(error);
     }
@@ -234,10 +226,7 @@ function InboxPage() {
     }
   };
 
-  useEffect(() => {
-    console.log("user_id", user_id);
-    console.log("dataFile", dataFile);
-  }, [user_id, dataFile]);
+  useEffect(() => {}, [dataFile, algoSignature, user_id, user]);
 
   return (
     <div>

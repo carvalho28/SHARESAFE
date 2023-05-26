@@ -2,6 +2,7 @@ import Sidebar from "../components/sidebar";
 import { useEffect, useState } from "react";
 import { getCookie } from "../auth/Cookies";
 import { api_url } from "../auth/general";
+import { Spinner } from "../components/Spinner";
 
 type Group = {
   id: number;
@@ -109,10 +110,12 @@ function GroupPage() {
           setUser(data);
           const emails = data.map((user: any) => user.email);
           setValidEmails(emails);
+          setLoading(false);
         })
         .catch((err) => {
           console.log(err.message);
           setErrorMessage("Unable to create group!");
+          setLoading(false);
         });
     };
     getUser();
@@ -167,7 +170,7 @@ function GroupPage() {
           .then((res) => res.json())
           .then((data) => {
             console.log(data);
-            
+
             return data;
           })
           .catch((err) => {
@@ -178,7 +181,10 @@ function GroupPage() {
 
         if (response) {
           console.log("user added");
-            setMembers((prevMembers: any) => [...prevMembers, ...user.filter((item) => item.email === email)]);
+          setMembers((prevMembers: any) => [
+            ...prevMembers,
+            ...user.filter((item) => item.email === email),
+          ]);
         } else {
           setErrorMessage("Error adding user");
           setShowErrorMessage(true);
@@ -315,6 +321,7 @@ function GroupPage() {
    */
 
   const [isShowingEditForm, setIsShowingEditForm] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const handleEditForm = (id: number) => {
     setGroupIdEdit(id);
@@ -346,43 +353,42 @@ function GroupPage() {
   };
 
   const handleRemoveMember = async (user: any) => {
-    console.log("user to be removed",user.name);
-    console.log("id of user to be removed",user.id);
-      if (user && groupIdEdit) {
-        await fetch(api_url + "/groups/removeUserFromGroup", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json; charset=UTF-8",
-            Authorization: "Bearer " + getCookie("accessToken"),
-          },
-          body: JSON.stringify({
-            group_id: groupIdEdit,
-            user_id: user.id,
-          }),
+    if (user && groupIdEdit) {
+      await fetch(api_url + "/groups/removeUserFromGroup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json; charset=UTF-8",
+          Authorization: "Bearer " + getCookie("accessToken"),
+        },
+        body: JSON.stringify({
+          group_id: groupIdEdit,
+          user_id: user.id,
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          setLoading(false);
+
+          if (data.status === "success") {
+            // setGroups(groups.filter((group) => group.id !== groupIdEdit));
+            setMembers(members.filter((u: any) => u !== user));
+            setIsShowingEditForm(false);
+          } else {
+            console.error(data.message);
+          }
         })
-          .then((res) => res.json())
-          .then((data) => {
-            console.log(data);
-  
-            if (data.status === "success") {
-              // setGroups(groups.filter((group) => group.id !== groupIdEdit));
-              setMembers(members.filter((u: any) => u !== user));
-              setIsShowingEditForm(false);
-            } else {
-              console.error(data.message);
-            }
-          })
-          .catch((err) => {
-            console.log(err.message);
-            setErrorMessage("Unable to leave group!");
-          });
+        .catch((err) => {
+          console.log(err.message);
+          setErrorMessage("Unable to leave group!");
+          setLoading(false);
+        });
     }
   };
 
   return (
     <div>
       <Sidebar />
-
       <div className="p-4 sm:ml-64">
         {/* Grupos */}
         <h2 className="text-center underline">Groups</h2>
@@ -429,6 +435,12 @@ function GroupPage() {
             <tbody></tbody>
           )}
         </table>
+        
+        {loading && (
+          <div className="text-center justify-center items-center w-full mt-10">
+            <Spinner width="100" height="100" />
+          </div>
+        )}
 
         <hr className="border-[#e57b1e] dark:border-[#9c9c9c] border-2 rounded my-5" />
 
@@ -568,14 +580,20 @@ function GroupPage() {
                         className="text-gray-100 bg-[#19376D] dark:bg-[#333333] cursor:pointer border-b"
                       >
                         <th>{member.email}</th>
-                        <th 
+                        <th
                           onClick={() => handleRemoveMember(member)}
                           onMouseOver={handleMouseOver}
                           onMouseOut={handleMouseOut}
                         >
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="red" width="16px" height="16px">
-                            <path d="M0 0h24v24H0z" fill="none"/>
-                            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="red"
+                            width="16px"
+                            height="16px"
+                          >
+                            <path d="M0 0h24v24H0z" fill="none" />
+                            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z" />
                           </svg>
                         </th>
                       </tr>
@@ -583,6 +601,8 @@ function GroupPage() {
                   </tbody>
                 </table>
               </div>
+
+              
 
               <div className="py-3 flex justify-center">
                 <input
