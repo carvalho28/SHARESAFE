@@ -296,9 +296,9 @@ function FilePage() {
           {/* Ficheiros */}
           <h2 className="text-center underline">{heading}</h2>
           <br></br>
-          <table className="w-full text-sm text-center text-gray-500 dark:text-gray-400">
+          <table className="w-full text-sm text-center text-gray-100">
             {/* CabeÃ§alho */}
-            <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <thead className="text-xs uppercase text-gray-100 bg-[#0B2447] dark:bg-[#242424]">
               <tr>
                 <th scope="col" className="px-6 py-3">
                   File Name
@@ -325,7 +325,7 @@ function FilePage() {
                 {dataFile.map((file: any, index: number) => (
                   <tr
                     key={file.id}
-                    className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+                    className="bg-[#19376D] dark:bg-[#333333] cursor:pointer border-b"
                   >
                     <th>{file.file_name}</th>
                     <td className="px-6 py-4">{file.file_size}</td>
