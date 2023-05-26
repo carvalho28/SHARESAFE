@@ -4,7 +4,7 @@ sidebar_position: 3
 
 # Diffie-Hellman
 
-Upon joining or leaving a group, an algorithm that simulates Diffie-Hellman for multiple parties is executed. The original Diffe-Hellman key exchange algorithm consists of creating a secret key between two entities, usually Alice and Bob, that takes advantage of the discrete logarithm problem. 
+Upon joining or leaving a group, an algorithm that simulates Diffie-Hellman for multiple parties is executed. The original Diffie-Hellman key exchange algorithm consists of creating a secret key between two entities, usually Alice and Bob, that takes advantage of the discrete logarithm problem.
 
 The idea behind the group version of the Diffie-Hellman algorithm is that, instead of the usual binary group of Alice and Bob, we have a group of $N$ people for which we want a secret key.
 
