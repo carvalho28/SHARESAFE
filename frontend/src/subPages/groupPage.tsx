@@ -133,7 +133,7 @@ function GroupPage() {
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [members, setMembers] = useState<string[]>([]);
+  const [members, setMembers] = useState<any>([]);
   const [groupIdEdit, setGroupIdEdit] = useState<number>();
 
   const [errorMessage, setErrorMessage] = useState("");
@@ -167,7 +167,7 @@ function GroupPage() {
           .then((res) => res.json())
           .then((data) => {
             console.log(data);
-            setMembers((prevMembers) => [...prevMembers, email]);
+            
             return data;
           })
           .catch((err) => {
@@ -178,6 +178,7 @@ function GroupPage() {
 
         if (response) {
           console.log("user added");
+            setMembers((prevMembers: any) => [...prevMembers, ...user.filter((item) => item.email === email)]);
         } else {
           setErrorMessage("Error adding user");
           setShowErrorMessage(true);
@@ -195,7 +196,7 @@ function GroupPage() {
         // duplicated email?
         if (!members.includes(email)) {
           setShowErrorMessage(false);
-          setMembers((prevMembers) => [...prevMembers, email]);
+          setMembers((prevMembers: any) => [...prevMembers, email]);
         } else {
           // email duplicated
           setShowErrorMessage(true);
@@ -462,7 +463,7 @@ function GroupPage() {
                   </thead>
 
                   <tbody>
-                    {members.map((member, index) => (
+                    {members.map((member: any, index: number) => (
                       <tr
                         key={index}
                         className="text-gray-100 bg-[#19376D] dark:bg-[#333333] cursor:pointer border-b"
@@ -531,7 +532,7 @@ function GroupPage() {
                   </thead>
 
                   <tbody>
-                    {members.map((member: any, index) => (
+                    {members.map((member: any, index: number) => (
                       <tr
                         key={index}
                         className="text-gray-100 bg-[#19376D] dark:bg-[#333333] cursor:pointer border-b"
