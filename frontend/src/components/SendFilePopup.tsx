@@ -488,7 +488,8 @@ export default function SendFilePopup(props: {
                 defaultValue={algorithmEncOptions[0]}
                 items={algorithmEncOptions}
               />
-              <div className="mt-20">
+            </div>
+            <div className="mt-20">
               <Dropdown
                 label="Key Size"
                 name="key-Size"
@@ -577,7 +578,7 @@ export default function SendFilePopup(props: {
             </div>
           </div>
           {/* DIV ABAIXO E FITA COLA */}
-        </div>
+        
 
           <div className="flex flex-col items-center justify-center w-full mt-2">
             <button
