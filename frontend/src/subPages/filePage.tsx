@@ -8,6 +8,7 @@ import { GiThink } from "react-icons/gi";
 import decryptFile from "../encryption/DecryptFile";
 import { FaTimes } from "react-icons/fa";
 import { Spinner } from "../components/Spinner";
+import DownloadFilePopup from "../components/DownloadFilePopup";
 
 type File = {
   id: number;
@@ -239,19 +240,11 @@ function FilePage() {
     }
   };
 
-  function handleFileChange(e: any) {
-    const reader = new FileReader();
-    reader.onload = async (e: any) => {
-      const text = e.target.result;
-
-      var lines = text.split("\n");
-      lines.splice(0, 1);
-      var newtext = lines.join("\n");
-
-      setPrivateKey(newtext);
-    };
-    reader.readAsText(e.target.files[0]);
-  }
+  const [triggered, setTriggered] = useState(false);
+  const [ownerFile, setOwnerFile] = useState("");
+  const [signedFile, setSignedFile] = useState("");
+  const [file, setFile] = useState();
+  const [fileData, setFileData] = useState(undefined);
 
   const deleteFile = async (file_id: number) => {
     // show alert
@@ -288,9 +281,17 @@ function FilePage() {
   return (
     <div>
       <Sidebar />
-
+      <DownloadFilePopup
+        triggered={triggered}
+        setTriggered={setTriggered}
+        files={file}
+        setFile={setFile}
+        fileData={fileData}
+        setFileData={setFileData}
+        ownerFile={ownerFile}
+        signedFile={signedFile}
+      />
       <div className="p-4 sm:ml-64">
-        <input type="file" id="file" onChange={(e) => handleFileChange(e)} />
         <section>
           {/* Ficheiros */}
           <h2 className="text-center underline">{heading}</h2>
@@ -333,30 +334,31 @@ function FilePage() {
                     <td className="px-6 py-4">
                       {validSignatures[index] ? "Yes" : "No"}
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-6 py-4 hover:cursor-pointer">
                       <button
-                        onClick={() =>
-                          handleDownloadClick(
-                            file,
-                            groupData.files[index],
-                            index,
-                          )
-                        }
+                        onClick={() => {
+                          setTriggered(true);
+                          setFile(file);
+                          setFileData(groupData.files[index]);
+                          setOwnerFile(getUserById(file.user_id));
+                          setSignedFile(validSignatures[index] ? "Yes" : "No");
+                        }}
                       >
                         Download
                       </button>
                     </td>
-                    <td className="px-6 py-4 hover:text-red-500 dark:hover:text-red-400">
-                      {/* cross icon to delete from react icons */}
-                      <button
-                        className="text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-500"
-                        onClick={() => {
-                          deleteFile(file.id);
-                        }}
-                      >
-                        <FaTimes />
-                      </button>
-                    </td>
+                    {file.user_id == user_id && (
+                      <td className="px-6 py-4 hover:text-red-500 dark:hover:text-red-400">
+                        <button
+                          className="text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-500"
+                          onClick={() => {
+                            deleteFile(file.id);
+                          }}
+                        >
+                          <FaTimes />
+                        </button>
+                      </td>
+                    )}
                   </tr>
                 ))}
               </tbody>

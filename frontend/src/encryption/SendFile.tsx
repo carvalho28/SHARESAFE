@@ -38,8 +38,11 @@ async function sendFile(
   let symetricKey: string = "";
   if (encryptionType === "random") {
     console.log("random");
-    if (encryption_algorithm === "3DES-CBC" || encryption_algorithm === "3DES-ECB") {
-      symetricKey = forge.random.getBytesSync(24)
+    if (
+      encryption_algorithm === "3DES-CBC" ||
+      encryption_algorithm === "3DES-ECB"
+    ) {
+      symetricKey = forge.random.getBytesSync(24);
     } else {
       symetricKey = forge.random.getBytesSync(32);
     }
@@ -151,8 +154,9 @@ async function sendFile(
     group_id: Number(groupId),
   };
 
+  console.log("group_id", groupId);
   const bodyGetUsers = {
-    group_id: 1,
+    group_id: groupId,
   };
   await fetch("http://localhost:3000/api/groups/getUsers", {
     method: "POST",
