@@ -74,7 +74,7 @@ function FilePage() {
       user_id,
     };
 
-    await fetch(api_url + "groups/getGroups", {
+    await fetch(api_url + "/groups/getGroups", {
       method: "POST",
       headers: {
         "Content-Type": "application/json; charset=UTF-8",
