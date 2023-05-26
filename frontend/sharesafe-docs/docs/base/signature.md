@@ -9,7 +9,6 @@ This signature is generated using the user's private key, and the signature algo
 
 ````typescript title="Signature"
 
-```typescript title="Sign the encrypted file"
 if (digitalSignature) {
   const privateKeyFileBuffer = await digitalSignature?.arrayBuffer();
   const privateKeyString = new TextDecoder().decode(privateKeyFileBuffer);
