@@ -6,17 +6,45 @@ import {
   getDiffieKey,
   removeUserFromGroupHandler,
   addMembersToGroupHandler,
-  addMemberToGroupHandler
+  addMemberToGroupHandler,
 } from "./group.controller";
 
 async function groupRoutes(server: FastifyInstance) {
-  server.post("/new", createGroupHandler);
-  server.post("/getGroups", getGroupsHandler);
-  server.post("/getUsers", getUsersFromGroupHandler);
-  server.post("/getDiffieKey", getDiffieKey);
-  server.post("/removeUserFromGroup", removeUserFromGroupHandler);
-  server.post("/addMembersToGroup", addMembersToGroupHandler);
-  server.post("/addMemberToGroup", addMemberToGroupHandler);
+  server.post(
+    "/new",
+    { preHandler: [server.authentication] },
+    createGroupHandler
+  );
+  server.post(
+    "/getGroups",
+    { preHandler: [server.authentication] },
+    getGroupsHandler
+  );
+  server.post(
+    "/getUsers",
+    { preHandler: [server.authentication] },
+    getUsersFromGroupHandler
+  );
+  server.post(
+    "/getDiffieKey",
+    { preHandler: [server.authentication] },
+    getDiffieKey
+  );
+  server.post(
+    "/removeUserFromGroup",
+    { preHandler: [server.authentication] },
+    removeUserFromGroupHandler
+  );
+  server.post(
+    "/addMembersToGroup",
+    { preHandler: [server.authentication] },
+    addMembersToGroupHandler
+  );
+  server.post(
+    "/addMemberToGroup",
+    { preHandler: [server.authentication] },
+    addMemberToGroupHandler
+  );
 }
 
 export default groupRoutes;

@@ -4,6 +4,7 @@ import { Spinner } from "./components/Spinner";
 import logo from "./images/Logo.png";
 import forge from "node-forge";
 import { useNavigate } from "react-router-dom";
+import { api_url } from "./auth/general";
 
 function Register() {
   // const [publicKey, setPublicKey] = useState("");
@@ -51,7 +52,7 @@ function Register() {
     let downloadElement;
 
     try {
-      const response = await fetch("http://localhost:3000/api/users/register", {
+      const response = await fetch(api_url + "/users/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json; charset=UTF-8",
@@ -211,7 +212,10 @@ function Register() {
           <div className="flex items-center justify-center mt-1">
             <p className="text-xs text-black dark:text-[#d9d9d9]">
               Already have an account? Click{" "}
-              <Link to="/" className="font-bold text-[#E57B1E] dark:text-[#d9d9d9]">
+              <Link
+                to="/"
+                className="font-bold text-[#E57B1E] dark:text-[#d9d9d9]"
+              >
                 here.
               </Link>
             </p>

@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { api_url } from "./general";
 
 function setCookie(cookieName: string, cookieValue: any, daysToLive: any) {
   const date = new Date();
@@ -37,9 +38,10 @@ async function verifyLogin(navigate: any) {
   if (getCookie("accessToken") === "") {
     navigate("/");
   } else if (getCookie("accessToken") !== "") {
-    await fetch("http://localhost:3000/api/users/verify", {
+    await fetch(api_url + "/users/verify", {
       method: "POST",
       headers: {
+        "Content-Type": "application/json; charset=UTF-8",
         Authorization: "Bearer " + getCookie("accessToken"),
       },
     })

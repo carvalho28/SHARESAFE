@@ -1,4 +1,5 @@
 import crypto from "crypto";
+import { FastifyReply, FastifyRequest } from "fastify";
 
 export function hashPassword(password: string) {
   const salt = crypto.randomBytes(32).toString("hex");
@@ -24,3 +25,22 @@ export function comparePassword({
 
   return hash === hashVerify;
 }
+
+// export async function validateToken(
+//   request: FastifyRequest,
+//   reply: FastifyReply,
+//   next: Function
+// ) {
+//   try {
+//     const auth = request.headers.authorization;
+//     if (!auth) {
+//       return reply.status(401).send({ message: "No token provided" });
+//     }
+//     const token = auth.split(" ")[1];
+//     const decoded = await request.jwtVerify();
+//     request.user = decoded;
+//     return next();
+//   } catch (err) {
+//     return reply.status(401).send({ message: "Unauthorized" });
+//   }
+// }

@@ -1,6 +1,7 @@
 import Sidebar from "../components/sidebar";
 import { useEffect, useState } from "react";
 import { getCookie } from "../auth/Cookies";
+import { api_url } from "../auth/general";
 
 type Group = {
   id: number;
@@ -27,10 +28,11 @@ function GroupPage() {
       user_id,
     };
 
-    await fetch("http://localhost:3000/api/groups/getGroups", {
+    await fetch(api_url + "/groups/getGroups", {
       method: "POST",
       headers: {
         "Content-Type": "application/json; charset=UTF-8",
+        Authorization: "Bearer " + getCookie("accessToken"),
       },
       body: JSON.stringify(body),
     })
@@ -89,10 +91,11 @@ function GroupPage() {
 
   useEffect(() => {
     const getUser = async () => {
-      await fetch("http://localhost:3000/api/users", {
+      await fetch(api_url + "/users", {
         method: "GET",
         headers: {
           "Content-Type": "application/json; charset=UTF-8",
+          Authorization: "Bearer " + getCookie("accessToken"),
         },
       })
         .then((res) => res.json())
@@ -144,19 +147,17 @@ function GroupPage() {
         const selectedUser = user.filter((item) => item.email === email);
         console.log(selectedUser);
 
-        const response = await fetch(
-          "http://localhost:3000/api/groups/addMemberToGroup",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              group_id: groupIdEdit,
-              user_id: selectedUser[0].id,
-            }),
+        const response = await fetch(api_url + "/groups/addMemberToGroup", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + getCookie("accessToken"),
           },
-        )
+          body: JSON.stringify({
+            group_id: groupIdEdit,
+            user_id: selectedUser[0].id,
+          }),
+        })
           .then((res) => res.json())
           .then((data) => {
             return data;
@@ -211,10 +212,11 @@ function GroupPage() {
 
   const handleLeaveGroup = async () => {
     if (user_id && groupIdEdit) {
-      await fetch("http://localhost:3000/api/groups/removeUserFromGroup", {
+      await fetch(api_url + "/groups/removeUserFromGroup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json; charset=UTF-8",
+          Authorization: "Bearer " + getCookie("accessToken"),
         },
         body: JSON.stringify({
           group_id: groupIdEdit,
@@ -271,10 +273,11 @@ function GroupPage() {
       };
     }
 
-    const response = await fetch("http://localhost:3000/api/groups/new", {
+    const response = await fetch(api_url + "/groups/new", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: "Bearer " + getCookie("accessToken"),
       },
       body: JSON.stringify(body),
     });
@@ -369,7 +372,7 @@ function GroupPage() {
         <hr className="border-[#e57b1e] dark:border-[#9c9c9c] border-2 rounded my-5" />
 
         {/** Buttons */}
-        <div className="flex items-center justify-center">
+        <div className="w-1/4 ml-5">
           <button
             className="shadow appearance-none border rounded w-1/2 py-2 bg-[#0B2447] hover:bg-[#19376D] dark:bg-[#333333] dark:hover:bg-[#383838] text-gray-100 font-bold text-xl"
             onClick={handleCreateForm}
@@ -380,12 +383,11 @@ function GroupPage() {
 
         <hr className="border-[#e57b1e] dark:border-[#9c9c9c] border-2 rounded my-5" />
 
-        <div className="">
+        <div className="flex items-center justify-center">
           {/** Create Group */}
           {isShowingCreateForm && (
-            <form className="w-full text-center pt-5">
+            <form className="w-1/2 text-center pt-5">
               <h1>Create Group</h1>
-
               <div className="py-3 flex items-center justify-center">
                 <input
                   className="shadow appearance-none w-1/2 border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-xl"
@@ -479,10 +481,12 @@ function GroupPage() {
               </div>
             </form>
           )}
+        </div>
 
+        <div className="flex items-center justify-center">
           {/** Edit Group */}
           {isShowingEditForm && (
-            <form className="w-full text-center pt-5">
+            <form className="w-1/2 text-center pt-5">
               <h1>Edit Group</h1>
 
               <div className="flex justify-center py-5">

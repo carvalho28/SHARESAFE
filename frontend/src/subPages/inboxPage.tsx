@@ -8,6 +8,7 @@ import { FaTimes } from "react-icons/fa";
 import { GiThink } from "react-icons/gi";
 import { Spinner } from "../components/Spinner";
 import DownloadFilePopup from "../components/DownloadFilePopup";
+import { api_url } from "../auth/general";
 
 export type FileType = {
   id: number;
@@ -123,10 +124,11 @@ function InboxPage() {
   // Owner user_name
   useEffect(() => {
     const getUser = async () => {
-      await fetch("http://localhost:3000/api/users", {
+      await fetch(api_url + "/users", {
         method: "GET",
         headers: {
           "Content-Type": "application/json; charset=UTF-8",
+          Authorization: "Bearer " + getCookie("accessToken"),
         },
       })
         .then((res) => res.json())
@@ -210,10 +212,11 @@ function InboxPage() {
     }
 
     try {
-      await fetch("http://localhost:3000/api/files/delete", {
+      await fetch(api_url + "/files/delete", {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json; charset=UTF-8",
+          Authorization: "Bearer " + getCookie("accessToken"),
         },
         body: JSON.stringify({ id: file_id }),
       })

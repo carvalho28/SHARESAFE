@@ -49,7 +49,7 @@ SHARESAFE
 
 ### Backend
 
-The library used for cryptography is [crypto](https://nodejs.org/api/crypto.html) which was used to hash secure passwords, using hashes.
+The library used for cryptography is [crypto](https://nodejs.org/api/crypto.html), which was used to hash secure passwords, using hashes.
 
 ### Frontend
 

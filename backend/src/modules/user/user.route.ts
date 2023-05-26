@@ -8,7 +8,7 @@ import {
 import { $ref } from "./user.schema";
 
 async function userRoutes(server: FastifyInstance) {
-  server.get("/", getUsersHandler);
+  server.get("/", { preHandler: [server.authentication] }, getUsersHandler);
 
   server.post(
     "/register",

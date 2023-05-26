@@ -9,6 +9,7 @@ import decryptFile from "../encryption/DecryptFile";
 import { FaTimes } from "react-icons/fa";
 import { Spinner } from "../components/Spinner";
 import DownloadFilePopup from "../components/DownloadFilePopup";
+import { api_url } from "../auth/general";
 
 type File = {
   id: number;
@@ -73,10 +74,11 @@ function FilePage() {
       user_id,
     };
 
-    await fetch("http://localhost:3000/api/groups/getGroups", {
+    await fetch(api_url + "groups/getGroups", {
       method: "POST",
       headers: {
         "Content-Type": "application/json; charset=UTF-8",
+        Authorization: "Bearer " + getCookie("accessToken"),
       },
       body: JSON.stringify(body),
     })
@@ -168,10 +170,11 @@ function FilePage() {
   // Owner user_name
   useEffect(() => {
     const getUser = async () => {
-      await fetch("http://localhost:3000/api/users", {
+      await fetch(api_url + "/users", {
         method: "GET",
         headers: {
           "Content-Type": "application/json; charset=UTF-8",
+          Authorization: "Bearer " + getCookie("accessToken"),
         },
       })
         .then((res) => res.json())
@@ -257,10 +260,11 @@ function FilePage() {
     console.log("file_id", file_id);
     console.log("body", JSON.stringify({ id: file_id }));
     try {
-      await fetch("http://localhost:3000/api/files/delete", {
+      await fetch(api_url + "/files/delete", {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json; charset=UTF-8",
+          Authorization: "Bearer " + getCookie("accessToken"),
         },
         body: JSON.stringify({ id: file_id }),
       })
