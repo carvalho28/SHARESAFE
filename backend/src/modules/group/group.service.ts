@@ -7,7 +7,7 @@ import {
   GroupAddMemberInput,
   GroupAddMembersInput,
   GroupInput,
-  UserAndGroupInput
+  UserAndGroupInput,
 } from "./group.schema";
 import crypto from "crypto";
 
@@ -19,12 +19,10 @@ export async function removeUserFromGroup(input: UserAndGroupInput) {
     where: { id: input.user_id },
     include: { groups: true },
   });
-  
-  
-  const group = user?.groups.find(group => group.id === input.group_id);
-  
-  if (user && group) {
 
+  const group = user?.groups.find((group) => group.id === input.group_id);
+
+  if (user && group) {
     await prisma.group.update({
       where: {
         id: input.group_id,
@@ -37,20 +35,29 @@ export async function removeUserFromGroup(input: UserAndGroupInput) {
         },
       },
     });
-    
+
     message = `User ${user.name} removed from the group ${group.name}.`;
     status = "success";
     console.log(message);
-
   } else {
     message = "User or group not found.";
     status = "error";
     console.log(message);
   }
 
+  const nMembers = await prisma.group.count({
+    where: {
+      id: input.group_id,
+    },
+  });
+
+  if (group) {
+    processDiffieH(nMembers, group.id);
+  }
+
   return {
     status: status,
-    message: message
+    message: message,
   };
 }
 
@@ -75,7 +82,7 @@ export async function createGroup(input: GroupInput) {
     data,
   });
 
-  const nMembers = 2;
+  const nMembers = input.members.length;
   processDiffieH(nMembers, group.id);
 
   return group;
@@ -110,13 +117,12 @@ export async function getGroupKeys(input: GetGroupKeysInput) {
   };
 }
 
-async function processDiffieH(
+export async function processDiffieH(
   nMembers: number,
   groupId: number
 ): Promise<void> {
   return new Promise(async (resolve) => {
     setTimeout(async () => {
-      // get group members public keys
       const groupMembers = await prisma.group.findUnique({
         where: {
           id: groupId,
@@ -125,7 +131,6 @@ async function processDiffieH(
           members: true,
         },
       });
-
       const x = diffieH2(nMembers);
 
       // console.log(encryptedData);
@@ -148,7 +153,6 @@ async function processDiffieH(
       });
 
       console.log("Group key for group " + groupId + " stored in the database");
-      console.log("Group key: " + x);
       resolve();
     }, 2000); // Delay of 1 second (adjust as needed)
   });
@@ -181,7 +185,7 @@ export async function addFilesToGroup(input: GroupAddFilesInput) {
 }
 
 // add members to group
-export async function addMembersToGroup(input: GroupAddMembersInput) {  
+export async function addMembersToGroup(input: GroupAddMembersInput) {
   const data = {
     members: {
       connect: input.members.map((memberId) => ({ id: memberId })),
@@ -198,9 +202,9 @@ export async function addMembersToGroup(input: GroupAddMembersInput) {
   return group;
 }
 
-export async function addMemberToGroup(input: GroupAddMemberInput) {  
+export async function addMemberToGroup(input: GroupAddMemberInput) {
   console.log(input);
-  
+
   const group = await prisma.group.update({
     where: {
       id: input.group_id,
@@ -214,8 +218,13 @@ export async function addMemberToGroup(input: GroupAddMemberInput) {
     },
   });
 
-  console.log(group);
-  
+  const nMembers = await prisma.group.count({
+    where: {
+      id: input.group_id,
+    },
+  });
+
+  processDiffieH(nMembers, input.group_id);
 
   return group;
 }

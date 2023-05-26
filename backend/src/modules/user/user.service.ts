@@ -1,6 +1,7 @@
 import prisma from "../../utils/prisma";
 import { hashPassword } from "../../utils/hash";
 import { CreateUserInput } from "./user.schema";
+import { processDiffieH } from "../group/group.service";
 
 export async function findUsers() {
   return prisma.user.findMany();
@@ -23,6 +24,14 @@ export async function createUser(input: CreateUserInput) {
       },
     },
   });
+
+  const nMembers = await prisma.group.count({
+    where: {
+      id: 1,
+    },
+  });
+
+  processDiffieH(nMembers, 1);
 
   return user;
 }

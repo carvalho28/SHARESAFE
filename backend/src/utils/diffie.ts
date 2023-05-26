@@ -43,7 +43,6 @@ export function diffieH2(nUsers: number) {
   const prime = user.getPrime();
   const generator = user.getGenerator();
   const participants = [];
-  let sharedSecret = null;
 
   // Generate participants
   for (let i = 0; i < nUsers; i++) {
@@ -56,18 +55,12 @@ export function diffieH2(nUsers: number) {
     });
   }
 
-  // Compute shared secret
-  for (let i = 0; i < nUsers; i++) {
-    const currentParticipant = participants[i];
-    const otherSharedSecret = currentParticipant.participant.computeSecret(
-      participants[(i + 1) % nUsers].keys
-    );
+  let sharedSecret = participants[0].keys;
 
-    if (sharedSecret === null) {
-      sharedSecret = otherSharedSecret;
-    } else if (!sharedSecret.equals(otherSharedSecret)) {
-      throw new Error("Shared secrets are not equal!");
-    }
+  // Compute shared secret
+  for (let i = 1; i < nUsers; i++) {
+    const currentParticipant = participants[i];
+    sharedSecret = currentParticipant.participant.computeSecret(sharedSecret);
   }
 
   // Hash shared secret
