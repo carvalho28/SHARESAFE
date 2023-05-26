@@ -24,6 +24,37 @@ const algorithmEncOptions = [
   { value: "DES-CBC", label: "DES-CBC" },
 ];
 
+// const AESKeySizes = {
+//     {value: "128 bits", label: "128 bits"},
+//     {value: "192 bits", label: "192 bits"},
+//     {value: "256 bits", label: "256 bits"},
+// };
+
+// const Triple3DESKeySizes = {
+//   {value: "192 bits", label: "192 bits"},
+// };
+
+// const DESKeySizes = {
+//   {value: "192 bits", label: "192 bits"},
+// };
+
+type CypherKeySize = {
+  AES: { value: string; label: string }[];
+  TRIPLE_3DES: { value: string; label: string }[];
+  DES: { value: string; label: string }[];
+};
+
+const cypherKeySizes: CypherKeySize = {
+  AES: [
+    { value: "128 bits", label: "128 bits" },
+    { value: "192 bits", label: "192 bits" },
+    { value: "256 bits", label: "256 bits" },
+  ],
+  TRIPLE_3DES: [{ value: "192 bits", label: "192 bits" }],
+  DES: [{ value: "56 bits", label: "56 bits" }],
+};
+
+
 const algorithmMDOptions = [
   { value: "SHA1", label: "SHA1" },
   { value: "SHA256", label: "SHA256" },
@@ -66,6 +97,13 @@ export default function SendFilePopup(props: {
   const [algorithm_sign, setAlgorithm_sign] = useState<string>(
     algorithmMDOptions[0].value,
   );
+
+  const [keySizes, setKeySizes] = useState<{value: string, label: string}>({value: "128 bits", label: "128 bits"});
+
+  const [key_size, setKey_size] = useState<string> (cypherKeySizes.AES[0].value);
+
+  const [availableSizes, setAvailableSizes] = useState<{ value: string; label: string }[] | undefined>(cypherKeySizes.AES);
+
   const [algorithm_encrypt, setAlgorithm_encrypt] =
     useState<forge.cipher.Algorithm>("AES-CBC");
   const [algorithm_hmac, setAlgorithm_hmac] =
@@ -102,9 +140,32 @@ export default function SendFilePopup(props: {
     }
     if (e.target.name === "algorithm-Encrypt") {
       setAlgorithm_encrypt(e.target.value as forge.cipher.Algorithm);
+      switch (e.target.value) {
+        case "AES-CBC":
+        case "AES-EBC":
+        case "AES-CFB":
+        case "AES-OFB":
+        case "AES-CTR": 
+        case "AES-GMC": {
+          setAvailableSizes(cypherKeySizes.AES);
+          break;
+        }
+        case "3DES-ECB":
+        case "3DES-CBC": {
+          setAvailableSizes(cypherKeySizes.TRIPLE_3DES);
+          break;
+        }
+        case "DES-ECB":
+        case "DES-CBC": {
+          setAvailableSizes(cypherKeySizes.DES);
+        }
+      }
     }
     if (e.target.name === "algorithm-HMAC") {
       setAlgorithm_hmac(e.target.value as forge.md.Algorithm);
+    }
+    if (e.target.name === "Key Size") {
+      setKey_size(e.target.value);
     }
   };
 
@@ -458,6 +519,15 @@ export default function SendFilePopup(props: {
             </div>
             <div className="mt-20">
               <Dropdown
+                label="Key Size"
+                name="key-Size"
+                onSelect={handleAlgorithmChange}
+                defaultValue={cypherKeySizes.AES[0]}
+                items={cypherKeySizes.AES}
+              />
+            </div>
+            <div className="mt-20">
+              <Dropdown
                 label="Algorithm to HMAC"
                 name="algorithm-HMAC"
                 onSelect={handleAlgorithmChange}
@@ -535,6 +605,8 @@ export default function SendFilePopup(props: {
               />
             </div>
           </div>
+          {/* DIV ABAIXO E FITA COLA */}
+        
 
           <div className="flex flex-col items-center justify-center w-full mt-2">
             <button
@@ -561,6 +633,7 @@ export default function SendFilePopup(props: {
                   algorithm_encrypt,
                   algorithm_sign,
                   algorithm_hmac,
+                  key_size
                 ).catch((error) => {
                   console.error("Error sending file:", error);
                 });
