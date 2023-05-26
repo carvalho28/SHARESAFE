@@ -4,7 +4,7 @@ sidebar_position: 4
 
 # File Encryption
 
-For safety purposes, the iv is generated randomly and is different for each file.
+For safety purposes, the **iv** is generated randomly and is different for each file.
 
 The encryption, however, can be done in three different ways:
 

@@ -12,8 +12,8 @@ A popup will appear, where the user can:
 - upload his private key, if he wishes to sign the file (optional);
 - select the encryption algorithm to be used (AES-256 default);
 - select the MAC algorithm to be used (SHA-256 default);
-- enable the digital signature (optional);
-  - select the digital signature algorithm to be used (RSA-2048 and SHA-256 default);
+- enable the digital signature (optional):
+  - select the digital signature algorithm to be used (RSA-2048 and SHA-256 default).
 - type the desired symetric key to be used in the file encryption (optional);
 - enable the use of diffie-hellman (optional).
 
