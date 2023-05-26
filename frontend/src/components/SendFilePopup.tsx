@@ -477,6 +477,33 @@ export default function SendFilePopup(props: {
           </div>
           <div className="flex items-center justify-center w-full mt-2 space-x-20">
             {/* checkbox to enable sign file */}
+            <div className="mt-20">
+              <Dropdown
+                label="Algorithm to Encrypt"
+                name="algorithm-Encrypt"
+                onSelect={handleAlgorithmChange}
+                defaultValue={algorithmEncOptions[0]}
+                items={algorithmEncOptions}
+              />
+            </div>
+            <div className="mt-20">
+              <Dropdown
+                label="Key Size"
+                name="key-Size"
+                onSelect={handleAlgorithmChange}
+                defaultValue={cypherKeySizes.AES[0]}
+                items={cypherKeySizes.AES}
+              />
+            </div>
+            <div className="mt-20">
+              <Dropdown
+                label="Algorithm to HMAC"
+                name="algorithm-HMAC"
+                onSelect={handleAlgorithmChange}
+                defaultValue={algorithmMDOptions[1]}
+                items={algorithmMDOptions}
+              />
+            </div>
             <div className="flex items-center justify-center flex-col mt-8">
               <div className="flex flex-row items-center justify-center">
                 <input
@@ -507,33 +534,6 @@ export default function SendFilePopup(props: {
                   </div>
                 )}
               </div>
-            </div>
-            <div className="mt-20">
-              <Dropdown
-                label="Algorithm to Encrypt"
-                name="algorithm-Encrypt"
-                onSelect={handleAlgorithmChange}
-                defaultValue={algorithmEncOptions[0]}
-                items={algorithmEncOptions}
-              />
-            </div>
-            <div className="mt-20">
-              <Dropdown
-                label="Key Size"
-                name="key-Size"
-                onSelect={handleAlgorithmChange}
-                defaultValue={cypherKeySizes.AES[0]}
-                items={cypherKeySizes.AES}
-              />
-            </div>
-            <div className="mt-20">
-              <Dropdown
-                label="Algorithm to HMAC"
-                name="algorithm-HMAC"
-                onSelect={handleAlgorithmChange}
-                defaultValue={algorithmMDOptions[1]}
-                items={algorithmMDOptions}
-              />
             </div>
           </div>
           <div className="flex items-center justify-center w-full space-x-20 mt-8">
