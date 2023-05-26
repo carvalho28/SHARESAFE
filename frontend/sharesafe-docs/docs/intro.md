@@ -38,7 +38,7 @@ SHARESAFE
 ## Tech Stack
 
 - [Docusaurus](https://docusaurus.io/) - Create documentation websites
-- [Express](https://expressjs.com/) - Web framework for Node.js
+- [Fastify](https://www.fastify.io/) - Web framework
 - [Node.js](https://nodejs.org/en/) - JavaScript runtime
 - [PostgreSQL](https://www.postgresql.org/) - Open source relational database
 - [Prisma](https://www.prisma.io/) - Database toolkit
