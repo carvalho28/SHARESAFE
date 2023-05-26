@@ -1,9 +1,18 @@
-export const Spinner = () => {
+interface SpinnerProps {
+  width?: string;
+  height?: string;
+}
+
+export const Spinner = ({ width = "50", height = "50" }: SpinnerProps) => {
   return (
-    <div role="status" className="flex flex-row text-center justify-center items-center">
+    <div
+      role="status"
+      className="flex flex-row text-center justify-center items-center"
+    >
       <svg
         aria-hidden="true"
-        className="w-12 h-12 mr-2 text-gray-200 animate-spin fill-[#E57B1E]"
+        style={{ width: width, height: height }}
+        className={`mr-2 text-gray-200 animate-spin fill-[#E57B1E]`}
         viewBox="0 0 100 101"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"

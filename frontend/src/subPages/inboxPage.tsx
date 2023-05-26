@@ -6,6 +6,7 @@ import { getCookie } from "../auth/Cookies";
 import forge from "node-forge";
 import { FaTimes } from "react-icons/fa";
 import { GiThink } from "react-icons/gi";
+import { Spinner } from "../components/Spinner";
 
 type File = {
   id: number;
@@ -58,6 +59,8 @@ function InboxPage() {
   const [validSignatures, setValidSignatures] = useState<any>([]);
   const [algoSignature, setAlgoSignature] = useState<any>([]);
 
+  const [loading, setLoading] = useState<boolean>(true);
+
   useEffect(() => {
     const getFiles = async () => {
       try {
@@ -69,8 +72,7 @@ function InboxPage() {
             return file.signature_algorithm;
           }),
         );
-        // verify the signature using the public key inside receivedData.group.files.user.public_key
-        // if the signature is valid, decrypt the file using the private key
+        setLoading(false);
       } catch (error) {
         console.log(error);
       }
@@ -242,7 +244,6 @@ function InboxPage() {
   return (
     <div>
       <Sidebar />
-
       <div className="p-4 sm:ml-64">
         <input type="file" id="file" onChange={(e) => handleFileChange(e)} />
         <section>
@@ -272,8 +273,7 @@ function InboxPage() {
                 <th></th>
               </tr>
             </thead>
-            {/* Linhas da base de dados */}
-            {dataFile.length !== 0 && (
+            {dataFile.length !== 0 && loading === false && (
               <tbody>
                 {dataFile.map((file: any, index: number) => (
                   <tr
@@ -316,7 +316,12 @@ function InboxPage() {
               </tbody>
             )}
           </table>
-          {dataFile.length === 0 && (
+          {loading && (
+            <div className="text-center justify-center items-center w-full mt-10">
+              <Spinner width="100" height="100" />
+            </div>
+          )}
+          {dataFile.length === 0 && loading === false && (
             <div className="flex justify-center items-center mt-10 flex-col">
               <p className="text-gray-400 text-4xl">No files yet</p>
               <GiThink className="ml-2 text-gray-400 mt-10" size={300} />

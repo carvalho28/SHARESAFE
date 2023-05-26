@@ -22,7 +22,6 @@ export default function Sidebar() {
           <ul className="space-y-2">
             <li>
               <div className="flex items-center justify-center pr-2 mt-10 mb-4">
-              <div className="flex items-center justify-center">
                 <img className="w-1/2" alt="Logo" src={logo} />
               </div>
             </li>
@@ -30,10 +29,8 @@ export default function Sidebar() {
             <li>
               <button
                 onClick={() => setTriggered(true)}
-                className="flex w-full border-2 items-center p-2 text-base 
-                font-normal rounded-lg text-white hover:bg-[#569DAA] 
-                dark:hover:bg-[#383838] mt-8"
-                className="flex w-full border-2 items-center p-2 text-base font-normal rounded-lg text-white hover:bg-[#19376D] dark:hover:bg-[#333333]"
+                className="flex w-full border-2 items-center p-2 text-base font-normal 
+                rounded-lg text-white hover:bg-[#19376D] dark:hover:bg-[#333333] mt-8 " 
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -57,8 +54,6 @@ export default function Sidebar() {
             <li>
               <Link
                 to="/inbox"
-                className="flex items-center p-2 text-base font-normal rounded-lg
-                text-white hover:bg-[#569DAA] dark:hover:bg-[#383838]"
                 className="flex items-center p-2 text-base font-normal rounded-lg text-white hover:bg-[#19376D] dark:hover:bg-[#333333]"
               >
                 <svg
