@@ -27,5 +27,5 @@ const hmacHex = hmac.digest().toHex();
 This HMAC is used to verify the integrity of the file, when the user receives it.
 HMAC guarantees:
 
-- **Message authentication**: the receiver can verify that the message comes from the sender.
-- **Message integrity**: the receiver can verify that the message has not been altered.
+- **message authentication**: the receiver can verify that the message comes from the sender;
+- **message integrity**: the receiver can verify that the message has not been altered.
