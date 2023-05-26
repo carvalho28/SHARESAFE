@@ -4,6 +4,7 @@ import { FaFileAlt, FaKey } from "react-icons/fa";
 import Dropdown from "./Dropdown";
 import { getCookie } from "../auth/Cookies";
 import forge from "node-forge";
+import { api_url } from "../auth/general";
 
 type filePreview = {
   name: string;
@@ -54,7 +55,6 @@ const cypherKeySizes: CypherKeySize = {
   DES: [{ value: "56 bits", label: "56 bits" }],
 };
 
-
 const algorithmMDOptions = [
   { value: "SHA1", label: "SHA1" },
   { value: "SHA256", label: "SHA256" },
@@ -98,11 +98,16 @@ export default function SendFilePopup(props: {
     algorithmMDOptions[0].value,
   );
 
-  const [keySizes, setKeySizes] = useState<{value: string, label: string}>({value: "128 bits", label: "128 bits"});
+  const [keySizes, setKeySizes] = useState<{ value: string; label: string }>({
+    value: "128 bits",
+    label: "128 bits",
+  });
 
-  const [key_size, setKey_size] = useState<string> (cypherKeySizes.AES[0].value);
+  const [key_size, setKey_size] = useState<string>(cypherKeySizes.AES[0].value);
 
-  const [availableSizes, setAvailableSizes] = useState<{ value: string; label: string }[] | undefined>(cypherKeySizes.AES);
+  const [availableSizes, setAvailableSizes] = useState<
+    { value: string; label: string }[] | undefined
+  >(cypherKeySizes.AES);
 
   const [algorithm_encrypt, setAlgorithm_encrypt] =
     useState<forge.cipher.Algorithm>("AES-CBC");
@@ -145,7 +150,7 @@ export default function SendFilePopup(props: {
         case "AES-EBC":
         case "AES-CFB":
         case "AES-OFB":
-        case "AES-CTR": 
+        case "AES-CTR":
         case "AES-GMC": {
           setAvailableSizes(cypherKeySizes.AES);
           break;
@@ -210,16 +215,14 @@ export default function SendFilePopup(props: {
       user_id: getCookie("user_id"),
       group_id: group_id,
     };
-    const response = await fetch(
-      "http://localhost:3000/api/groups/getDiffieKey",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json; charset=UTF-8",
-        },
-        body: JSON.stringify(body),
+    const response = await fetch(api_url + "/groups/getDiffieKey", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json; charset=UTF-8",
+        Authorization: "Bearer " + getCookie("accessToken"),
       },
-    )
+      body: JSON.stringify(body),
+    })
       .then((res) => res.json())
       .then((data) => {
         return data;
@@ -612,7 +615,6 @@ export default function SendFilePopup(props: {
             </div>
           </div>
           {/* DIV ABAIXO E FITA COLA */}
-        
 
           <div className="flex flex-col items-center justify-center w-full mt-2">
             <button
@@ -639,7 +641,7 @@ export default function SendFilePopup(props: {
                   algorithm_encrypt,
                   algorithm_sign,
                   algorithm_hmac,
-                  key_size
+                  key_size,
                 ).catch((error) => {
                   console.error("Error sending file:", error);
                 });

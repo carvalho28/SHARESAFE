@@ -1,6 +1,7 @@
 import Sidebar from "../components/sidebar";
 import { useEffect, useState } from "react";
 import { getCookie } from "../auth/Cookies";
+import { api_url } from "../auth/general";
 
 type Group = {
   id: number;
@@ -27,10 +28,11 @@ function GroupPage() {
       user_id,
     };
 
-    await fetch("http://localhost:3000/api/groups/getGroups", {
+    await fetch(api_url + "/groups/getGroups", {
       method: "POST",
       headers: {
         "Content-Type": "application/json; charset=UTF-8",
+        Authorization: "Bearer " + getCookie("accessToken"),
       },
       body: JSON.stringify(body),
     })
@@ -89,10 +91,11 @@ function GroupPage() {
 
   useEffect(() => {
     const getUser = async () => {
-      await fetch("http://localhost:3000/api/users", {
+      await fetch(api_url + "/users", {
         method: "GET",
         headers: {
           "Content-Type": "application/json; charset=UTF-8",
+          Authorization: "Bearer " + getCookie("accessToken"),
         },
       })
         .then((res) => res.json())
@@ -144,19 +147,17 @@ function GroupPage() {
         const selectedUser = user.filter((item) => item.email === email);
         console.log(selectedUser);
 
-        const response = await fetch(
-          "http://localhost:3000/api/groups/addMemberToGroup",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              group_id: groupIdEdit,
-              user_id: selectedUser[0].id,
-            }),
+        const response = await fetch(api_url + "/groups/addMemberToGroup", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + getCookie("accessToken"),
           },
-        )
+          body: JSON.stringify({
+            group_id: groupIdEdit,
+            user_id: selectedUser[0].id,
+          }),
+        })
           .then((res) => res.json())
           .then((data) => {
             return data;
@@ -211,10 +212,11 @@ function GroupPage() {
 
   const handleLeaveGroup = async () => {
     if (user_id && groupIdEdit) {
-      await fetch("http://localhost:3000/api/groups/removeUserFromGroup", {
+      await fetch(api_url + "/groups/removeUserFromGroup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json; charset=UTF-8",
+          Authorization: "Bearer " + getCookie("accessToken"),
         },
         body: JSON.stringify({
           group_id: groupIdEdit,
@@ -271,10 +273,11 @@ function GroupPage() {
       };
     }
 
-    const response = await fetch("http://localhost:3000/api/groups/new", {
+    const response = await fetch(api_url + "/groups/new", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: "Bearer " + getCookie("accessToken"),
       },
       body: JSON.stringify(body),
     });

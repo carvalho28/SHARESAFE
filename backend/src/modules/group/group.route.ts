@@ -10,27 +10,39 @@ import {
 } from "./group.controller";
 
 async function groupRoutes(server: FastifyInstance) {
-  server.post("/new", { preHandler: [server.auth] }, createGroupHandler);
-  server.post("/getGroups", { preHandler: [server.auth] }, getGroupsHandler);
+  server.post(
+    "/new",
+    { preHandler: [server.authentication] },
+    createGroupHandler
+  );
+  server.post(
+    "/getGroups",
+    { preHandler: [server.authentication] },
+    getGroupsHandler
+  );
   server.post(
     "/getUsers",
-    { preHandler: [server.auth] },
+    { preHandler: [server.authentication] },
     getUsersFromGroupHandler
   );
-  server.post("/getDiffieKey", { preHandler: [server.auth] }, getDiffieKey);
+  server.post(
+    "/getDiffieKey",
+    { preHandler: [server.authentication] },
+    getDiffieKey
+  );
   server.post(
     "/removeUserFromGroup",
-    { preHandler: [server.auth] },
+    { preHandler: [server.authentication] },
     removeUserFromGroupHandler
   );
   server.post(
     "/addMembersToGroup",
-    { preHandler: [server.auth] },
+    { preHandler: [server.authentication] },
     addMembersToGroupHandler
   );
   server.post(
     "/addMemberToGroup",
-    { preHandler: [server.auth] },
+    { preHandler: [server.authentication] },
     addMemberToGroupHandler
   );
 }

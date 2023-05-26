@@ -56,7 +56,9 @@ export async function verifyAccessTokenHandler(
   request: FastifyRequest,
   reply: FastifyReply
 ) {
+  console.log(request.headers);
   const token = request.headers.authorization?.replace("Bearer ", "")!;
+  console.log(token);
 
   try {
     const decoded = await request.jwt.verify(token);

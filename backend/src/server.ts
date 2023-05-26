@@ -3,16 +3,19 @@ import cors from "@fastify/cors";
 import fastifyJwt, { JWT } from "@fastify/jwt";
 import userRoutes from "./modules/user/user.route";
 import fileRoutes from "./modules/file/file.route";
+import groupRoutes from "./modules/group/group.route";
 import { userSchemas } from "./modules/user/user.schema";
 
 declare module "fastify" {
   interface FastifyRequest {
     jwt: JWT;
   }
+  export interface FastifyInstance {
+    authentication: any;
+  }
 }
 
 import dotenv from "dotenv";
-import groupRoutes from "./modules/group/group.route";
 dotenv.config();
 
 function buildServer() {
@@ -30,8 +33,9 @@ function buildServer() {
   });
 
   server.decorate(
-    "auth",
+    "authentication",
     async (request: FastifyRequest, reply: FastifyReply) => {
+      console.log(request.headers.authorization);
       try {
         await request.jwtVerify();
       } catch (err) {
