@@ -21,7 +21,7 @@ export default function Sidebar() {
         <div className="h-full px-3 py-1 overflow-y-auto bg-[#0B2447] dark:bg-[#242424]">
           <ul className="space-y-2">
             <li>
-              <div className="flex items-center justify-center pr-2 mt-10 mb-4">
+              <div className="flex items-center justify-center my-8">
                 <img className="w-1/2" alt="Logo" src={logo} />
               </div>
             </li>
