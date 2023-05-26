@@ -43,7 +43,6 @@ export async function receiveFile(input: FileReceive) {
 }
 
 export async function uploadFile(input: FileInput) {
-  console.log(input.file_info.group_id);
   const file_data = {
     file_name: input.file_info.file_name,
     file_type: input.file_info.file_type,
