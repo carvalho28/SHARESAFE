@@ -369,7 +369,7 @@ function GroupPage() {
         <hr className="border-[#e57b1e] dark:border-[#9c9c9c] border-2 rounded my-5" />
 
         {/** Buttons */}
-        <div className="flex items-center justify-center">
+        <div className="w-1/4 ml-5">
           <button
             className="shadow appearance-none border rounded w-1/2 py-2 bg-[#0B2447] hover:bg-[#19376D] dark:bg-[#333333] dark:hover:bg-[#383838] text-gray-100 font-bold text-xl"
             onClick={handleCreateForm}
@@ -380,12 +380,11 @@ function GroupPage() {
 
         <hr className="border-[#e57b1e] dark:border-[#9c9c9c] border-2 rounded my-5" />
 
-        <div className="">
+        <div className="flex items-center justify-center">
           {/** Create Group */}
           {isShowingCreateForm && (
-            <form className="w-full text-center pt-5">
+            <form className="w-1/2 text-center pt-5">
               <h1>Create Group</h1>
-
               <div className="py-3 flex items-center justify-center">
                 <input
                   className="shadow appearance-none w-1/2 border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-xl"
@@ -479,10 +478,12 @@ function GroupPage() {
               </div>
             </form>
           )}
+        </div>
 
+        <div className="flex items-center justify-center">
           {/** Edit Group */}
           {isShowingEditForm && (
-            <form className="w-full text-center pt-5">
+            <form className="w-1/2 text-center pt-5">
               <h1>Edit Group</h1>
 
               <div className="flex justify-center py-5">
