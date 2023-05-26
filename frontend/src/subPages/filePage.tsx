@@ -7,6 +7,7 @@ import { GiThink } from "react-icons/gi";
 
 import decryptFile from "../encryption/DecryptFile";
 import { FaTimes } from "react-icons/fa";
+import { Spinner } from "../components/Spinner";
 
 type File = {
   id: number;
@@ -54,6 +55,8 @@ function FilePage() {
 
   // Get user_id to query the db
   const user_id = getCookie("user_id");
+
+  const [loading, setLoading] = useState<boolean>(true);
 
   const [groups, setGroups] = useState<
     {
@@ -319,7 +322,7 @@ function FilePage() {
               </tr>
             </thead>
             {/* Linhas da base de dados */}
-            {dataFile.length !== 0 && (
+            {dataFile.length !== 0 && loading === false && (
               <tbody>
                 {dataFile.map((file: any, index: number) => (
                   <tr
@@ -362,8 +365,13 @@ function FilePage() {
               </tbody>
             )}
           </table>
+          {loading && (
+            <div className="text-center justify-center items-center w-full mt-10">
+              <Spinner width="100" height="100" />
+            </div>
+          )}
           {/* if empty show No files yet */}
-          {dataFile.length === 0 && (
+          {dataFile.length === 0 && loading === false && (
             <div className="flex justify-center items-center mt-10 flex-col">
               <p className="text-gray-400 text-4xl">No files yet</p>
               <GiThink className="ml-2 text-gray-400 mt-10" size={300} />

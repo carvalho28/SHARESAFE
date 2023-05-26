@@ -6,6 +6,7 @@ import { getCookie } from "../auth/Cookies";
 import forge from "node-forge";
 import { FaTimes } from "react-icons/fa";
 import { GiThink } from "react-icons/gi";
+import { Spinner } from "../components/Spinner";
 
 type File = {
   id: number;
@@ -58,6 +59,8 @@ function InboxPage() {
   const [validSignatures, setValidSignatures] = useState<any>([]);
   const [algoSignature, setAlgoSignature] = useState<any>([]);
 
+  const [loading, setLoading] = useState<boolean>(true);
+
   useEffect(() => {
     const getFiles = async () => {
       try {
@@ -69,8 +72,7 @@ function InboxPage() {
             return file.signature_algorithm;
           }),
         );
-        // verify the signature using the public key inside receivedData.group.files.user.public_key
-        // if the signature is valid, decrypt the file using the private key
+        setLoading(false);
       } catch (error) {
         console.log(error);
       }
@@ -242,16 +244,15 @@ function InboxPage() {
   return (
     <div>
       <Sidebar />
-
       <div className="p-4 sm:ml-64">
         <input type="file" id="file" onChange={(e) => handleFileChange(e)} />
         <section>
           {/* Ficheiros */}
           <h2 className="text-center underline">{heading}</h2>
           <br></br>
-          <table className="w-full text-sm text-center text-gray-500 dark:text-gray-400">
+          <table className="w-full text-sm text-center text-gray-100">
             {/* Cabecalho */}
-            <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <thead className="text-xs uppercase text-gray-100 bg-[#0B2447] dark:bg-[#242424]">
               <tr>
                 <th scope="col" className="px-6 py-3">
                   File Name
@@ -272,13 +273,12 @@ function InboxPage() {
                 <th></th>
               </tr>
             </thead>
-            {/* Linhas da base de dados */}
-            {dataFile.length !== 0 && (
+            {dataFile.length !== 0 && loading === false && (
               <tbody>
                 {dataFile.map((file: any, index: number) => (
                   <tr
                     key={file.id}
-                    className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+                    className="bg-[#19376D] dark:bg-[#333333] border-b"
                   >
                     <th>{file.file_name}</th>
                     <td className="px-6 py-4">{file.file_size}</td>
@@ -316,7 +316,12 @@ function InboxPage() {
               </tbody>
             )}
           </table>
-          {dataFile.length === 0 && (
+          {loading && (
+            <div className="text-center justify-center items-center w-full mt-10">
+              <Spinner width="100" height="100" />
+            </div>
+          )}
+          {dataFile.length === 0 && loading === false && (
             <div className="flex justify-center items-center mt-10 flex-col">
               <p className="text-gray-400 text-4xl">No files yet</p>
               <GiThink className="ml-2 text-gray-400 mt-10" size={300} />
