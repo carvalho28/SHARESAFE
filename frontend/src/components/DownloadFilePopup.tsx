@@ -157,7 +157,7 @@ export default function DownloadFilePopup(props: {
         <div
             className="px-10 pt-4 flex flex-col items-center justify-center w-full h-full border-2
             border-[#E57B1E] border-dashed rounded-lg cursor-pointer bg-[#0B2447] dark:bg-[#242424]
-            dark:border-[#383838]"
+            dark:border-[#383838] min-w-[500px]"
         >
             <div className="flex flex-row w-full space-x-8">
                 <div className="flex w-full justify-between flex-col">

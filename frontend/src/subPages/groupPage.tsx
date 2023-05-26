@@ -411,7 +411,7 @@ function GroupPage() {
               <div className="pt-1 pb-5 flex justify-center">
                 <button
                   type="button"
-                  className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+                  className="bg-[#0B2447] hover:bg-[#19376D] text-white dark:text-[#d9d9d9] dark:bg-[#333333] dark:hover:bg-[#383838] focus:ring-2 focus:ring-[#E57B1E] font-medium rounded-lg text-sm px-5 py-2 mr-2 mb-2 focus:outline-none dark:focus:ring-[#383838]"
                   onClick={handleAddMember}
                 >
                   Add Member

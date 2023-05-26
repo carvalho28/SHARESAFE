@@ -475,37 +475,43 @@ export default function SendFilePopup(props: {
               </div>
             </div>
           </div>
-          <div className="flex items-center justify-center w-full mt-2 space-x-20">
+          <div className="2xl:flex items-center justify-center w-full mt-2 2xl:space-x-20">
             {/* checkbox to enable sign file */}
-            <div className="mt-20">
-              <Dropdown
-                label="Algorithm to Encrypt"
-                name="algorithm-Encrypt"
-                onSelect={handleAlgorithmChange}
-                defaultValue={algorithmEncOptions[0]}
-                items={algorithmEncOptions}
-              />
+            <div className="flex items-center justify-center flex-col">
+              <div className="2xl:mt-20 mt-10 flex flex-col items-center justify-center w-[150px] min-w-[150px]">
+                <Dropdown
+                  label="Algorithm to Encrypt"
+                  name="algorithm-Encrypt"
+                  onSelect={handleAlgorithmChange}
+                  defaultValue={algorithmEncOptions[0]}
+                  items={algorithmEncOptions}
+                />
+              </div>
             </div>
-            <div className="mt-20">
-              <Dropdown
-                label="Key Size"
-                name="key-Size"
-                onSelect={handleAlgorithmChange}
-                defaultValue={cypherKeySizes.AES[0]}
-                items={cypherKeySizes.AES}
-              />
+            <div className="flex items-center justify-center flex-col">
+              <div className="2xl:mt-20 mt-10 flex flex-col items-center justify-center w-[150px] min-w-[150px]">
+                <Dropdown
+                  label="Key Size"
+                  name="key-Size"
+                  onSelect={handleAlgorithmChange}
+                  defaultValue={cypherKeySizes.AES[0]}
+                  items={cypherKeySizes.AES}
+                />
+              </div>
             </div>
-            <div className="mt-20">
-              <Dropdown
-                label="Algorithm to HMAC"
-                name="algorithm-HMAC"
-                onSelect={handleAlgorithmChange}
-                defaultValue={algorithmMDOptions[1]}
-                items={algorithmMDOptions}
-              />
+            <div className="flex items-center justify-center flex-col">
+              <div className="2xl:mt-20 mt-10 flex flex-col items-center justify-center w-[150px] min-w-[150px]">
+                <Dropdown
+                  label="Algorithm to HMAC"
+                  name="algorithm-HMAC"
+                  onSelect={handleAlgorithmChange}
+                  defaultValue={algorithmMDOptions[1]}
+                  items={algorithmMDOptions}
+                />
+              </div>
             </div>
-            <div className="flex items-center justify-center flex-col mt-8">
-              <div className="flex flex-row items-center justify-center">
+            <div className="flex items-center justify-center flex-col">
+              <div className="flex flex-row items-center justify-center 2xl:mt-8 mt-10">
                 <input
                   type="checkbox"
                   id="sign-file"
@@ -521,9 +527,9 @@ export default function SendFilePopup(props: {
                   Sign File
                 </label>
               </div>
-              <div className="flex flex-col items-center justify-center">
+              <div>
                 {signFile && (
-                  <div className="mt-8">
+                  <div className="2xl:mt-7 mt-5 flex flex-col items-center justify-center w-[150px] min-w-[150px]">
                     <Dropdown
                       label="Algorithm to Sign"
                       name="algorithm-Sign"
