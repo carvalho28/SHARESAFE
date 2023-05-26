@@ -304,9 +304,9 @@ function InboxPage() {
                         Download
                       </button>
                     </td>
-                    {/* if user_id is equal to the user logged in, show delete button */}
-                    {file.user_id == user_id && (
-                      <td className="px-6 py-4 hover:text-red-500 dark:hover:text-red-400">
+                    <td className="px-6 py-4 hover:text-red-500 dark:hover:text-red-400">
+                      {/* if user_id is equal to the user logged in, show delete button */}
+                      {file.user_id == user_id && (
                         <button
                           className="text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-500"
                           onClick={() => {
@@ -315,8 +315,8 @@ function InboxPage() {
                         >
                           <FaTimes />
                         </button>
-                      </td>
-                    )}
+                      )}
+                    </td>
                   </tr>
                 ))}
               </tbody>
