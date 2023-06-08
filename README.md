@@ -64,6 +64,23 @@ Go to your desired folder in your computer and clone the repo using:
 git clone https://github.com/carvalho28/SHARESAFE
 ```
 
+### Prepare Database
+
+You need to have a database ready o use, inside `/backend`, create a `.env` with:
+
+```
+DATABASE_URL="database_url"
+```
+
+And then, to set it up using prisma, just run, on the global folder:
+
+```
+cd backend && npx prisma migrate dev --name init
+```
+
+After this, you have set up your database.
+
+
 ### Install the Dependencies
 
 After cloning the repo, navigate to the created folder using:
