@@ -3754,10 +3754,10 @@ yoga-layout-prebuilt@^1.9.6:
   dependencies:
     "@types/yoga-layout" "1.9.2"
 
-zod-to-json-schema@^3.17.1, zod-to-json-schema@^3.20.4:
-  version "3.20.4"
-  resolved "https://registry.yarnpkg.com/zod-to-json-schema/-/zod-to-json-schema-3.20.4.tgz#155f687c5a059fdc0f1bb3ff32d6e9200036b6f4"
-  integrity sha512-Un9+kInJ2Zt63n6Z7mLqBifzzPcOyX+b+Exuzf7L1+xqck9Q2EPByyTRduV3kmSPaXaRer1JCsucubpgL1fipg==
+zod-to-json-schema@^3.17.1, zod-to-json-schema@^3.21.3:
+  version "3.21.3"
+  resolved "https://registry.yarnpkg.com/zod-to-json-schema/-/zod-to-json-schema-3.21.3.tgz#2ce40860570217979ad5c9734e2e2df717784859"
+  integrity sha512-09W/9oyxeF1/wWnzCb6MursW+lOzgKi91QwE7eTBbC+t/qgfuLsUVDai3lHemSQnQu/UONAcT/fv3ZnDvbTeKg==
 
 zod@^3.19.1, zod@^3.21.4:
   version "3.21.4"
